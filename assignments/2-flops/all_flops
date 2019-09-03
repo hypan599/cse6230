@@ -1,0 +1,120 @@
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 100000000000 -1 -1 25 0.5 3.0
+[./fma_prof] Nh = 0, Nd = 1215752192, T = 25, default block size
+[./fma_prof]: 3.868914e-02 elapsed seconds
+[./fma_prof]: 0 flops executed
+[./fma_prof]: 0.000000e+00 flop/s
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 200000000000 -1 -1 25 0.5 3.0
+DEV_ARRAY_SIZE negative
+make: *** [run_fma_prof] Error 1
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 300000000000 -1 -1 25 0.5 3.0
+DEV_ARRAY_SIZE negative
+make: *** [run_fma_prof] Error 1
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 400000000000 -1 -1 25 0.5 3.0
+[./fma_prof] Nh = 0, Nd = 568041472, T = 25, default block size
+[./fma_prof]: 1.142216e-02 elapsed seconds
+[./fma_prof]: 0 flops executed
+[./fma_prof]: 0.000000e+00 flop/s
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 500000000000 -1 -1 25 0.5 3.0
+[./fma_prof] Nh = 0, Nd = 1783793664, T = 25, default block size
+[./fma_prof]: 2.133083e-02 elapsed seconds
+[./fma_prof]: 0 flops executed
+[./fma_prof]: 0.000000e+00 flop/s
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 600000000000 -1 -1 25 0.5 3.0
+DEV_ARRAY_SIZE negative
+make: *** [run_fma_prof] Error 1
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 700000000000 -1 -1 25 0.5 3.0
+DEV_ARRAY_SIZE negative
+make: *** [run_fma_prof] Error 1
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_prof.o fma_prof.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_omp.o fma_omp.c
+icc -g -Wall -std=c99 -fPIC -O3 -xHost -I/usr/local/pacerepov1/cuda/8.0.44/include -qopenmp -c -o fma_loop_host.o fma_loop_host.c
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_cuda.o fma_cuda.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -O3 -dc -o fma_loop_dev.o fma_loop_dev.cu
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc -ccbin=icpc -Xcompiler '-fPIC' -dlink  fma_cuda.o fma_loop_dev.o -o fma_cuda_link.o
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+icpc -qopenmp -shared -Wl,-soname,libfma_cuda.so -o libfma_cuda.so fma_cuda_link.o fma_cuda.o fma_loop_dev.o -L/usr/local/pacerepov1/cuda/8.0.44/lib64 -Wl,-rpath,/usr/local/pacerepov1/cuda/8.0.44/lib64 -lcudart
+icpc -qopenmp -o fma_prof fma_prof.o fma_omp.o fma_loop_host.o libfma_cuda.so -Wl,-rpath,.
+OMP_PROC_BIND=spread OMP_NUM_THREADS=28  ./fma_prof 0 800000000000 -1 -1 25 0.5 3.0
+[./fma_prof] Nh = 0, Nd = 1136082944, T = 25, default block size
+[./fma_prof]: 1.981401e-02 elapsed seconds
+[./fma_prof]: 0 flops executed
+[./fma_prof]: 0.000000e+00 flop/s
