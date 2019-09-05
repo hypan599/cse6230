@@ -1,4 +1,4 @@
-
 *.so
 *.o
 fma_prof
+fma_prof_opt

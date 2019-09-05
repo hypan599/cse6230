@@ -5,3 +5,4 @@ syllabus.pdf
 jupyter.*.log
 jupyter.o*
 hpctoolkit-*
+.DS_Store
