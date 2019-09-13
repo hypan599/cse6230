@@ -1,3 +1,6 @@
+.vscode/*
+.idea/*
+
 *.gif
 cloud
 cloud2

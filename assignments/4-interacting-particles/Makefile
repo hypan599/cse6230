@@ -7,7 +7,7 @@ RM = rm -f
 LIBS = -lm -lrt
 LINKER = $(CC)
 
-all: cloud cloud2
+all: cloud cloud2 cloud_ori
 
 %.o: %.c
 	$(CC) -std=c99 $(CFLAGS) $(COPTFLAGS) $(CPPFLAGS) $(DEFINES) $(OMPFLAGS) -c -o $@ $<
@@ -28,10 +28,17 @@ verlet_accelerate2.o: verlet_accelerate2.c verlet.h cloud.h
 
 cloud.o: cloud.c verlet.h cloud.h
 
+cloud_ori.o: cloud_ori.c verlet.h cloud.h
+
+verlet_ori.o: verlet_ori.c verlet.h cloud.h
+
 cloud: verlet.o verlet_stream_and_noise.o verlet_accelerate.o cloud.o initialize.o hamiltonian.o
 	$(LINKER) -o $@ $^ $(LIBS)
 
 cloud2: verlet.o verlet_stream_and_noise.o verlet_accelerate2.o cloud.o initialize.o hamiltonian.o
+	$(LINKER) -o $@ $^ $(LIBS)
+
+cloud_ori: verlet_ori.o verlet_stream_and_noise.o verlet_accelerate.o cloud_ori.o initialize.o hamiltonian.o
 	$(LINKER) -o $@ $^ $(LIBS)
 
 PERF =
@@ -54,6 +61,11 @@ runcloud2:
 	$(MAKE) --silent clean
 	$(MAKE) --silent cloud2
 	$(PERF) ./cloud2 $(NP) $(NT) $(DT) $(K) $(D)
+
+runcloud_ori:
+	$(MAKE) --silent clean
+	$(MAKE) --silent cloud_ori
+	$(PERF) ./cloud $(NP) $(NT) $(DT) $(K) $(D)
 
 vizcloud:
 	$(MAKE) --silent clean

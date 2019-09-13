@@ -2,7 +2,7 @@
 #include "cloud.h"
 
 double
-compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3])
+compute_hamiltonian_ori (int Np, double k, const double *X[3], const double *U[3])
 {
   double h = 0.;
 
@@ -20,24 +20,24 @@ compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3])
 }
 
 
-// double
-// compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3])
-// {
-//   double h = 0.;
+double
+compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3])
+{
+  double h = 0.;
 
-//     #pragma omp parallel for
-//     // TODO: h prevents parallel
-//   for (int index = 0; index < Np * Np; index++) { /* for every particle */
-//       int i = index / Np;
-//       int j = index % Np;
-//       if (i == j) {
-//          h += U[0][i]*U[0][i] + U[1][i]*U[1][i] + U[2][i]*U[2][i]; /* kinetic energy */
-//       } else {
-//          if (k) {
-//             double hj = potential (k, X[0][i], X[1][i], X[2][i], X[0][j], X[1][j], X[2][j]);
-//             h += hj;
-//          }
-//       }
-//   }
-//   return h / 2.;
-// }
+    #pragma omp parallel for
+    // TODO: h prevents parallel
+  for (int index = 0; index < Np * Np; index++) { /* for every particle */
+      int i = index / Np;
+      int j = index % Np;
+      if (i == j) {
+         h += U[0][i]*U[0][i] + U[1][i]*U[1][i] + U[2][i]*U[2][i]; /* kinetic energy */
+      } else {
+         if (k) {
+            double hj = potential (k, X[0][i], X[1][i], X[2][i], X[0][j], X[1][j], X[2][j]);
+            h += hj;
+         }
+      }
+  }
+  return h / 2.;
+}

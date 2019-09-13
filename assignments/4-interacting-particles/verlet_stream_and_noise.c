@@ -53,12 +53,12 @@ verlet_step_stream_and_noise (int Np, double dt_stream, double dt_noise,
 //     }
 //   }
 //   else {
-//         #pragma omp parallel for
-//       // TODO: convert nested loop into one loop
-//     for (int i = 0; i < Np; i++) {
-//       for (int d = 0; d < 3; d++) {
+//      see if iterate on Np first gives better performance
+//     #pragma omp parallel for
+//     for (int index = 0; index < Np * 3; index++) {
+//         int i = index % Np;
+//         int d = index / Np;
 //         X[d][i] += dt_stream * U[d][i];
-//       }
 //     }
 //   }
 // }
