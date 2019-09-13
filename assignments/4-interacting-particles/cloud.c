@@ -80,13 +80,13 @@ main (int argc, char **argv)
   int Np, Nt, err;
   int Nint;
   double dt;
-  double k;
-  double d;
+  double k; // coefficient in potential
+  double d; // brownian diffusion factor
   double *X0[3];
-  double *X[3], *U[3];
+  double *X[3], *U[3]; // location and potential
   double Hin, Hout;
-  int seed = 6230;
-  const char *gifname = NULL;
+  int seed = 6230; // random seed
+  const char *gifname = NULL;  // output filename
   cse6230rand_t rand;
   TicTocTimer loop_timer;
   double loop_time;
@@ -153,6 +153,7 @@ main (int argc, char **argv)
     }
   }
 
+  // program finish, free space used
   for (int d = 0; d < 3; d++) {
     free (U[d]);
     free (X[d]);
