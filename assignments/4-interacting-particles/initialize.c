@@ -1,5 +1,6 @@
 
 #include "cloud.h"
+// #include <omp.h>
 
 void
 initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], double *X[3], double *U[3])
@@ -9,7 +10,7 @@ initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], doub
   init_tag = cse6230rand_get_tag (rand);
 
   // init 4 points at a time
-  #paragma omp parallel for
+//     #pragma omp parallel for
   for (int i = 0; i < Np; i+=4) { /* for every particle */
     double xval[3][4];
     double uval[3][4];
@@ -26,9 +27,10 @@ initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], doub
         }
       }
     }
-
+      
     if (i + 4 <= Np) {
       // TODO: parallel this loop
+//         #pragma omp parallel for
       for (int j = 0; j < 4; j++) {
         for (int d = 0; d < 3; d++) { /* scale uniform [0,1) variables to [-1, 1) */
           X0[d][i + j] = X[d][i + j] = 2. * xval[d][j] - 1.;
@@ -38,6 +40,7 @@ initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], doub
     }
     else {
       // TODO: parallel this loop
+//         #pragma omp parallel for
       for (int j = 0; j < Np - i; j++) {
         for (int d = 0; d < 3; d++) {
           X0[d][i + j] = X[d][i + j] = 2. * xval[d][j] - 1.;

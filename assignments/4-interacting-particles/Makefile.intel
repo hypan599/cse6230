@@ -1,5 +1,5 @@
 
-CC = icc
+CC = icc -qopenmp
 COPTFLAGS = -O3 -xHost -qopt-report=5
 OMPFLAGS =
 CFLAGS = -g -Wall -fPIC

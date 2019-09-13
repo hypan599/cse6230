@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 #include <cse6230rand.h>
+#include <omp.h>
 #include "cloud.h"
 #include "verlet.h"
 
