@@ -17,16 +17,19 @@ verlet_step_stream_and_noise (int Np, double dt_stream, double dt_noise,
 
       cse6230rand_hash (rand, tag, i, 0, 0, rval);
 
+        #pragma omp parallel for
       for (int d = 0; d < 3; d++) {
         X[d][i] += dt_stream * U[d][i] + dt_noise * (2. * rval[d] - 1.);
       }
     }
   }
   else {
-    for (int i = 0; i < Np; i++) {
-      for (int d = 0; d < 3; d++) {
+     see if iterate on Np first gives better performance
+    #pragma omp parallel for
+    for (int index = 0; index < Np * 3; index++) {
+        int i = index % Np;
+        int d = index / Np;
         X[d][i] += dt_stream * U[d][i];
-      }
     }
   }
 }
@@ -46,19 +49,16 @@ verlet_step_stream_and_noise (int Np, double dt_stream, double dt_noise,
 
 //       cse6230rand_hash (rand, tag, i, 0, 0, rval);
 
-//         #pragma omp parallel for
 //       for (int d = 0; d < 3; d++) {
 //         X[d][i] += dt_stream * U[d][i] + dt_noise * (2. * rval[d] - 1.);
 //       }
 //     }
 //   }
 //   else {
-//      see if iterate on Np first gives better performance
-//     #pragma omp parallel for
-//     for (int index = 0; index < Np * 3; index++) {
-//         int i = index % Np;
-//         int d = index / Np;
+//     for (int i = 0; i < Np; i++) {
+//       for (int d = 0; d < 3; d++) {
 //         X[d][i] += dt_stream * U[d][i];
+//       }
 //     }
 //   }
 // }
