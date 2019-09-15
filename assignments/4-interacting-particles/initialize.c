@@ -30,7 +30,7 @@ initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], doub
       
     if (i + 4 <= Np) {
       // TODO: parallel this loop
-      // #pragma omp parallel for
+      #pragma omp parallel for
       for (int j = 0; j < 4; j++) {
         for (int d = 0; d < 3; d++) { /* scale uniform [0,1) variables to [-1, 1) */
           X0[d][i + j] = X[d][i + j] = 2. * xval[d][j] - 1.;
@@ -40,7 +40,7 @@ initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], doub
     }
     else {
       // TODO: parallel this loop
-      // #pragma omp parallel for
+      #pragma omp parallel for
       for (int j = 0; j < Np - i; j++) {
         for (int d = 0; d < 3; d++) {
           X0[d][i + j] = X[d][i + j] = 2. * xval[d][j] - 1.;
