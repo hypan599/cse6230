@@ -8,6 +8,7 @@ compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3])
 
     #pragma omp parallel for
     // TODO: h prevents parallel
+    // not urgent, not the most heavy part of cloud
   for (int index = 0; index < Np * Np; index++) { /* for every particle */
       int i = index / Np;
       int j = index % Np;
