@@ -11,19 +11,19 @@ verlet_step_stream_and_noise (int Np, double dt_stream, double dt_noise,
     size_t tag;
 
     tag = cse6230rand_get_tag (rand);
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(static)
     for (int i = 0; i < Np; i++) {
       double rval[4];
 
       cse6230rand_hash (rand, tag, i, 0, 0, rval);
-//       #pragma unroll(3)
+      #pragma unroll(3)
       for (int d = 0; d < 3; d++) {
         X[d][i] += dt_stream * U[d][i] + dt_noise * (2. * rval[d] - 1.);
       }
     }
   }
   else {
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(static)
     for (int d = 0; d < 3; d++) {
       for (int i = 0; i < Np; i+=2) {
         X[d][i] += dt_stream * U[d][i];

@@ -57,7 +57,7 @@ initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], doub
   size_t init_tag;
 
   init_tag = cse6230rand_get_tag (rand);
-//   # pragma omp parallel for
+  # pragma omp parallel for schedule(static)
   for (int i = 0; i < Np; i+=4) { /* for every particle */
     double xval[3][4];
     double uval[3][4];
