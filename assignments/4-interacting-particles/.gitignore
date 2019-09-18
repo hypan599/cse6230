@@ -1,0 +1,8 @@
+*.gif
+cloud
+cloud2
+*.optrpt
+*.o
+*.hpcstruct
+db_cloud_*/*
+prof_cloud_*/*
