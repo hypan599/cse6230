@@ -5,27 +5,22 @@ double
 compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3])
 {
   double h = 0.;
+  # pragma omp parallel for
+  for (int i = 0; i < Np; i++) { /* for every particle */
+    h += 0.5 * (U[0][i]*U[0][i] + U[1][i]*U[1][i] + U[2][i]*U[2][i]); /* kinetic energy */
+    if (k) {
+      for (int j = i + 1; j < Np; j++) { /* for every other particle */
+        double hj = potential (k, X[0][i], X[1][i], X[2][i], X[0][j], X[1][j], X[2][j]);
 
-    #pragma omp parallel for
-    // TODO: h prevents parallel
-    // not urgent, not the most heavy part of cloud
-  for (int index = 0; index < Np * Np; index++) { /* for every particle */
-      int i = index / Np;
-      int j = index % Np;
-      if (i == j) {
-         h += U[0][i]*U[0][i] + U[1][i]*U[1][i] + U[2][i]*U[2][i]; /* kinetic energy */
-      } else {
-         if (k) {
-            double hj = potential (k, X[0][i], X[1][i], X[2][i], X[0][j], X[1][j], X[2][j]);
-            h += hj;
-         }
+        h += hj;
       }
+    }
   }
-  return h / 2.;
+  return h;
 }
 
 // double
-// compute_hamiltonian_ori (int Np, double k, const double *X[3], const double *U[3])
+// compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3])
 // {
 //   double h = 0.;
 
