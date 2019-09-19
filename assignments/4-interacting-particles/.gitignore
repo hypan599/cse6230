@@ -4,5 +4,5 @@ cloud2
 *.optrpt
 *.o
 *.hpcstruct
-db_cloud_*/*
+db_cloud*/*
 prof_cloud_*/*
