@@ -6,3 +6,4 @@ jupyter.*.log
 jupyter.o*
 hpctoolkit-*
 .DS_Store
+.vscode/*
