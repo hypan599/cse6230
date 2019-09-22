@@ -47,11 +47,13 @@ verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *
 
                   force (dt, X[0][i], X[1][i], X[2][i], X[0][j], X[1][j], X[2][j], du);
 
-                  #pragma unroll(3)
-                  for (int d = 0; d < 3; d++) {
-                    U[d][i] += du[d];
-                    U[d][j] -= du[d];
-                  }
+                  #pragma omp critical 
+                    {
+                          for (int d = 0; d < 3; d++) {
+                            U[d][i] += du[d];
+                            U[d][j] -= du[d];
+                          }
+                    }
             }
       }
 }

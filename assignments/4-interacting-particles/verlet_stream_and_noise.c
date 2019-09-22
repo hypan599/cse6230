@@ -25,9 +25,8 @@ verlet_step_stream_and_noise (int Np, double dt_stream, double dt_noise,
   else {
     #pragma omp parallel for schedule(static)
     for (int d = 0; d < 3; d++) {
-      for (int i = 0; i < Np; i+=2) {
+      for (int i = 0; i < Np; i++) {
         X[d][i] += dt_stream * U[d][i];
-        X[d][i+1] += dt_stream * U[d][i+1];
       }
     }
   }
