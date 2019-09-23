@@ -7,3 +7,4 @@ jupyter.o*
 hpctoolkit-*
 .DS_Store
 .vscode/*
+workspace/*
