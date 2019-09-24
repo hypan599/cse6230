@@ -96,29 +96,27 @@ force_2 (double k,
 static inline void
 force_vec (double K, double k,
        double x1, double y1, double z1,
-       double *restrict x2, double *restrict y2, double *restrict z2,
+       const double *x2, const double *y2, const double *z2,
        double *fx, double *fy, double *fz)
 {
-#define VMAX 32
-  double dx[VMAX], dy[VMAX], dz[VMAX];
-  double qdx[VMAX], qdy[VMAX], qdz[VMAX];
-  double r2[VMAX], ir3[VMAX];
-
   for (int i = 0; i < K; i++) {
-    dx[i] = remainder(x1 - x2[i], 1.);
-    dy[i] = remainder(y1 - y2[i], 1.);
-    dz[i] = remainder(z1 - z2[i], 1.);
+    double dx, dy, dz;
+    double qdx, qdy, qdz;
+    double r2, ir3;
+    dx = remainder(x1 - x2[i], 1.);
+    dy = remainder(y1 - y2[i], 1.);
+    dz = remainder(z1 - z2[i], 1.);
 
-    qdx[i] = qdist(dx[i]);
-    qdy[i] = qdist(dy[i]);
-    qdz[i] = qdist(dz[i]);
+    qdx = qdist(dx);
+    qdy = qdist(dy);
+    qdz = qdist(dz);
 
-    r2[i] = qdx[i]*qdx[i] + qdy[i]*qdy[i] + qdz[i]*qdz[i];
-    ir3[i] = 1. / (sqrt(r2[i]) * r2[i]);
+    r2 = qdx*qdx + qdy*qdy + qdz*qdz;
+    ir3 = 1. / (sqrt(r2) * r2);
 
-    fx[i] = k * ir3[i] * qdx[i] * dqdist(dx[i]);
-    fy[i] = k * ir3[i] * qdy[i] * dqdist(dy[i]);
-    fz[i] = k * ir3[i] * qdz[i] * dqdist(dz[i]);
+    fx[i] = k * ir3 * qdx * dqdist(dx);
+    fy[i] = k * ir3 * qdy * dqdist(dy);
+    fz[i] = k * ir3 * qdz * dqdist(dz);
   }
 }
 #else
