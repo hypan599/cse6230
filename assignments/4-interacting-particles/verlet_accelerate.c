@@ -42,7 +42,7 @@ verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *
         }
       }
       // COMPUTATION: we've set ourselves up for K^2 computations of force
-      // without all data already read into the cache
+      // with all data already read into the cache
       for (int l = 0; l < K; l++) {
         double ddux[K];
         double dduy[K];
