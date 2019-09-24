@@ -38,6 +38,7 @@ potential (double k,
   return k * ir;
 }
 
+#if !defined(DUMMY)
 /* computes the force particle 2 exerts on particle 1,
  * according to the potential above */
 static inline void
@@ -65,6 +66,18 @@ force (double k,
   f[1] = k * ir3 * qdy * dqdist(dy);
   f[2] = k * ir3 * qdz * dqdist(dz);
 }
+#else
+static inline void
+force (double k,
+       double x1, double y1, double z1,
+       double x2, double y2, double z2,
+       double f[])
+{
+  f[0] = 1.e-6 + y1 * z2 - y2 * z1;
+  f[1] = -1.e-6 + z1 * x2 - z2 * x1;
+  f[2] = -5.e-7 + x1 * y2 - x2 * y1;
+}
+#endif
 
 void initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], double *X[3], double *U[3]);
 double compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3]);

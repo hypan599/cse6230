@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <omp.h>
 #include <cse6230rand.h>
 #include "cloud.h"
 #include "verlet.h"
@@ -90,6 +91,10 @@ main (int argc, char **argv)
   cse6230rand_t rand;
   TicTocTimer loop_timer;
   double loop_time;
+  double init_tic, init_toc, init_time = 0.;
+  double hami_tic, hami_toc, hami_time = 0.;
+  double accl_time = 0.;
+  double strm_time = 0.;
 
   err = process_options (argc, argv, &Np, &Nt, &Nint, &dt, &k, &d, &gifname);CHK(err);
 
@@ -101,9 +106,15 @@ main (int argc, char **argv)
 
   cse6230rand_seed (seed, &rand);
 
+  init_tic = omp_get_wtime();
   initialize_variables (Np, k, &rand, X0, X, U);
+  init_toc = omp_get_wtime();
+  init_time = init_toc - init_tic;
 
+  hami_tic = omp_get_wtime();
   Hin = compute_hamiltonian (Np, k, (const double **)X, (const double **)U);
+  hami_toc = omp_get_wtime();
+  hami_time = hami_toc - hami_tic;
   if (!gifname) {
     printf ("[%s] NUM_POINTS=%d, NUM_STEPS=%d, CHUNK_SIZE=%d, DT=%g, K=%g, D=%g\n", argv[0], Np, Nt, Nint, dt, k, d);
     printf ("[%s] Hamiltonian, T = 0: %g\n", argv[0], Hin);
@@ -117,14 +128,20 @@ main (int argc, char **argv)
   loop_timer = tic();
   for (int t = 0; t < Nt; t += Nint) {
     if (gifname) {
+      hami_tic = omp_get_wtime();
       Hout = compute_hamiltonian (Np, k, (const double **)X, (const double **)U);
+      hami_toc = omp_get_wtime();
+      hami_time += hami_toc - hami_tic;
       write_step (Np, t * dt, Hout, (const double **)X);
     }
     /* execute the loop */
-    verlet_step (Np, Nint, dt, k, d, &rand, X, U);
+    verlet_step (Np, Nint, dt, k, d, &rand, X, U, &accl_time, &strm_time);
   }
   loop_time = toc(&loop_timer);
+  hami_tic = omp_get_wtime();
   Hout = compute_hamiltonian (Np, k, (const double **)X, (const double **)U);
+  hami_toc = omp_get_wtime();
+  hami_time += hami_toc - hami_tic;
   if (gifname) {write_step (Np, Nt * dt, Hout, (const double **)X);}
 
   {
@@ -144,6 +161,10 @@ main (int argc, char **argv)
 
     if (!gifname) {
       printf ("[%s] Simulation walltime: %g\n", argv[0], loop_time);
+      printf ("[%s] Initialization walltime: %g\n", argv[0], init_time);
+      printf ("[%s] Hamiltonian walltime: %g\n", argv[0], hami_time);
+      printf ("[%s] Acceleration walltime: %g\n", argv[0], accl_time);
+      printf ("[%s] Streaming walltime: %g\n", argv[0], strm_time);
       printf ("[%s] Hamiltonian, T = %g: %g, Relative Error: %g\n", argv[0], Nt * dt, Hout, Hin ? fabs(Hout - Hin) / Hin: 0.);
       printf ("[%s] Average Distance Traveled: %g\n", argv[0], avgDist);
     } else {

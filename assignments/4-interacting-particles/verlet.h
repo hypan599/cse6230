@@ -4,7 +4,7 @@
 #include <cse6230rand.h>
 
 void
-verlet_step (int Np, int Nt, double dt, double k, double d, cse6230rand_t *rand, double *restrict X[3], double *restrict V[3]);
+verlet_step (int Np, int Nt, double dt, double k, double d, cse6230rand_t *rand, double *restrict X[3], double *restrict V[3], double *accl_time, double *strm_time);
 
 void
 verlet_step_stream_and_noise (int Np, double dt_stream, double dt_noise, cse6230rand_t *rand, double *restrict X[3], const double *restrict V[3]);
