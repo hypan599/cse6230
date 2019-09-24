@@ -38,7 +38,7 @@ potential (double k,
   return k * ir;
 }
 
-#if !defined(DUMMY)
+#if !defined(DUMMY) || !DUMMY
 /* computes the force particle 2 exerts on particle 1,
  * according to the potential above */
 static inline void
@@ -66,18 +66,6 @@ force (double k,
   f[1] = k * ir3 * qdy * dqdist(dy);
   f[2] = k * ir3 * qdz * dqdist(dz);
 }
-#else
-static inline void
-force (double k,
-       double x1, double y1, double z1,
-       double x2, double y2, double z2,
-       double f[])
-{
-  f[0] = 1.e-6 + y1 * z2 - y2 * z1;
-  f[1] = -1.e-6 + z1 * x2 - z2 * x1;
-  f[2] = -5.e-7 + x1 * y2 - x2 * y1;
-}
-#endif
 
 static inline void
 force_2 (double k,
@@ -109,7 +97,7 @@ static inline void
 force_vec (double K, double k,
        double x1, double y1, double z1,
        double *restrict x2, double *restrict y2, double *restrict z2,
-       double *restrict fx, double *restrict fy, double *restrict fz)
+       double *fx, double *fy, double *fz)
 {
 #define VMAX 32
   double dx[VMAX], dy[VMAX], dz[VMAX];
@@ -133,6 +121,43 @@ force_vec (double K, double k,
     fz[i] = k * ir3[i] * qdz[i] * dqdist(dz[i]);
   }
 }
+#else
+static inline void
+force (double k,
+       double x1, double y1, double z1,
+       double x2, double y2, double z2,
+       double f[])
+{
+  f[0] = 1.e-6 + y1 * z2 - y2 * z1;
+  f[1] = -1.e-6 + z1 * x2 - z2 * x1;
+  f[2] = -5.e-7 + x1 * y2 - x2 * y1;
+}
+
+static inline void
+force_2 (double k,
+         double x1, double y1, double z1,
+         double x2, double y2, double z2,
+         double *fx, double *fy, double *fz)
+{
+  *fx = 1.e-6 + y1 * z2 - y2 * z1;
+  *fy = -1.e-6 + z1 * x2 - z2 * x1;
+  *fz = -5.e-7 + x1 * y2 - x2 * y1;
+}
+
+static inline void
+force_vec (int K, double k,
+           double x1, double y1, double z1,
+           double *x2, double *y2, double *z2,
+           double *fx, double *fy, double *fz)
+{
+  for (int i = 0; i < K; i++) {
+    fx[i] = 1.e-6  + y1 * z2[i] - y2[i] * z1;
+    fy[i] = -1.e-6 + z1 * x2[i] - z2[i] * x1;
+    fz[i] = -5.e-7 + x1 * y2[i] - x2[i] * y1;
+  }
+}
+#endif
+
 
 void initialize_variables (int Np, double k, cse6230rand_t *rand, double *X0[3], double *X[3], double *U[3]);
 double compute_hamiltonian (int Np, double k, const double *X[3], const double *U[3]);
