@@ -10,6 +10,21 @@
 /* The derivative of qdist wrt x */
 #define dqdist(x) (1. - 2. * fabs(x))
 
+#pragma omp declare simd
+static inline double
+my_remainder(double x, double y)
+{
+  double d = x / y;
+  double n = rint(d);
+  return x - n * y;
+}
+
+#if defined(MY_REMAINDER) && MY_REMAINDER
+#define force_remainder my_remainder
+#else
+#define force_remainder remainder
+#endif
+
 /* computes the potential between two particles,
  * assuming they are moving in a periodic domain.
  * This model problem asssumes both masses are 1.
@@ -24,9 +39,9 @@ potential (double k,
   double dx, dy, dz;
   double r2, ir;
 
-  dx = remainder(x1 - x2, 1.);
-  dy = remainder(y1 - y2, 1.);
-  dz = remainder(z1 - z2, 1.);
+  dx = force_remainder(x1 - x2, 1.);
+  dy = force_remainder(y1 - y2, 1.);
+  dz = force_remainder(z1 - z2, 1.);
 
   dx = qdist(dx);
   dy = qdist(dy);
@@ -37,6 +52,8 @@ potential (double k,
 
   return k * ir;
 }
+
+
 
 #if !defined(DUMMY) || !DUMMY
 /* computes the force particle 2 exerts on particle 1,
@@ -51,9 +68,9 @@ force (double k,
   double qdx, qdy, qdz;
   double r2, ir3;
 
-  dx = remainder(x1 - x2, 1.);
-  dy = remainder(y1 - y2, 1.);
-  dz = remainder(z1 - z2, 1.);
+  dx = force_remainder(x1 - x2, 1.);
+  dy = force_remainder(y1 - y2, 1.);
+  dz = force_remainder(z1 - z2, 1.);
 
   qdx = qdist(dx);
   qdy = qdist(dy);
@@ -77,9 +94,9 @@ force_2 (double k,
   double qdx, qdy, qdz;
   double r2, ir3;
 
-  dx = remainder(x1 - x2, 1.);
-  dy = remainder(y1 - y2, 1.);
-  dz = remainder(z1 - z2, 1.);
+  dx = force_remainder(x1 - x2, 1.);
+  dy = force_remainder(y1 - y2, 1.);
+  dz = force_remainder(z1 - z2, 1.);
 
   qdx = qdist(dx);
   qdy = qdist(dy);
@@ -103,9 +120,9 @@ force_vec (double K, double k,
     double dx, dy, dz;
     double qdx, qdy, qdz;
     double r2, ir3;
-    dx = remainder(x1 - x2[i], 1.);
-    dy = remainder(y1 - y2[i], 1.);
-    dz = remainder(z1 - z2[i], 1.);
+    dx = force_remainder(x1 - x2[i], 1.);
+    dy = force_remainder(y1 - y2[i], 1.);
+    dz = force_remainder(z1 - z2[i], 1.);
 
     qdx = qdist(dx);
     qdy = qdist(dy);
