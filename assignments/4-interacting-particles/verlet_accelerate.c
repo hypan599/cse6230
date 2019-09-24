@@ -30,7 +30,9 @@ verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *
 
     // read the other particles in groups of K as well
     for (j = 0; j < Nplim; j += K) {
-      double du[3][K][K];
+      double dux[K][K];
+      double duy[K][K];
+      double duz[K][K];
       double y[3][K];
 
       // explicitly read the positions of the K particles into a temporary variable
@@ -42,24 +44,32 @@ verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *
       // COMPUTATION: we've set ourselves up for K^2 computations of force
       // without all data already read into the cache
       for (int l = 0; l < K; l++) {
+        double ddux[K];
+        double dduy[K];
+        double dduz[K];
         force_vec (K, dt, x[0][l], x[1][l], x[2][l],
                    &(y[0][0]), &(y[1][0]), &(y[2][0]),
-                   &(du[0][l][0]), &(du[1][l][0]), &(du[2][l][0]));
+                   ddux, dduy, dduz);
+        for (int m = 0; m < K; m++) {
+          dux[l][m] = ddux[m];
+          duy[l][m] = dduy[m];
+          duz[l][m] = dduz[m];
+        }
       }
       // zero out the interactions of a particle with itself
       if (i == j) {
         for (int l = 0; l < K; l++) {
-          for (int d = 0; d < 3; d++) {
-            du[d][l][l] = 0.;
-          }
+          dux[l][l] = 0.;
+          duy[l][l] = 0.;
+          duz[l][l] = 0.;
         }
       }
       // sum the contributions of this block of particles
       for (int m = 0; m < K; m++) {
         for (int l = 0; l < K; l++) {
-          for (int d = 0; d < 3; d++) {
-            u[d][l] += du[d][l][m];
-          }
+          u[0][l] += dux[l][m];
+          u[1][l] += duy[l][m];
+          u[2][l] += duz[l][m];
         }
       }
     }
