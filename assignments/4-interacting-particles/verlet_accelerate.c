@@ -2,7 +2,7 @@
 #include "verlet.h"
 #include "cloud.h"
 
-#define K 4
+#define K 16 
 void
 verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *restrict U[3])
 {
@@ -26,7 +26,7 @@ verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *
 
     // read the other particles in groups of K as well
     for (j = 0; j < Nplim ; j += K) {
-      double du[K][K][3];
+      double du[3][K][K];
       double y[3][K];
 
       // explicitly read the positions of the K particles into a temporary variable
@@ -38,29 +38,29 @@ verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *
       // COMPUTATION: we've set ourselves up for K^2 computations of force
       // without all data already read into the cache
       for (int l = 0; l < K; l++) {
-        for (int m = 0; m < K; m++) {
-          force (dt, x[0][l], x[1][l], x[2][l], y[0][m], y[1][m], y[2][m], &(du[l][m][0]));
-        }
+        force_vec (K, dt, x[0][l], x[1][l], x[2][l],
+                   &(y[0][0]), &(y[1][0]), &(y[2][0]),
+                   &(du[0][l][0]), &(du[1][l][0]), &(du[2][l][0]));
       }
       // zero out the interactions of a particle with itself
       if (i == j) {
         for (int l = 0; l < K; l++) {
           for (int d = 0; d < 3; d++) {
-            du[l][l][d] = 0.;
+            du[d][l][l] = 0.;
           }
         }
       }
       // sum the contributions of this block of particles
-      for (int l = 0; l < K; l++) {
-        for (int m = 0; m < K; m++) {
+      for (int m = 0; m < K; m++) {
+        for (int l = 0; l < K; l++) {
           for (int d = 0; d < 3; d++) {
-            u[d][l] += du[l][m][d];
+            u[d][l] += du[d][l][m];
           }
         }
       }
     }
     // remainder loop
-    for (; j < Np; j++) {
+    for (j = Nplim ; j < Np; j++) {
       double du[K][3];
       double y[3][K];
 
