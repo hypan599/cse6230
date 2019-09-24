@@ -2,14 +2,18 @@
 #include "verlet.h"
 #include "cloud.h"
 
-#define K 16 
+#if defined(VERLET_K)
+#define K VERLET_K
+#else
+#define K 16
+#endif
 void
 verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *restrict U[3])
 {
   int Nplim = Np - (Np % K);
   int i;
 
-#if defined(GROUP_FORCE)
+#if defined(GROUP_FORCE) && GROUP_FORCE
   #pragma omp parallel for schedule(static)
   // write updates for K particles at a time
   for (i = 0; i < Nplim; i += K) {
@@ -25,7 +29,7 @@ verlet_step_accelerate (int Np, double dt, const double *restrict X[3], double *
     }
 
     // read the other particles in groups of K as well
-    for (j = 0; j < Nplim ; j += K) {
+    for (j = 0; j < Nplim; j += K) {
       double du[3][K][K];
       double y[3][K];
 
