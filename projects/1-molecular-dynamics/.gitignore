@@ -1,2 +1,7 @@
 cloud
 prof_*/*
+db_*/*
+*.hpcstruct
+*.o
+*.optrpt
+*.log
