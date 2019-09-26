@@ -111,11 +111,12 @@ force_2 (double k,
 }
 
 static inline void
-force_vec (double K, double k,
+force_vec (int K, double k,
        double x1, double y1, double z1,
        const double *x2, const double *y2, const double *z2,
        double *fx, double *fy, double *fz)
 {
+  #pragma omp simd
   for (int i = 0; i < K; i++) {
     double dx, dy, dz;
     double qdx, qdy, qdz;
