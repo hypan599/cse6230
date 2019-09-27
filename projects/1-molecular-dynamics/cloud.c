@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <omp.h>
 #include <cse6230rand.h>
 #include <tictoc.h>
 #include "cloud_util.h"

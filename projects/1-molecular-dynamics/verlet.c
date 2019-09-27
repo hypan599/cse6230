@@ -1,4 +1,5 @@
 #include <math.h>
+#include <omp.h>
 #include "cloud_util.h"
 #include "verlet.h"
 
