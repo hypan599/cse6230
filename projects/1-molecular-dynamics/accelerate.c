@@ -27,8 +27,9 @@ AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
   a->r  = r;
   a->use_ix = use_ix;
   if (use_ix) {
-    int boxdim = 4; /* how could we choose boxdim ? */
-    int maxNx = Np; /* how should we estimate the maximum number of interactions? */
+    int boxdim = 10; /* this number is magic! */
+    int maxNx;
+    maxNx = pow((3 * L)/(boxdim * r), 6) / 2; /* how should we estimate the maximum number of interactions? */
     err = IXCreate(L, boxdim, maxNx, &(a->ix));CHK(err);
   }
   else {
@@ -67,8 +68,16 @@ accelerate_ix (Accel accel, Vector X, Vector U)
       IDX(U,j,i) = 0.;
     }
   }
+    
+      
+//   for (int j = 0; j < 3; j++) {
+//     for (int i = 0; i < Np; i++) {
+//       IDX(U,j,i) = 0.;
+//     }
+//   }
 
   IXGetPairs (ix, X, 2.*r, &Npairs, &pairs);
+  #pragma omp parallel for schedule(static)
   for (int p = 0; p < Npairs; p++) {
     int i = pairs[p].p[0];
     int j = pairs[p].p[1];
@@ -77,7 +86,9 @@ accelerate_ix (Accel accel, Vector X, Vector U)
     force (k, r, L, IDX(X,0,i), IDX(X,1,i), IDX(X,2,i), IDX(X,0,j), IDX(X,1,j), IDX(X,2,j), du);
 
     for (int d = 0; d < 3; d++) {
+      #pragma omp atomic
       IDX(U,d,i) += du[d];
+      #pragma omp atomic
       IDX(U,d,j) -= du[d];
     }
   }

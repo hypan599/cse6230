@@ -4,6 +4,22 @@
 #include <math.h>
 
 
+#pragma omp declare simd
+static inline double
+my_remainder(double x, double y)
+{
+  double d = x / y;
+  double n = rint(d);
+  return x - n * y;
+}
+
+#if defined(MY_REMAINDER) && MY_REMAINDER
+#define force_remainder my_remainder
+#else
+#define force_remainder remainder
+#endif
+
+
 /* This kernel should be called if the distance between two particles is less
  * than twice the particle radius */
 static inline void
@@ -31,9 +47,9 @@ dist_and_disp (double x1, double y1, double z1, /* The center of the first parti
                double *Dx, double *Dy, double *Dz)
 {
   double dx, dy, dz;
-  *Dx = dx = remainder(x1 - x2, L);
-  *Dy = dy = remainder(y1 - y2, L);
-  *Dz = dz = remainder(z1 - z2, L);
+  *Dx = dx = force_remainder(x1 - x2, L);
+  *Dy = dy = force_remainder(y1 - y2, L);
+  *Dz = dz = force_remainder(z1 - z2, L);
 
   return dx*dx + dy*dy + dz*dz;
 }
