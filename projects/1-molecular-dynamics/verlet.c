@@ -1,5 +1,4 @@
 #include <math.h>
-#include <omp.h>
 #include "cloud_util.h"
 #include "verlet.h"
 
@@ -86,26 +85,16 @@ stream_and_noise(Verlet Vr, double dt_stream, double dt_noise,
   }
 }
 
-void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector U, double *accl_time, double *strm_time)
+void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector U)
 {
   int t;
   double d = Vr->d;
 
   double dt_noise = sqrt(2. * d * dt);
 
-  double accl_tic, accl_toc;
-  double strm_tic, strm_toc;
-
   for (t = 0; t < Nt; t++)
   {
-    accl_tic = omp_get_wtime();
     accelerate(Vr->accel, X, U);
-    accl_toc = omp_get_wtime();
-    *accl_time += accl_toc - accl_tic;
-
-    strm_tic = omp_get_wtime();
     stream_and_noise(Vr, dt, dt_noise, X, U);
-    strm_toc = omp_get_wtime();
-    *strm_time += strm_toc - strm_tic;
   }
 }

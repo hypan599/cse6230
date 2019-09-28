@@ -5,7 +5,6 @@
 #include <math.h>
 #include <omp.h>
 #include <cse6230rand.h>
-#include <tictoc.h>
 #include "cloud_util.h"
 #include "initialize.h"
 #include "verlet.h"
@@ -86,12 +85,6 @@ int main(int argc, char **argv)
     int seed = 6230;
     const char *gifname = NULL;
     cse6230rand_t rand;
-    TicTocTimer timer;
-    double init_tic, init_toc, init_time = 0.;
-    double loop_time = 0.;
-    double accl_time = 0.;
-    double strm_time = 0.;
-
     err = process_options(argc, argv, &Np, &Nt, &Nint, &dt, &k, &d, &L, &r, &gifname);
     CHK(err);
 
@@ -103,10 +96,7 @@ int main(int argc, char **argv)
     CHK(err);
 
     cse6230rand_seed(seed, &rand);
-    init_tic = omp_get_wtime();
     initialize_positions(X0, X, L, &rand);
-    init_toc = omp_get_wtime();
-    init_time = init_toc - init_tic;
 
     if (!gifname)
     {
@@ -140,7 +130,6 @@ int main(int argc, char **argv)
     err = VerletSetAccel(Vr, Ac);
     CHK(err);
 
-    loop_timer = tic();
     for (int t = 0; t < Nt; t += Nint)
     {
         if (gifname)
@@ -148,12 +137,8 @@ int main(int argc, char **argv)
             write_step(X, L, t * dt);
         }
         /* execute the loop */
-        verlet_step(Vr, Nint, dt, X, U, &accl_time, &strm_time);
+        verlet_step(Vr, Nint, dt, X, U);
     }
-    loop_time = toc(&loop_timer);
-    printf("[%s] Simulation walltime: %g\n", argv[0], loop_time);
-    printf("[%s] Acceleration walltime: %g\n", argv[0], accl_time);
-    printf("[%s] Streaming walltime: %g\n", argv[0], strm_time);
 
     if (gifname)
     {
