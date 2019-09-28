@@ -11,6 +11,6 @@ int VerletSetNoise(Verlet Vr, cse6230rand_t *rand, double d);
 int VerletSetAccel(Verlet Vr, Accel Ac);
 int VerletDestroy(Verlet *Vr);
 
-void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector V, double *accl_time, double *strm_time);
+void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector V);
 
 #endif
