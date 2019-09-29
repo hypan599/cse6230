@@ -29,7 +29,7 @@ AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
   if (use_ix) {
     int boxdim = 10; /* this number is magic! */
     int maxNx;
-    maxNx = pow((3 * L)/(boxdim * r), 6) / 2; /* how should we estimate the maximum number of interactions? */
+    maxNx = 27; /* how should we estimate the maximum number of interactions? */
     err = IXCreate(L, boxdim, maxNx, &(a->ix));CHK(err);
   }
   else {
@@ -78,7 +78,7 @@ accelerate_ix (Accel accel, Vector X, Vector U)
 
   IXGetPairs (ix, X, 2.*r, &Npairs, &pairs);
   #pragma omp parallel for schedule(static)
-  for (int p = 0; p < Npairs; p++) {
+  for (int p = 0; p < Npairs; p+=2) {
     int i = pairs[p].p[0];
     int j = pairs[p].p[1];
     double du[3];
@@ -92,6 +92,9 @@ accelerate_ix (Accel accel, Vector X, Vector U)
       IDX(U,d,j) -= du[d];
     }
   }
+    
+    
+    
   IXRestorePairs (ix, X, 2.*r, &Npairs, &pairs);
 }
 

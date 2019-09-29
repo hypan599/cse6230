@@ -39,6 +39,26 @@ int box_neighbors[NUM_BOX_NEIGHBORS][3] =
         {0, -1, +1},
         {0, 0, -1}};
 
+// #define NUM_BOX_NEIGHBORS 16
+// int box_neighbors[NUM_BOX_NEIGHBORS][3] =
+//     {
+//         {-2, 0, 0},
+//         {0, -2, 0},
+//         {0, 0, -2},
+//         {-1, -1, -1},
+//         {-1, -1, 0},
+//         {-1, -1, +1},
+//         {-1, 0, -1},
+//         {-1, 0, 0},
+//         {-1, 0, +1},
+//         {-1, +1, -1},
+//         {-1, +1, 0},
+//         {-1, +1, +1},
+//         {0, -1, -1},
+//         {0, -1, 0},
+//         {0, -1, +1},
+//         {0, 0, -1}};
+
 /* maxNx: _predicted_ maximum number of interactions */
 int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
 {
@@ -223,7 +243,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   double d2, dx, dy, dz;
 
   IXClearPairs(ix);
-#pragma omp parallel for schedule(static)
+// #pragma omp parallel for schedule(static) private(p1, p2)
   for (idx = 0; idx < boxdim; idx++)
   {
     for (idy = 0; idy < boxdim; idy++)
@@ -234,6 +254,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
 
         // within box interactions
         p1 = bp->head;
+//         #pragma omp parallel private(p1, p2)
         while (p1 != -1)
         {
           p2 = next[p1];
@@ -254,6 +275,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
         }
 
         // interactions with other boxes
+//         #pragma omp parallel for schedule(static) private(p1, p2)
         for (int j = 0; j < NUM_BOX_NEIGHBORS; j++)
         {
           neigh_idx = (idx + box_neighbors[j][0] + boxdim) % boxdim;
