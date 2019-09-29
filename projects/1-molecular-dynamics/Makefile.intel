@@ -1,6 +1,6 @@
 
 CC = icc
-COPTFLAGS = -O3 -xHost -qopt-report=5 -DMY_REMAINDER=1 -DVECTOR_AOS=1
+COPTFLAGS = -O3 -xHost -qopt-report=5
 OMPFLAGS = -openmp
 CFLAGS = -g -Wall -fPIC
 
