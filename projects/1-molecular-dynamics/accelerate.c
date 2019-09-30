@@ -76,8 +76,8 @@ accelerate_ix (Accel accel, Vector X, Vector U)
 //     }
 //   }
 
-  IXGetPairs (ix, X, 2.*r, &Npairs, &pairs);
-  #pragma omp parallel for schedule(static)
+  IXGetPairs (ix, X, 2.*r, &Npairs, &pairs);  // parallel in side
+  #pragma omp parallel for schedule(runtime)
   for (int p = 0; p < Npairs; p+=2) {
     int i = pairs[p].p[0];
     int j = pairs[p].p[1];
@@ -106,7 +106,7 @@ accelerate_direct (Accel accel, Vector X, Vector U)
   double k = accel->k;
   double r = accel->r;
 
-  #pragma omp parallel for schedule(static)
+  #pragma omp parallel for schedule(static, 16)
   for (int i = 0; i < Np; i++) {
     double u[3] = {0.};
 
