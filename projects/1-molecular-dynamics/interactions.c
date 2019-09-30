@@ -4,6 +4,7 @@
 #include "interactions.h"
 #include "cloud_util.h"
 #include "steric.h"
+#include <omp.h>
 
 typedef struct _box
 {
@@ -18,7 +19,12 @@ struct _ix
   box ***boxes;
   int maxNx;
   int curNx;
+#ifdef MULTIVECTOR
+  int numContainers;
+  ix_pair **pairs;
+#else
   ix_pair *pairs;
+#endif
 };
 
 // it is possible to use smaller boxes and more complex neighbor patterns
@@ -39,26 +45,6 @@ int box_neighbors[NUM_BOX_NEIGHBORS][3] =
         {0, -1, +1},
         {0, 0, -1}};
 
-// #define NUM_BOX_NEIGHBORS 16
-// int box_neighbors[NUM_BOX_NEIGHBORS][3] =
-//     {
-//         {-2, 0, 0},
-//         {0, -2, 0},
-//         {0, 0, -2},
-//         {-1, -1, -1},
-//         {-1, -1, 0},
-//         {-1, -1, +1},
-//         {-1, 0, -1},
-//         {-1, 0, 0},
-//         {-1, 0, +1},
-//         {-1, +1, -1},
-//         {-1, +1, 0},
-//         {-1, +1, +1},
-//         {0, -1, -1},
-//         {0, -1, 0},
-//         {0, -1, +1},
-//         {0, 0, -1}};
-
 /* maxNx: _predicted_ maximum number of interactions */
 int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
 {
@@ -75,7 +61,10 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
   ix->L = L;
   ix->boxdim = boxdim;
   ix->curNx = 0;
-  ix->maxNx = maxNx;
+  ix->maxNx = maxNx; // max value for each single container
+#ifdef MULTIVECTOR
+  ix->numContainers = omp_get_thread_num();
+#endif
   err = safeMALLOC(boxdim * sizeof(box **), &(ix->boxes));
   CHK(err);
   for (int i = 0; i < boxdim; i++)
@@ -88,8 +77,19 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
       CHK(err);
     }
   }
+#ifdef MULTIVECTOR
+  err = safeMALLOC(ix->numContainers * sizeof(ix_pair *), &(ix->pairs));
+  CHK(err);
+  for (int i = 0; i < ix->numContainers; i++)
+  {
+    err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs[i]));
+    CHK(err);
+  }
+#else
   err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs));
   CHK(err);
+#endif
+
   *ix_p = ix;
   return (0);
 }
@@ -243,7 +243,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   double d2, dx, dy, dz;
 
   IXClearPairs(ix);
-// #pragma omp parallel for schedule(static) private(p1, p2)
+  // #pragma omp parallel for schedule(static) private(p1, p2)
   for (idx = 0; idx < boxdim; idx++)
   {
     for (idy = 0; idy < boxdim; idy++)
@@ -254,7 +254,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
 
         // within box interactions
         p1 = bp->head;
-//         #pragma omp parallel private(p1, p2)
+        //         #pragma omp parallel private(p1, p2)
         while (p1 != -1)
         {
           p2 = next[p1];
@@ -275,7 +275,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
         }
 
         // interactions with other boxes
-//         #pragma omp parallel for schedule(static) private(p1, p2)
+        //         #pragma omp parallel for schedule(static) private(p1, p2)
         for (int j = 0; j < NUM_BOX_NEIGHBORS; j++)
         {
           neigh_idx = (idx + box_neighbors[j][0] + boxdim) % boxdim;
