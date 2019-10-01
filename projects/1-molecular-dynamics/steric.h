@@ -36,7 +36,7 @@ force_in_range(double k,                        /* The interaction strength (may
   f[2] = k * strength * dz;
   if (f[0] != f[0])
   {
-    printf("we get f of nan on k, strength, d:%f, %f ,%f ,%f, %f, %f\n", k, strength, dx, dy, dz);
+    printf("we get f of nan on k, strength, d:%f, %f ,%f ,%f, %f\n", k, strength, dx, dy, dz);
   }
 }
 
