@@ -36,7 +36,7 @@ VIZNAME=cloud
 
 runcloud:
 	$(MAKE) --silent clean
-	$(MAKE) --silent cloud
+	$(MAKE) cloud #--silent cloud
 	$(PERF) ./cloud $(NP) $(NT) $(DT) $(K) $(D) $(L) $(R)
 
 vizcloud:
