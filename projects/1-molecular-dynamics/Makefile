@@ -30,7 +30,7 @@ K=100.
 D=1.
 L=20.
 R=1.
-NT=1000
+NT=25600
 CHUNK=1000
 VIZNAME=cloud
 

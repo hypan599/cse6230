@@ -108,7 +108,7 @@ int IXDestroy(IX *ix_p)
   free((*ix_p)->curNx);
   free((*ix_p)->maxNx);
   for (int i = 0; i < (*ix_p)->numContainers; i++) {
-    free((*ix_p)->pairs[i])
+    free((*ix_p)->pairs[i]);
   }
 #endif
   free((*ix_p)->pairs);
