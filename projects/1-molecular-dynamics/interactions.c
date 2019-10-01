@@ -373,6 +373,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   }
   // *Npairs = tmp;
   *pairs = totalPairs;
+  free(totalPairs);
 #else
   *Npairs = ix->curNx;
   *pairs = ix->pairs;
