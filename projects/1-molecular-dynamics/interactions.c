@@ -136,10 +136,14 @@ int IXDestroy(IX *ix_p)
 static void
 IXClearPairs(IX ix)
 {
+#ifdef MULTIVECTOR
   for (int i = 0; i < ix->numContainers; i++)
   {
     ix->curNx[i] = 0;
   }
+#else
+  ix->curNx = 0;
+#endif
 }
 
 static void
