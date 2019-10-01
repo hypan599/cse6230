@@ -61,8 +61,7 @@ accelerate_ix(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //a
 {
     IX ix = accel->ix;
     int Np = X->Np;
-    // int Npairs;
-    // ix_pair *pairs; //Global variables
+
     double L = accel->L;
     double k = accel->k;
     double r = accel->r;
@@ -76,11 +75,12 @@ accelerate_ix(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //a
     }
 
     IXGetPairs(ix, X, 2. * r, Npairs, pairs); // parallel in side
+    int NpairTMP = *Npairs;
 #pragma omp parallel for schedule(runtime)
-    for (int p = 0; p < *Npairs; p++)
+    for (int p = 0; p < NpairTMP; p++)
     { // p+=2
-        int i = pairs[p].p[0];
-        int j = pairs[p].p[1];
+        int i = (*pairs)[p].p[0];
+        int j = (*pairs)[p].p[1];
         double du[3];
 
         force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
@@ -102,23 +102,24 @@ accelerate_ix_no_update(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **
     double L = accel->L;
     double k = accel->k;
     double r = accel->r;
-
+    int NpairTMP = *Npairs;
 #pragma omp parallel for schedule(runtime)
     for (int p = 0; p < *Npairs; p++)
-        int i = pairs[p].p[0];
-    int j = pairs[p].p[1];
-    double du[3];
-
-    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-
-    for (int d = 0; d < 3; d++)
     {
+        int i = (*pairs)[p].p[0];
+        int j = (*pairs)[p].p[1];
+        double du[3];
+
+        force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+
+        for (int d = 0; d < 3; d++)
+        {
 #pragma omp atomic
-        IDX(U, d, i) += du[d];
+            IDX(U, d, i) += du[d];
 #pragma omp atomic
-        IDX(U, d, j) -= du[d];
+            IDX(U, d, j) -= du[d];
+        }
     }
-}
 }
 
 static void
@@ -129,12 +130,12 @@ accelerate_ix_no_update_restore(Accel accel, Vector X, Vector U, int *Npairs, ix
     double L = accel->L;
     double k = accel->k;
     double r = accel->r;
-
+    int NpairTMP = *Npairs;
 #pragma omp parallel for schedule(runtime)
     for (int p = 0; p < *Npairs; p++)
     {
-        int i = pairs[p].p[0];
-        int j = pairs[p].p[1];
+        int i = (*pairs)[p].p[0];
+        int j = (*pairs)[p].p[1];
         double du[3];
 
         force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
