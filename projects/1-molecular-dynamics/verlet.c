@@ -52,7 +52,7 @@ stream_and_noise(Verlet Vr, double dt_stream, double dt_noise,
   size_t tag;
 
   tag = cse6230rand_get_tag(rand);
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
   for (int i = 0; i < Np; i += 4)
   {
     double rval[3][4];
@@ -91,7 +91,11 @@ void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector U)
   double d = Vr->d;
 
   int update_inter_pair; //the period of time step updating interaction pairs
+    #ifdef UPDATEINTERVAL
+    update_inter_pair = UPDATEINTERVAL;
+    #else
   update_inter_pair = 4;
+    #endif
 
   int control_update;
 

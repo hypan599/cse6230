@@ -28,9 +28,13 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
     a->use_ix = use_ix;
     if (use_ix)
     {
+        #ifdef BOXDIM
+        int boxdim = BOXDIM;
+        #else
         int boxdim = 8; /* this number is magic! */ // Original 4, optimized 10
+        #endif
         int maxNx;
-        maxNx = 64; /* how should we estimate the maximum number of interactions? */
+        maxNx = 32; /* how should we estimate the maximum number of interactions? */
         err = IXCreate(L, boxdim, maxNx, &(a->ix));
         CHK(err);
     }
@@ -76,7 +80,7 @@ accelerate_ix(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //a
 
     IXGetPairs(ix, X, 2. * r, Npairs, pairs); // parallel in side
     int NpairTMP = *Npairs;
-#pragma omp parallel for schedule(runtime)
+#pragma omp parallel for schedule(static, 16) // I'm good
     for (int p = 0; p < NpairTMP; p++)
     { // p+=2
         int i = (*pairs)[p].p[0];
@@ -103,7 +107,7 @@ accelerate_ix_no_update(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **
     double k = accel->k;
     double r = accel->r;
     int NpairTMP = *Npairs;
-#pragma omp parallel for schedule(runtime)
+#pragma omp parallel for schedule(static, 16) // I'm good
     for (int p = 0; p < *Npairs; p++)
     {
         int i = (*pairs)[p].p[0];
@@ -131,7 +135,7 @@ accelerate_ix_no_update_restore(Accel accel, Vector X, Vector U, int *Npairs, ix
     double k = accel->k;
     double r = accel->r;
     int NpairTMP = *Npairs;
-#pragma omp parallel for schedule(runtime)
+#pragma omp parallel for schedule(static, 16) // I'm good
     for (int p = 0; p < *Npairs; p++)
     {
         int i = (*pairs)[p].p[0];
@@ -159,7 +163,7 @@ accelerate_direct(Accel accel, Vector X, Vector U)
     double k = accel->k;
     double r = accel->r;
 
-#pragma omp parallel for schedule(static, 16)
+#pragma omp parallel for schedule(static, 16) // I'm good
     for (int i = 0; i < Np; i++)
     {
         double u[3] = {0.};
