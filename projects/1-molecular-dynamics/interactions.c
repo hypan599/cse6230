@@ -331,7 +331,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
       }
     }
   }
-
+  printf("GET PAIRS done, now merge results");
   free(next);
 #ifdef MULTIVECTOR
   // have to join result of all pairs here
