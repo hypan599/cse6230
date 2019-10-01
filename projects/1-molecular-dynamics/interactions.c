@@ -223,7 +223,7 @@ int interactions_check(IX ix, Vector X, double r, int Npairs, ix_pair *pairs, in
     return 0;
 }
 
-int IXGetPairs(IX ix, Vector X, double r, double k)
+int IXGetPairs(IX ix, Vector X, Vector U, double r, double k)
 {
     int boxdim = ix->boxdim;
     double L = ix->L;
