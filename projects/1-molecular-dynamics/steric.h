@@ -2,6 +2,7 @@
 #define STERIC_H
 
 #include <math.h>
+#define EPSILON 0.0001
 
 #pragma omp declare simd
 static inline double
@@ -72,7 +73,7 @@ force(double k,                        /* The interaction strength (may be scale
 
   /* If the distance between the centers is less than twice the radius, they
    * interact */
-  if (R2 < r2)
+  if (R2 < r2 && R2 > EPSILON)
   {
     double R = sqrt(R2);
 
