@@ -71,6 +71,10 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
   CHK(err);
   err = safeMALLOC(ix->numContainers * sizeof(int), &(ix->maxNx));
   CHK(err);
+  for (int i = 0; i < ix->numContainers; i++)
+  {
+    ix->maxNx[i] = maxNx;
+  }
   err = safeMALLOC(ix->numContainers * sizeof(ix_pair *), &(ix->pairs));
   CHK(err);
   for (int i = 0; i < ix->numContainers; i++)
@@ -107,7 +111,8 @@ int IXDestroy(IX *ix_p)
 #ifdef MULTIVECTOR
   free((*ix_p)->curNx);
   free((*ix_p)->maxNx);
-  for (int i = 0; i < (*ix_p)->numContainers; i++) {
+  for (int i = 0; i < (*ix_p)->numContainers; i++)
+  {
     free((*ix_p)->pairs[i]);
   }
 #endif
@@ -152,7 +157,7 @@ IXPushPair(IX ix, int p1, int p2)
     ix->pairs[current_thread] = newpairs;
     ix->maxNx[current_thread] = maxNx;
   }
-  pair = &(ix->pairs[current_thread][ix->curNx[current_thread]++]);
+  pair = &(ix->pairs[current_thread][(ix->curNx[current_thread])++]);
   pair->p[0] = p1;
   pair->p[1] = p2;
 }
@@ -345,7 +350,6 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
     tmp += ix->curNx[i];
   }
   *pairs = totalPairs;
-
 #else
   *Npairs = ix->curNx;
   *pairs = ix->pairs;
