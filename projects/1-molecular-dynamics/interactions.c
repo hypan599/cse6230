@@ -267,17 +267,20 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
     next[i] = -1;
 
     // get the periodic coordinates in [0,L)
-    for (int j = 0; j < 3; j++)
-    {
-      //printf("%g\n",IDX(X,j,i));
-      pos_p[j] = force_remainder(IDX(X, j, i), L) + L / 2.;
-    }
+    // for (int j = 0; j < 3; j++)
+    // {
+    //   pos_p[j] = force_remainder(IDX(X, j, i), L) + L / 2.;
+    // }
+    pos_p[0] = force_remainder(IDX(X, 0, i), L) + L / 2.;
+    pos_p[1] = force_remainder(IDX(X, 1, i), L) + L / 2.;
+    pos_p[2] = force_remainder(IDX(X, 2, i), L) + L / 2.;
+    printf("pos are: %f, %f, %f", pos_p[0], pos_p[1], pos_p[2]);
     // which box does the particle belong to?
     idx = (int)(pos_p[0] / L * boxdim);
     idy = (int)(pos_p[1] / L * boxdim);
     idz = (int)(pos_p[2] / L * boxdim);
-
-    // add to beginning of implied linked list
+    printf("idx, idy, idz is: ", idx, idy, idz);
+    // add to beginn of ingimplied linked list
     bp = &b[idx][idy][idz];
     next[i] = bp->head;
     bp->head = i;
