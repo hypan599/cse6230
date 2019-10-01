@@ -149,8 +149,9 @@ IXClearPairs(IX ix)
 static void
 IXPushPair(IX ix, int p1, int p2)
 {
-  int current_thread = omp_get_thread_num();
   ix_pair *pair;
+#ifdef MULTIVECTOR
+  int current_thread = omp_get_thread_num();
   if (ix->curNx[current_thread] == ix->maxNx[current_thread])
   {
     int maxNx = ix->maxNx[current_thread] * 2;
@@ -163,6 +164,20 @@ IXPushPair(IX ix, int p1, int p2)
     ix->maxNx[current_thread] = maxNx;
   }
   pair = &(ix->pairs[current_thread][(ix->curNx[current_thread])++]);
+#else
+  if (ix->curNx == ix->maxNx)
+  {
+    int maxNx = ix->maxNx * 2;
+    ix_pair *newpairs;
+
+    safeMALLOC(maxNx * sizeof(ix_pair), &newpairs);
+    memcpy(newpairs, ix->pairs, ix->curNx * sizeof(ix_pair));
+    free(ix->pairs);
+    ix->pairs = newpairs;
+    ix->maxNx = maxNx;
+  }
+  pair = &(ix->pairs[ix->curNx++]);
+#endif
   pair->p[0] = p1;
   pair->p[1] = p2;
 }
