@@ -313,9 +313,6 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   *Npairs = ix->curNx;
   *pairs = ix->pairs;
 
-// int DEBUG;
-// DEBUG = 1; //added to check pairs
-
 #if DEBUG
   {
     int NpairsCheck;

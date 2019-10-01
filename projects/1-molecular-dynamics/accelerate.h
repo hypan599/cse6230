@@ -9,6 +9,6 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel);
 int AccelDestroy(Accel *accel);
 
 void
-accelerate (Accel accel, Vector X, Vector V, int control_update); //add the coefficient of period update_inter_pair 
+accelerate (Accel accel, Vector X, Vector V, int control_update, int update_inter_pair); //add the coefficient of period update_inter_pair 
 
 #endif
