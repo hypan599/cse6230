@@ -83,7 +83,7 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
     err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs[i]));
     CHK(err);
   }
-  printf("CREATE %d pairs finish", ix->numContainers);
+  // printf("CREATE %d pairs finish", ix->numContainers);
 #else
   ix->curNx = 0;
   ix->maxNx = maxNx; // max value for each single container
