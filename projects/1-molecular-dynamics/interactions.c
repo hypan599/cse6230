@@ -74,6 +74,7 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
   for (int i = 0; i < ix->numContainers; i++)
   {
     ix->maxNx[i] = maxNx;
+    ix->curNx[i] = 0;
   }
   err = safeMALLOC(ix->numContainers * sizeof(ix_pair *), &(ix->pairs));
   CHK(err);
