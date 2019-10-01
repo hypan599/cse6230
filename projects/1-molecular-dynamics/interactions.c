@@ -17,12 +17,15 @@ struct _ix
   double r;
   int boxdim;
   box ***boxes;
-  int maxNx;
-  int curNx;
+
 #ifdef MULTIVECTOR
   int numContainers;
+  int *curNx;
+  int *maxNx;
   ix_pair **pairs;
 #else
+  int maxNx;
+  int curNx;
   ix_pair *pairs;
 #endif
 };
@@ -61,9 +64,25 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
   ix->L = L;
   ix->boxdim = boxdim;
   ix->curNx = 0;
-  ix->maxNx = maxNx; // max value for each single container
+
 #ifdef MULTIVECTOR
-  ix->numContainers = omp_get_thread_num();
+  ix->numContainers = omp_get_num_threads();
+  err = safeMALLOC(ix->numContainers * sizeof(int), &(ix->curNx));
+  CHK(err);
+  err = safeMALLOC(ix->numContainers * sizeof(int), &(ix->maxNx));
+  CHK(err);
+  err = safeMALLOC(ix->numContainers * sizeof(ix_pair *), &(ix->pairs));
+  CHK(err);
+  for (int i = 0; i < ix->numContainers; i++)
+  {
+    err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs[i]));
+    CHK(err);
+  }
+#else
+  ix->curNx = 0;
+  ix->maxNx = maxNx; // max value for each single container
+  err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs));
+  CHK(err);
 #endif
   err = safeMALLOC(boxdim * sizeof(box **), &(ix->boxes));
   CHK(err);
@@ -77,18 +96,6 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
       CHK(err);
     }
   }
-#ifdef MULTIVECTOR
-  err = safeMALLOC(ix->numContainers * sizeof(ix_pair *), &(ix->pairs));
-  CHK(err);
-  for (int i = 0; i < ix->numContainers; i++)
-  {
-    err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs[i]));
-    CHK(err);
-  }
-#else
-  err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs));
-  CHK(err);
-#endif
 
   *ix_p = ix;
   return (0);
@@ -97,8 +104,15 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
 int IXDestroy(IX *ix_p)
 {
   int boxdim = (*ix_p)->boxdim;
-
+#ifdef
+  free((*ix_p)->curNx);
+  free((*ix_p)->maxNx);
+  for (int i = 0; i < (*ix_p)->numContainers; i++) {
+    free((*ix_p)->pairs[i])
+  }
+#endif
   free((*ix_p)->pairs);
+
   for (int i = 0; i < boxdim; i++)
   {
     for (int j = 0; j < boxdim; j++)
@@ -116,25 +130,28 @@ int IXDestroy(IX *ix_p)
 static void
 IXClearPairs(IX ix)
 {
-  ix->curNx = 0;
+  for (int i = 0; i < ix->numContainers; i++) {
+    ix->curNx[i] = 0;
+  }
 }
 
 static void
 IXPushPair(IX ix, int p1, int p2)
 {
+  int current_thread = omp_get_thread_num();
   ix_pair *pair;
-  if (ix->curNx == ix->maxNx)
+  if (ix->curNx[current_thread] == ix->maxNx[current_thread])
   {
-    int maxNx = ix->maxNx * 2;
+    int maxNx = ix->maxNx[current_thread] * 2;
     ix_pair *newpairs;
 
     safeMALLOC(maxNx * sizeof(ix_pair), &newpairs);
-    memcpy(newpairs, ix->pairs, ix->curNx * sizeof(ix_pair));
-    free(ix->pairs);
-    ix->pairs = newpairs;
-    ix->maxNx = maxNx;
+    memcpy(newpairs, ix->pairs[current_thread], ix->curNx[current_thread] * sizeof(ix_pair));
+    free(ix->pairs[current_thread]);
+    ix->pairs[current_thread] = newpairs;
+    ix->maxNx[current_thread] = maxNx;
   }
-  pair = &(ix->pairs[ix->curNx++]);
+  pair = &(ix->pairs[current_thread][ix->curNx[current_thread]++]);
   pair->p[0] = p1;
   pair->p[1] = p2;
 }
