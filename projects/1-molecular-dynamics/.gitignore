@@ -5,3 +5,4 @@ db_*/*
 *.o
 *.optrpt
 *.log
+workspace/*
