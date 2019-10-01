@@ -6,3 +6,4 @@ db_*/*
 *.optrpt
 *.log
 workspace/*
+*.sh
