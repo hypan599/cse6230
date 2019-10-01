@@ -107,7 +107,8 @@ int IXDestroy(IX *ix_p)
 #ifdef MULTIVECTOR
   free((*ix_p)->curNx);
   free((*ix_p)->maxNx);
-  for (int i = 0; i < (*ix_p)->numContainers; i++) {
+  for (int i = 0; i < (*ix_p)->numContainers; i++)
+  {
     free((*ix_p)->pairs[i])
   }
 #endif
@@ -130,7 +131,8 @@ int IXDestroy(IX *ix_p)
 static void
 IXClearPairs(IX ix)
 {
-  for (int i = 0; i < ix->numContainers; i++) {
+  for (int i = 0; i < ix->numContainers; i++)
+  {
     ix->curNx[i] = 0;
   }
 }
@@ -326,9 +328,29 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   }
 
   free(next);
+#ifdef MULTIVECTOR
+  // have to join result of all pairs here
+  int totalNumPairs = 0;
+  for (int i = 0; i < ix->numContainers; i++)
+  {
+    totalNumPairs += ix->curNx[i];
+  }
+  *Npairs = totalNumPairs;
+  ix_pair *totalPairs;
+  err = safeMALLOC(totalNumPairs * sizeof(ix_pair), &totalPairs);
+  CHK(err);
+  int tmp = 0;
+  for (int i = 0; i < ix->numContainers; i++)
+  {
+    memcpy(totalPairs + tmp, ix->pairs[i], ix->curNx[i] * sizeof(ix_pair));
+    tmp += ix->curNx[i];
+  }
+  *pairs = totalPairs;
 
+#else
   *Npairs = ix->curNx;
   *pairs = ix->pairs;
+#endif
 
 #if DEBUG
   {
