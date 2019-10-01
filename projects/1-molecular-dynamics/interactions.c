@@ -66,7 +66,7 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
   ix->curNx = 0;
 
 #ifdef MULTIVECTOR
-  ix->numContainers = omp_get_num_threads();
+  ix->numContainers = omp_get_max_threads();
   err = safeMALLOC(ix->numContainers * sizeof(int), &(ix->curNx));
   CHK(err);
   err = safeMALLOC(ix->numContainers * sizeof(int), &(ix->maxNx));
