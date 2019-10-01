@@ -61,8 +61,6 @@ accelerate_ix(Accel accel, Vector X, Vector U)
 {
     IX ix = accel->ix;
     int Np = X->Np;
-    int Npairs;
-    ix_pair *pairs;
     double L = accel->L;
     double k = accel->k;
     double r = accel->r;
@@ -75,7 +73,7 @@ accelerate_ix(Accel accel, Vector X, Vector U)
         }
     }
 
-    IXGetPairs(ix, X, 2. * r, &Npairs, &pairs); // parallel in side
+    IXGetPairs(ix, X, 2. * r, L, k); // parallel in side
     // IXRestorePairs(ix, X, 2. * r, &Npairs, &pairs);
 }
 

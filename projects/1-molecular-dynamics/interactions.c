@@ -223,7 +223,7 @@ int interactions_check(IX ix, Vector X, double r, int Npairs, ix_pair *pairs, in
     return 0;
 }
 
-int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
+int IXGetPairs(IX ix, Vector X, double r, double L, double k)
 {
     int boxdim = ix->boxdim;
     double L = ix->L;
@@ -274,17 +274,11 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
         pos_p[0] = force_remainder(IDX(X, 0, i), L) + L / 2.;
         pos_p[1] = force_remainder(IDX(X, 1, i), L) + L / 2.;
         pos_p[2] = force_remainder(IDX(X, 2, i), L) + L / 2.;
-        // printf("pos are: %f, %f, %f", pos_p[0], pos_p[1], pos_p[2]);
-        // which box does the particle belong to?
+
         idx = (int)(pos_p[0] / L * boxdim);
         idy = (int)(pos_p[1] / L * boxdim);
         idz = (int)(pos_p[2] / L * boxdim);
-        // printf("idx, idy, idz is: %d, %d ,%d, \n", idx, idy, idz);
-        // add to beginn of ingimplied linked list
-        // if (pos_p[0] != pos_p[0]) {
-        //   printf("nan happened at %d with U value:%f, %f %f,\n", i, IDX(U, 0, i), IDX(U, 1, i), IDX(U, 2, i));
-        //   exit(1);
-        // }
+
         bp = &b[idx][idy][idz];
         next[i] = bp->head;
         bp->head = i;
@@ -356,13 +350,13 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
 #ifdef MULTIVECTOR
                 // all pairs get here
                 int current_thread = omp_get_thread_num();
-                for (int p = 0; p < ix->curNx[i]; p += 1)
+                for (int p = 0; p < ix->curNx[current_thread]; p += 1)
                 {
                     int i = ix->pairs[current_thread][p].p[0];
                     int j = ix->pairs[current_thread][p].p[1];
                     double du[3];
 
-                    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+                    force(k, r / 2, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
                     for (int d = 0; d < 3; d++)
                     {
 #pragma omp atomic
