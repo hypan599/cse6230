@@ -73,7 +73,7 @@ accelerate_ix(Accel accel, Vector X, Vector U)
         }
     }
 
-    IXGetPairs(ix, X, 2. * r, L, k); // parallel in side
+    IXGetPairs(ix, X, 2. * r, k); // parallel in side
     // IXRestorePairs(ix, X, 2. * r, &Npairs, &pairs);
 }
 

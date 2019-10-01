@@ -223,7 +223,7 @@ int interactions_check(IX ix, Vector X, double r, int Npairs, ix_pair *pairs, in
     return 0;
 }
 
-int IXGetPairs(IX ix, Vector X, double r, double L, double k)
+int IXGetPairs(IX ix, Vector X, double r, double k)
 {
     int boxdim = ix->boxdim;
     double L = ix->L;
@@ -371,14 +371,14 @@ int IXGetPairs(IX ix, Vector X, double r, double L, double k)
     }
     // printf("GET PAIRS done, now merge results");
     free(next);
-#ifdef MULTIVECTOR
-    // have to join result of all pairs here
-    *Npairs = 0;
-    *pairs = NULL;
-#else
-    *Npairs = ix->curNx;
-    *pairs = ix->pairs;
-#endif
+// #ifdef MULTIVECTOR
+//     // have to join result of all pairs here
+//     *Npairs = 0;
+//     *pairs = NULL;
+// #else
+//     *Npairs = ix->curNx;
+//     *pairs = ix->pairs;
+// #endif
 
 #if DEBUG
     {
