@@ -274,17 +274,17 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
     pos_p[0] = force_remainder(IDX(X, 0, i), L) + L / 2.;
     pos_p[1] = force_remainder(IDX(X, 1, i), L) + L / 2.;
     pos_p[2] = force_remainder(IDX(X, 2, i), L) + L / 2.;
-    printf("pos are: %f, %f, %f", pos_p[0], pos_p[1], pos_p[2]);
+    // printf("pos are: %f, %f, %f", pos_p[0], pos_p[1], pos_p[2]);
     // which box does the particle belong to?
     idx = (int)(pos_p[0] / L * boxdim);
     idy = (int)(pos_p[1] / L * boxdim);
     idz = (int)(pos_p[2] / L * boxdim);
-    printf("idx, idy, idz is: %d, %d ,%d, \n", idx, idy, idz);
+    // printf("idx, idy, idz is: %d, %d ,%d, \n", idx, idy, idz);
     // add to beginn of ingimplied linked list
-    if (pos_p[0] != pos_p[0]) {
-      printf("nan happened at %d with U value:%f, %f %f,\n", i, IDX(U, 0, i), IDX(U, 1, i), IDX(U, 2, i));
-      exit(1);
-    }
+    // if (pos_p[0] != pos_p[0]) {
+    //   printf("nan happened at %d with U value:%f, %f %f,\n", i, IDX(U, 0, i), IDX(U, 1, i), IDX(U, 2, i));
+    //   exit(1);
+    // }
     bp = &b[idx][idy][idz];
     next[i] = bp->head;
     bp->head = i;
@@ -408,6 +408,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
 int IXRestorePairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
 {
   *Npairs = 0;
-  *pairs = NULL;
+  free(*pairs);
+  // *pairs = NULL;
   return 0;
 }
