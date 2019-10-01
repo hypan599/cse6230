@@ -297,7 +297,6 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
 
         // within box interactions
         p1 = bp->head;
-        //         #pragma omp parallel private(p1, p2)
         while (p1 != -1)
         {
           p2 = next[p1];
@@ -318,7 +317,6 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
         }
 
         // interactions with other boxes
-        //         #pragma omp parallel for schedule(static) private(p1, p2)
         for (int j = 0; j < NUM_BOX_NEIGHBORS; j++)
         {
           neigh_idx = (idx + box_neighbors[j][0] + boxdim) % boxdim;
@@ -366,7 +364,9 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   int tmp = 0;
   for (int i = 0; i < ix->numContainers; i++)
   {
-    memcpy(totalPairs + tmp, ix->pairs[i], ix->curNx[i] * sizeof(ix_pair));
+    for (int j = 0; j < ix->curNx[i]; j ++) {
+      totalPairs[tmp + j] = ix->pairs[j];
+    }
     tmp += ix->curNx[i];
   }
   *pairs = totalPairs;
