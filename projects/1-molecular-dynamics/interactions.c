@@ -104,7 +104,7 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
 int IXDestroy(IX *ix_p)
 {
   int boxdim = (*ix_p)->boxdim;
-#ifdef
+#ifdef MULTIVECTOR
   free((*ix_p)->curNx);
   free((*ix_p)->maxNx);
   for (int i = 0; i < (*ix_p)->numContainers; i++) {
