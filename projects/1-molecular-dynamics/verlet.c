@@ -90,11 +90,20 @@ void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector U)
   int t;
   double d = Vr->d;
 
+  int update_inter_pair; //the period of time step updating interaction pairs
+  update_inter_pair = 2;
+
+  int control_update;
+
   double dt_noise = sqrt(2. * d * dt);
 
-  for (t = 0; t < Nt; t++)
-  {
-    accelerate(Vr->accel, X, U);
+  for (t = 0; t < Nt; t+=update_inter_pair) //t++
+  { 
+    control_update = 0;
+    accelerate(Vr->accel, X, U, control_update); //add the coefficient of period update_inter_pair
+    stream_and_noise(Vr, dt, dt_noise, X, U);
+    control_update++;
+    // accelerate(Vr->accel, X, U, control_update); //add the coefficient of period update_inter_pair
     stream_and_noise(Vr, dt, dt_noise, X, U);
   }
 }
