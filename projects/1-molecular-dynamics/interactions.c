@@ -82,6 +82,7 @@ int IXCreate(double L, int boxdim, int maxNx, IX *ix_p)
     err = safeMALLOC(maxNx * sizeof(ix_pair), &(ix->pairs[i]));
     CHK(err);
   }
+  printf("CREATE %d pairs finish", ix->numContainers);
 #else
   ix->curNx = 0;
   ix->maxNx = maxNx; // max value for each single container
@@ -266,7 +267,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   double d2, dx, dy, dz;
 
   IXClearPairs(ix);
-  #pragma omp parallel for schedule(static) private(p1, p2)
+#pragma omp parallel for schedule(static) private(p1, p2)
   for (idx = 0; idx < boxdim; idx++)
   {
     for (idy = 0; idy < boxdim; idy++)
