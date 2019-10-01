@@ -353,23 +353,25 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   free(next);
 #ifdef MULTIVECTOR
   // have to join result of all pairs here
-  int totalNumPairs = 0;
-  for (int i = 0; i < ix->numContainers; i++)
-  {
-    totalNumPairs += ix->curNx[i];
-  }
-  *Npairs = totalNumPairs;
+  // int totalNumPairs = 0;
+  // for (int i = 0; i < ix->numContainers; i++)
+  // {
+  //   totalNumPairs += ix->curNx[i];
+  // }
+  // *Npairs = totalNumPairs;
   ix_pair *totalPairs;
   err = safeMALLOC(totalNumPairs * sizeof(ix_pair), &totalPairs);
   CHK(err);
   int tmp = 0;
   for (int i = 0; i < ix->numContainers; i++)
   {
-    for (int j = 0; j < ix->curNx[i]; j ++) {
-      totalPairs[tmp + j] = ix->pairs[j];
+    for (int j = 0; j < ix->curNx[i]; j++)
+    {
+      totalPairs[tmp + j] = ix->pairs[i][j];
     }
     tmp += ix->curNx[i];
   }
+  *Npairs = tmp;
   *pairs = totalPairs;
 #else
   *Npairs = ix->curNx;
