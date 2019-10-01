@@ -279,8 +279,12 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
     idx = (int)(pos_p[0] / L * boxdim);
     idy = (int)(pos_p[1] / L * boxdim);
     idz = (int)(pos_p[2] / L * boxdim);
-    printf("idx, idy, idz is: \n", idx, idy, idz);
+    printf("idx, idy, idz is: %d, %d ,%d, \n", idx, idy, idz);
     // add to beginn of ingimplied linked list
+    if (pos_p[0] != pos_p[0]) {
+      print("nan happened at %d", i);
+      exit(1);
+    }
     bp = &b[idx][idy][idz];
     next[i] = bp->head;
     bp->head = i;
