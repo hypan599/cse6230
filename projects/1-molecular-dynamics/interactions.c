@@ -287,7 +287,7 @@ int IXGetPairs(IX ix, Vector X, double r, int *Npairs, ix_pair **pairs)
   double d2, dx, dy, dz;
 
   IXClearPairs(ix);
-#pragma omp parallel for schedule(static) private(p1, p2)
+#pragma omp parallel for schedule(static) private(p1, p2, idx, idy, idz)
   for (idx = 0; idx < boxdim; idx++)
   {
     for (idy = 0; idy < boxdim; idy++)
