@@ -57,173 +57,174 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
     *accel = a;
     return 0;
   }
+}
 
-  int AccelDestroy(Accel * accel)
+int AccelDestroy(Accel *accel)
+{
+  int err;
+
+  if ((*accel)->ix)
   {
-    int err;
-
-    if ((*accel)->ix)
-    {
-      err = IXDestroy(&((*accel)->ix));
-      CHK(err);
-    }
-    free(*accel);
-    *accel = NULL;
-    return 0;
+    err = IXDestroy(&((*accel)->ix));
+    CHK(err);
   }
+  free(*accel);
+  *accel = NULL;
+  return 0;
+}
 
-  static void
-  accelerate_ix(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
+static void
+accelerate_ix(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
+{
+  IX ix = accel->ix;
+  int Np = X->Np;
+
+  double L = accel->L;
+  double k = accel->k;
+  double r = accel->r;
+
+  for (int i = 0; i < Np; i++)
   {
-    IX ix = accel->ix;
-    int Np = X->Np;
-
-    double L = accel->L;
-    double k = accel->k;
-    double r = accel->r;
-
-    for (int i = 0; i < Np; i++)
+    for (int j = 0; j < 3; j++)
     {
-      for (int j = 0; j < 3; j++)
-      {
-        IDX(U, j, i) = 0.;
-      }
-    }
-
-    IXGetPairs(ix, X, 2. * r, Npairs, pairs); // parallel in side
-    int NpairTMP = *Npairs;
-#pragma omp parallel for schedule(static, 16) // I'm good
-    for (int p = 0; p < NpairTMP; p++)
-    { // p+=2
-      int i = (*pairs)[p].p[0];
-      int j = (*pairs)[p].p[1];
-      double du[3];
-
-      force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-      for (int d = 0; d < 3; d++)
-      {
-#pragma omp atomic
-        IDX(U, d, i) += du[d];
-#pragma omp atomic
-        IDX(U, d, j) -= du[d];
-      }
+      IDX(U, j, i) = 0.;
     }
   }
 
-  static void
-  accelerate_ix_no_update(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
-  {
-    IX ix = accel->ix;
-    int Np = X->Np;
-    double L = accel->L;
-    double k = accel->k;
-    double r = accel->r;
-    int NpairTMP = *Npairs;
+  IXGetPairs(ix, X, 2. * r, Npairs, pairs); // parallel in side
+  int NpairTMP = *Npairs;
 #pragma omp parallel for schedule(static, 16) // I'm good
-    for (int p = 0; p < *Npairs; p++)
+  for (int p = 0; p < NpairTMP; p++)
+  { // p+=2
+    int i = (*pairs)[p].p[0];
+    int j = (*pairs)[p].p[1];
+    double du[3];
+
+    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+    for (int d = 0; d < 3; d++)
     {
-      int i = (*pairs)[p].p[0];
-      int j = (*pairs)[p].p[1];
-      double du[3];
-
-      force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-
-      for (int d = 0; d < 3; d++)
-      {
 #pragma omp atomic
-        IDX(U, d, i) += du[d];
+      IDX(U, d, i) += du[d];
 #pragma omp atomic
-        IDX(U, d, j) -= du[d];
-      }
+      IDX(U, d, j) -= du[d];
     }
   }
+}
 
-  static void
-  accelerate_ix_no_update_restore(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
-  {
-    IX ix = accel->ix;
-    int Np = X->Np;
-    double L = accel->L;
-    double k = accel->k;
-    double r = accel->r;
-    int NpairTMP = *Npairs;
+static void
+accelerate_ix_no_update(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
+{
+  IX ix = accel->ix;
+  int Np = X->Np;
+  double L = accel->L;
+  double k = accel->k;
+  double r = accel->r;
+  int NpairTMP = *Npairs;
 #pragma omp parallel for schedule(static, 16) // I'm good
-    for (int p = 0; p < *Npairs; p++)
+  for (int p = 0; p < *Npairs; p++)
+  {
+    int i = (*pairs)[p].p[0];
+    int j = (*pairs)[p].p[1];
+    double du[3];
+
+    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+
+    for (int d = 0; d < 3; d++)
     {
-      int i = (*pairs)[p].p[0];
-      int j = (*pairs)[p].p[1];
-      double du[3];
-
-      force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-
-      for (int d = 0; d < 3; d++)
-      {
 #pragma omp atomic
-        IDX(U, d, i) += du[d];
+      IDX(U, d, i) += du[d];
 #pragma omp atomic
-        IDX(U, d, j) -= du[d];
-      }
+      IDX(U, d, j) -= du[d];
     }
-    IXRestorePairs(ix, X, 2. * r, Npairs, pairs);
   }
+}
 
-  static void
-  accelerate_direct(Accel accel, Vector X, Vector U)
+static void
+accelerate_ix_no_update_restore(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
+{
+  IX ix = accel->ix;
+  int Np = X->Np;
+  double L = accel->L;
+  double k = accel->k;
+  double r = accel->r;
+  int NpairTMP = *Npairs;
+#pragma omp parallel for schedule(static, 16) // I'm good
+  for (int p = 0; p < *Npairs; p++)
   {
-    int Np = accel->Np;
-    double L = accel->L;
-    double k = accel->k;
-    double r = accel->r;
+    int i = (*pairs)[p].p[0];
+    int j = (*pairs)[p].p[1];
+    double du[3];
+
+    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+
+    for (int d = 0; d < 3; d++)
+    {
+#pragma omp atomic
+      IDX(U, d, i) += du[d];
+#pragma omp atomic
+      IDX(U, d, j) -= du[d];
+    }
+  }
+  IXRestorePairs(ix, X, 2. * r, Npairs, pairs);
+}
+
+static void
+accelerate_direct(Accel accel, Vector X, Vector U)
+{
+  int Np = accel->Np;
+  double L = accel->L;
+  double k = accel->k;
+  double r = accel->r;
 
 #pragma omp parallel for schedule(static, 16) // I'm good
-    for (int i = 0; i < Np; i++)
-    {
-      double u[3] = {0.};
+  for (int i = 0; i < Np; i++)
+  {
+    double u[3] = {0.};
 
-      for (int j = 0; j < Np; j++)
+    for (int j = 0; j < Np; j++)
+    {
+      if (j != i)
       {
-        if (j != i)
+        double du[3];
+
+        force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+
+        for (int d = 0; d < 3; d++)
         {
-          double du[3];
-
-          force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-
-          for (int d = 0; d < 3; d++)
-          {
-            u[d] += du[d];
-          }
+          u[d] += du[d];
         }
       }
-      for (int d = 0; d < 3; d++)
-      {
-        /* Instead of adding to the velocity,
+    }
+    for (int d = 0; d < 3; d++)
+    {
+      /* Instead of adding to the velocity,
        * For this project the computed interactions give the complete velocity */
-        IDX(U, d, i) = u[d];
-      }
+      IDX(U, d, i) = u[d];
     }
   }
+}
 
-  void accelerate(Accel accel, Vector X, Vector U, int control_update, int update_inter_pair) //add the coefficient of period update_inter_pair
+void accelerate(Accel accel, Vector X, Vector U, int control_update, int update_inter_pair) //add the coefficient of period update_inter_pair
+{
+  int Npairs;
+  ix_pair *pairs;
+  if (accel->use_ix)
   {
-    int Npairs;
-    ix_pair *pairs;
-    if (accel->use_ix)
+    if (control_update && control_update != update_inter_pair)
     {
-      if (control_update && control_update != update_inter_pair)
-      {
-        accelerate_ix_no_update(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, no update_inter_pair
-      }
-      else if (control_update == update_inter_pair)
-      {
-        accelerate_ix_no_update_restore(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, no update_inter_pair,restore pairs
-      }
-      else
-      {
-        accelerate_ix(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, update_inter_pair
-      }
+      accelerate_ix_no_update(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, no update_inter_pair
+    }
+    else if (control_update == update_inter_pair)
+    {
+      accelerate_ix_no_update_restore(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, no update_inter_pair,restore pairs
     }
     else
     {
-      accelerate_direct(accel, X, U);
+      accelerate_ix(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, update_inter_pair
     }
   }
+  else
+  {
+    accelerate_direct(accel, X, U);
+  }
+}
