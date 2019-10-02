@@ -26,37 +26,25 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
   a->k = k;
   a->r = r;
   a->use_ix = use_ix;
+
   if (use_ix)
   {
+#ifdef BOXDIM
+    int boxdim = BOXDIM;
+#else
     int boxdim = 8; /* this number is magic! */ // Original 4, optimized 10
+#endif
     int maxNx;
-    maxNx = 64; /* how should we estimate the maximum number of interactions? */
+    maxNx = 32; /* how should we estimate the maximum number of interactions? */
     err = IXCreate(L, boxdim, maxNx, &(a->ix));
     CHK(err);
-    a->Np = Np;
-    a->L = L;
-    a->k = k;
-    a->r = r;
-    a->use_ix = use_ix;
-    if (use_ix)
-    {
-#ifdef BOXDIM
-      int boxdim = BOXDIM;
-#else
-      int boxdim = 8; /* this number is magic! */ // Original 4, optimized 10
-#endif
-      int maxNx;
-      maxNx = 32; /* how should we estimate the maximum number of interactions? */
-      err = IXCreate(L, boxdim, maxNx, &(a->ix));
-      CHK(err);
-    }
-    else
-    {
-      a->ix = NULL;
-    }
-    *accel = a;
-    return 0;
   }
+  else
+  {
+    a->ix = NULL;
+  }
+  *accel = a;
+  return 0;
 }
 
 int AccelDestroy(Accel *accel)
