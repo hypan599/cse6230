@@ -1,6 +1,6 @@
 
 CC = icc
-COPTFLAGS = -O3 -xHost -qopt-report=5 -DMY_REMAINDER=1 -DMULTIVECTOR
+COPTFLAGS = -O3 -xHost -qopt-report=5 -DMY_REMAINDER=1 -DMULTIVECTOR -DUPDATEINTERVAL=6
 OMPFLAGS = -openmp
 CFLAGS = -g -Wall -fPIC
 
