@@ -97,9 +97,10 @@ void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector U)
 
   double dt_noise = sqrt(2. * d * dt);
 
-  for (t = 0; t < Nt; t+=update_inter_pair) //t++
-  { 
-    for (control_update = 0; control_update < update_inter_pair; control_update++){
+  for (t = 0; t < Nt; t += update_inter_pair) //t++
+  {
+    for (control_update = 0; control_update < update_inter_pair; control_update++)
+    {
       accelerate(Vr->accel, X, U, control_update, update_inter_pair); //add the coefficient of period update_inter_pair
       stream_and_noise(Vr, dt, dt_noise, X, U);
     }
