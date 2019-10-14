@@ -24,7 +24,7 @@ int splitCommunicator(MPI_Comm comm, int firstCommSize, MPI_Comm *subComm_p)
    * `VecGetGlobalSize_tree_subcomm()` in the file `dmv_global_size.c` in the
    * `notes/mpi/dmv` example.
    */
-  int rank, size, color;
+  int rank, size, color, err;
 
   err = MPI_Comm_size(comm, &size);
   MPI_CHK(err);
@@ -42,6 +42,9 @@ int splitCommunicator(MPI_Comm comm, int firstCommSize, MPI_Comm *subComm_p)
 int destroyCommunicator(MPI_Comm *subComm_p)
 {
   /* TODO: destroy the subcommunicator created in `splitCommunicator` */
+  int err;
+  err = MPI_Comm_free(subComm_p);
+  MPI_CHK(err);
   return 0;
 }
 
