@@ -61,7 +61,7 @@ int stopTime(double tic_in, double *toc_p)
    * write the results in `toc_p` */
   double end = MPI_Wtime();
   *toc_p = end - tic_in;
-  *toc_p *= 1e6;
+//   *toc_p *= 1e6;
   return 0;
 }
 
@@ -197,9 +197,11 @@ int main(int argc, char **argv)
             MPI_CHK(err);
           }
         }
+        err = stopTime(tic, &tic);
+        MPI_CHK(err);       
+        timeAvg += tic;
       }
-      err = stopTime(tic, &tic);
-      MPI_CHK(err);
+
       timeAvg /= numTests;
       err = maxTime(subComm, timeAvg, &timeAvg);
       MPI_CHK(err);
