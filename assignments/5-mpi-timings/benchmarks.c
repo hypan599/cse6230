@@ -69,7 +69,7 @@ int maxTime(MPI_Comm comm, double myTime, double *maxTime_p)
 {
   /* TODO: take the times from all processes and compute the maximum,
    * storing the result on process 0 */
-  MPI_REDUCE(&myTime, maxTime_p, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  MPI_Reduce(&myTime, maxTime_p, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
   return 0;
 }
 
