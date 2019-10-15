@@ -61,6 +61,7 @@ int stopTime(double tic_in, double *toc_p)
    * write the results in `toc_p` */
   double end = MPI_Wtime();
   *toc_p = end - tic_in;
+  *toc_p *= 1e6;
   return 0;
 }
 
@@ -68,6 +69,7 @@ int maxTime(MPI_Comm comm, double myTime, double *maxTime_p)
 {
   /* TODO: take the times from all processes and compute the maximum,
    * storing the result on process 0 */
+  MPI_REDUCE(&myTime, maxTime_p, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
   return 0;
 }
 
