@@ -59,9 +59,10 @@ int stopTime(double tic_in, double *toc_p)
 {
   /* TODO: Get the elapsed MPI walltime since `tic_in`,
    * write the results in `toc_p` */
+
   double end = MPI_Wtime();
   *toc_p = end - tic_in;
-//   *toc_p *= 1e6;
+  //   *toc_p *= 1e6;
   return 0;
 }
 
@@ -167,14 +168,14 @@ int main(int argc, char **argv)
     MPI_Comm subComm = MPI_COMM_NULL;
     err = splitCommunicator(comm, numComm, &subComm);
     MPI_CHK(err);
+
     for (int numBytes = 8; numBytes <= maxSize; numBytes *= 8)
     {
+      double tic = -1;
       double timeAvg = 0.;
       long long int totalNumBytes = numBytes * numComm;
-      double tic = -1;
       for (int t = 0; t < numTests + numSkip; t++)
       {
-        double tic = -1.;
         if (t == numSkip)
         {
           err = startTime(&tic);
@@ -197,11 +198,9 @@ int main(int argc, char **argv)
             MPI_CHK(err);
           }
         }
-        err = stopTime(tic, &tic);
-        MPI_CHK(err);       
-        timeAvg += tic;
       }
-
+      err = stopTime(tic, &timeAvg);
+      MPI_CHK(err);
       timeAvg /= numTests;
       err = maxTime(subComm, timeAvg, &timeAvg);
       MPI_CHK(err);
