@@ -1,4 +1,5 @@
 *.o
 benchmarks
 *.log
-
+test_output
+benchmarks.png

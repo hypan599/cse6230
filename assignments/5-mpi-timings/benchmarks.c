@@ -213,7 +213,6 @@ int main(int argc, char **argv)
   /* NOTE: In all of your tests, make sure you skip `numSkip` iterations
    * before you start timing, as in the point-to-point ping-pong example */
 
-  /*
   // === BROADCAST PING-PONG ===
   MPI_LOG(rank, "MPI Broadcast ping-pong test:\n"
                 " # Processes  | Message Size | Total Size   | Time         | B/s\n");
@@ -228,7 +227,7 @@ int main(int argc, char **argv)
       double timeAvg = 0.;
       long long int totalNumBytes = numBytes * (numComm - 1) * 2;
 
-      // TODO: Set up a ping pong test for the broadcast collective.  When
+      // Set up a ping pong test for the broadcast collective.  When
       // you broadcast the 'ping' message, use the subComm communicator to
       // broadcast from rank 0 the first `numBytes` bytes of the `buffer` to
       // the other subComm processes. Store the results in the first
@@ -236,11 +235,32 @@ int main(int argc, char **argv)
       // the collective with the reverse communication pattern of broadcast
       // for the 'pong' message.
       // (HINT: look up the proper usage of MPI_IN_PLACE)
+      for (int t = 0; t < numTests + numSkip; t++)
+      {
+        if (t == numSkip)
+        {
+          err = startTime(&tic);
+          MPI_CHK(err);
+        }
+        if (rank == 0)
+        {
+          err = MPI_Bcast(buffer, numBytes, MPI_BYTE, 0, subComm);
+          MPI_CHK(err);
+          err = MPI_Reduce(MPI_IN_PLACE, buffer, numBytes, MPI_BYTE, MPI_BXOR, 0, subComm);
+          MPI_CHK(err);
+        }
+      }
+      err = stopTime(tic, &timeAvg);
+      MPI_CHK(err);
+      timeAvg /= numTests;
+      err = maxTime(subComm, timeAvg, &timeAvg);
+      MPI_CHK(err);
       MPI_LOG(rank, " %12d   %12d   %12lld   %+12.5e   %+12.5e\n", numComm, numBytes, totalNumBytes, timeAvg, totalNumBytes / timeAvg);
     }
     err = destroyCommunicator(&subComm);
     MPI_CHK(err);
   }
+  /*
 
   // === SCATTER PING-PONG ===
   MPI_LOG(rank, "MPI Scatter ping-pong test:\n"
