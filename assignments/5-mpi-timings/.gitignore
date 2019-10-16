@@ -2,6 +2,6 @@
 benchmarks
 *.log
 test_output
+*.png
 !benchmarks.png
 !benchmarks2.png
-*.png
