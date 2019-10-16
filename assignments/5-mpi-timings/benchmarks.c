@@ -16,7 +16,7 @@
 
 int splitCommunicator(MPI_Comm comm, int firstCommSize, MPI_Comm *subComm_p)
 {
-  /* TODO: split the communicator `comm` into one communicator for ranks
+  /* split the communicator `comm` into one communicator for ranks
    * [0, ..., firstCommSize - 1] and one for [firstCommSize, ..., size - 1],
    * where `size` is the size of `comm`.
    *
@@ -41,7 +41,7 @@ int splitCommunicator(MPI_Comm comm, int firstCommSize, MPI_Comm *subComm_p)
 
 int destroyCommunicator(MPI_Comm *subComm_p)
 {
-  /* TODO: destroy the subcommunicator created in `splitCommunicator` */
+  /* destroy the subcommunicator created in `splitCommunicator` */
   int err;
   err = MPI_Comm_free(subComm_p);
   MPI_CHK(err);
@@ -50,14 +50,14 @@ int destroyCommunicator(MPI_Comm *subComm_p)
 
 int startTime(double *tic_p)
 {
-  /* TODO: Record the MPI walltime in `tic_p` */
+  /* Record the MPI walltime in `tic_p` */
   *tic_p = MPI_Wtime();
   return 0;
 }
 
 int stopTime(double tic_in, double *toc_p)
 {
-  /* TODO: Get the elapsed MPI walltime since `tic_in`,
+  /* Get the elapsed MPI walltime since `tic_in`,
    * write the results in `toc_p` */
 
   double end = MPI_Wtime();
@@ -68,7 +68,7 @@ int stopTime(double tic_in, double *toc_p)
 
 int maxTime(MPI_Comm comm, double myTime, double *maxTime_p)
 {
-  /* TODO: take the times from all processes and compute the maximum,
+  /* take the times from all processes and compute the maximum,
    * storing the result on process 0 */
   MPI_Reduce(&myTime, maxTime_p, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
   return 0;
