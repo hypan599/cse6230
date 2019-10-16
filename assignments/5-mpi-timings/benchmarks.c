@@ -236,6 +236,7 @@ int main(int argc, char **argv)
       // for the 'pong' message.
       // (HINT: look up the proper usage of MPI_IN_PLACE)
       double tic = -1;
+      char* tmp_buffer;
       tmp_buffer = (char *)calloc(totalNumBytes, sizeof(char));
       if (!tmp_buffer)
         return 1;
