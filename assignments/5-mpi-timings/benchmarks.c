@@ -243,10 +243,20 @@ int main(int argc, char **argv)
           err = startTime(&tic);
           MPI_CHK(err);
         }
-        err = MPI_Bcast(buffer, numBytes, MPI_BYTE, 0, subComm);
-        MPI_CHK(err);
-        err = MPI_Reduce(MPI_IN_PLACE, buffer, numBytes, MPI_BYTE, MPI_BXOR, 0, subComm);
-        MPI_CHK(err);
+        if (rank == 0)
+        {
+          err = MPI_Bcast(buffer, numBytes, MPI_BYTE, 0, subComm);
+          MPI_CHK(err);
+          err = MPI_Reduce(MPI_IN_PLACE, buffer, numBytes, MPI_BYTE, MPI_BXOR, 0, subComm);
+          MPI_CHK(err);
+        }
+        else
+        {
+          err = MPI_Bcast(buffer, numBytes, MPI_BYTE, 0, subComm);
+          MPI_CHK(err);
+          err = MPI_Reduce(buffer, buffer, numBytes, MPI_BYTE, MPI_BXOR, 0, subComm);
+          MPI_CHK(err);
+        }
       }
       err = stopTime(tic, &timeAvg);
       MPI_CHK(err);
