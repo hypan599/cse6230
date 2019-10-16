@@ -236,7 +236,6 @@ int main(int argc, char **argv)
       // for the 'pong' message.
       // (HINT: look up the proper usage of MPI_IN_PLACE)
       double tic = -1;
-      double timeAvg = 0.;
       for (int t = 0; t < numTests + numSkip; t++)
       {
         if (t == numSkip)
