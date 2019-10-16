@@ -1,118 +1,284 @@
-MPI Version: 3.0
-Intel(R) MPI Library 5.1.1 for Linux* OS
+rm -f *.o benchmarks
+mpicc -fopenmp -I../../utils -g -Wall -O3 -std=c99 -c -o benchmarks.o benchmarks.c
+mpicc -fopenmp -o benchmarks benchmarks.o 
+MPI Version: 3.1
+MVAPICH2 Version      :	2.3.2
+MVAPICH2 Release date :	Fri August 9 22:00:00 EST 2019
+MVAPICH2 Device       :	ch3:mrail
+MVAPICH2 configure    :	--prefix=/nv/coc-ice/tisaac3/opt/pace-ice/mvapich2/2.3 --with-hwloc --with-pbs=/opt/torque/current --enable-romio --with-file-system=ufs+nfs --enable-shared --enable-sharedlibs=gcc
+MVAPICH2 CC           :	gcc    -DNDEBUG -DNVALGRIND -O2
+MVAPICH2 CXX          :	g++   -DNDEBUG -DNVALGRIND -O2
+MVAPICH2 F77          :	gfortran -L/lib -L/lib   -O2
+MVAPICH2 FC           :	gfortran   -O2
 
-MPI # Procs: 28
-MPI Wtime 1.5712e+09, precision 1e-06
+MPI # Procs: 112
+MPI Wtime 1.57125e+09, precision 1e-06
 MPI Wtime is global
-MPI proc 0 host: coc-ice.pace.gatech.edu
-MPI proc 1 host: coc-ice.pace.gatech.edu
-MPI proc 2 host: coc-ice.pace.gatech.edu
-MPI proc 3 host: coc-ice.pace.gatech.edu
-MPI proc 4 host: coc-ice.pace.gatech.edu
-MPI proc 5 host: coc-ice.pace.gatech.edu
-MPI proc 6 host: coc-ice.pace.gatech.edu
-MPI proc 7 host: coc-ice.pace.gatech.edu
-MPI proc 8 host: coc-ice.pace.gatech.edu
-MPI proc 9 host: coc-ice.pace.gatech.edu
-MPI proc 10 host: coc-ice.pace.gatech.edu
-MPI proc 11 host: coc-ice.pace.gatech.edu
-MPI proc 12 host: coc-ice.pace.gatech.edu
-MPI proc 13 host: coc-ice.pace.gatech.edu
-MPI proc 14 host: coc-ice.pace.gatech.edu
-MPI proc 15 host: coc-ice.pace.gatech.edu
-MPI proc 16 host: coc-ice.pace.gatech.edu
-MPI proc 17 host: coc-ice.pace.gatech.edu
-MPI proc 18 host: coc-ice.pace.gatech.edu
-MPI proc 19 host: coc-ice.pace.gatech.edu
-MPI proc 20 host: coc-ice.pace.gatech.edu
-MPI proc 21 host: coc-ice.pace.gatech.edu
-MPI proc 22 host: coc-ice.pace.gatech.edu
-MPI proc 23 host: coc-ice.pace.gatech.edu
-MPI proc 24 host: coc-ice.pace.gatech.edu
-MPI proc 25 host: coc-ice.pace.gatech.edu
-MPI proc 26 host: coc-ice.pace.gatech.edu
-MPI proc 27 host: coc-ice.pace.gatech.edu
+MPI proc 0 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 1 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 2 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 3 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 4 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 5 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 6 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 7 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 8 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 9 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 10 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 11 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 12 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 13 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 14 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 15 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 16 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 17 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 18 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 19 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 20 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 21 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 22 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 23 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 24 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 25 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 26 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 27 host: rich133-k40-20-r.pace.gatech.edu
+MPI proc 28 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 29 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 30 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 31 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 32 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 33 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 34 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 35 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 36 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 37 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 38 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 39 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 40 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 41 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 42 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 43 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 44 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 45 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 46 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 47 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 48 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 49 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 50 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 51 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 52 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 53 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 54 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 55 host: rich133-k40-21-r.pace.gatech.edu
+MPI proc 56 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 57 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 58 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 59 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 60 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 61 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 62 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 63 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 64 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 65 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 66 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 67 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 68 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 69 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 70 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 71 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 72 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 73 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 74 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 75 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 76 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 77 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 78 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 79 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 80 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 81 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 82 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 83 host: rich133-k40-23-r.pace.gatech.edu
+MPI proc 84 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 85 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 86 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 87 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 88 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 89 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 90 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 91 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 92 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 93 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 94 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 95 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 96 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 97 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 98 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 99 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 100 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 101 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 102 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 103 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 104 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 105 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 106 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 107 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 108 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 109 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 110 host: rich133-k40-24-l.pace.gatech.edu
+MPI proc 111 host: rich133-k40-24-l.pace.gatech.edu
 MPI Point-to-point ping-pong test:
  # Processes  | Message Size | Total Size   | Time         | B/s
-           14              8            112   +6.38008e-07   +1.75546e+08
-           14             64            896   +8.07047e-07   +1.11022e+09
-           14            512           7168   +1.05691e-06   +6.78204e+09
-           14           4096          57344   +2.35391e-06   +2.43612e+10
-           14          32768         458752   +2.47822e-05   +1.85114e+10
-           14         262144        3670016   +1.30565e-04   +2.81087e+10
-           14        2097152       29360128   +9.00823e-04   +3.25926e+10
-           28              8            224   +1.51014e-06   +1.48330e+08
-           28             64           1792   +1.74594e-06   +1.02638e+09
-           28            512          14336   +2.43187e-06   +5.89505e+09
-           28           4096         114688   +1.43199e-05   +8.00900e+09
-           28          32768         917504   +7.82621e-05   +1.17235e+10
-           28         262144        7340032   +6.02371e-04   +1.21852e+10
-           28        2097152       58720256   +3.75673e-03   +1.56307e+10
+           14              8            112   +7.89881e-07   +1.41794e+08
+           14             64            896   +4.87089e-07   +1.83950e+09
+           14            512           7168   +8.02994e-07   +8.92659e+09
+           14           4096          57344   +2.32983e-06   +2.46130e+10
+           14          32768         458752   +2.20611e-05   +2.07946e+10
+           14         262144        3670016   +1.34092e-04   +2.73694e+10
+           14        2097152       29360128   +6.98278e-04   +4.20465e+10
+           28              8            224   +1.58095e-06   +1.41687e+08
+           28             64           1792   +3.96800e-06   +4.51613e+08
+           28            512          14336   +1.94407e-06   +7.37424e+09
+           28           4096         114688   +6.05011e-06   +1.89563e+10
+           28          32768         917504   +4.60892e-05   +1.99071e+10
+           28         262144        7340032   +2.88240e-04   +2.54650e+10
+           28        2097152       58720256   +2.29534e-03   +2.55824e+10
+           56              8            448   +1.11022e-05   +4.03524e+07
+           56             64           3584   +9.47094e-06   +3.78421e+08
+           56            512          28672   +1.40340e-05   +2.04303e+09
+           56           4096         229376   +4.00550e-05   +5.72652e+09
+           56          32768        1835008   +2.64275e-04   +6.94355e+09
+           56         262144       14680064   +1.93608e-03   +7.58236e+09
+           56        2097152      117440512   +1.54122e-02   +7.61998e+09
+          112              8            896   +1.14281e-05   +7.84031e+07
+          112             64           7168   +8.82697e-06   +8.12057e+08
+          112            512          57344   +3.00071e-05   +1.91101e+09
+          112           4096         458752   +7.74119e-05   +5.92612e+09
+          112          32768        3670016   +4.11540e-04   +8.91776e+09
+          112         262144       29360128   +2.02411e-03   +1.45052e+10
+          112        2097152      234881024   +1.56009e-02   +1.50556e+10
 MPI Broadcast ping-pong test:
  # Processes  | Message Size | Total Size   | Time         | B/s
-           14              8            208   +3.11303e-06   +6.68159e+07
-           14             64           1664   +3.58796e-06   +4.63773e+08
-           14            512          13312   +4.81915e-06   +2.76231e+09
-           14           4096         106496   +1.83601e-05   +5.80039e+09
-           14          32768         851968   +1.31939e-04   +6.45729e+09
-           14         262144        6815744   +1.29096e-03   +5.27958e+09
-           14        2097152       54525952   +5.74762e-03   +9.48670e+09
-           28              8            432   +1.25680e-05   +3.43730e+07
-           28             64           3456   +1.25570e-05   +2.75224e+08
-           28            512          27648   +1.37291e-05   +2.01383e+09
-           28           4096         221184   +8.54609e-05   +2.58813e+09
-           28          32768        1769472   +3.23649e-04   +5.46726e+09
-           28         262144       14155776   +1.10243e-03   +1.28405e+10
-           28        2097152      113246208   +6.93682e-03   +1.63254e+10
+           14              8            208   +2.49195e-06   +8.34687e+07
+           14             64           1664   +3.87692e-06   +4.29206e+08
+           14            512          13312   +7.18904e-06   +1.85171e+09
+           14           4096         106496   +2.66778e-05   +3.99193e+09
+           14          32768         851968   +1.83669e-04   +4.63860e+09
+           14         262144        6815744   +6.30469e-04   +1.08106e+10
+           14        2097152       54525952   +8.04712e-03   +6.77583e+09
+           28              8            432   +3.18503e-06   +1.35634e+08
+           28             64           3456   +3.59607e-06   +9.61050e+08
+           28            512          27648   +7.18904e-06   +3.84586e+09
+           28           4096         221184   +3.54061e-05   +6.24706e+09
+           28          32768        1769472   +7.06049e-04   +2.50616e+09
+           28         262144       14155776   +1.64064e-03   +8.62822e+09
+           28        2097152      113246208   +1.59167e-02   +7.11495e+09
+           56              8            880   +4.49419e-06   +1.95808e+08
+           56             64           7040   +5.48911e-06   +1.28254e+09
+           56            512          56320   +1.08051e-05   +5.21234e+09
+           56           4096         450560   +4.09961e-05   +1.09903e+10
+           56          32768        3604480   +9.21545e-04   +3.91134e+09
+           56         262144       28835840   +2.26761e-03   +1.27164e+10
+           56        2097152      230686720   +2.71247e-02   +8.50468e+09
+          112              8           1776   +5.36704e-06   +3.30909e+08
+          112             64          14208   +6.18410e-06   +2.29750e+09
+          112            512         113664   +1.17640e-05   +9.66198e+09
+          112           4096         909312   +4.72541e-05   +1.92430e+10
+          112          32768        7274496   +7.73522e-04   +9.40438e+09
+          112         262144       58195968   +2.21248e-03   +2.63036e+10
+          112        2097152      465567744   +2.81884e-02   +1.65163e+10
 MPI Scatter ping-pong test:
  # Processes  | Message Size | Total Size   | Time         | B/s
-           14              8            208   +1.02210e-05   +2.03503e+07
-           14             64           1664   +3.76105e-06   +4.42429e+08
-           14            512          13312   +6.29091e-06   +2.11607e+09
-           14           4096         106496   +4.88501e-05   +2.18006e+09
-           14          32768         851968   +5.17335e-04   +1.64684e+09
-           28              8            432   +1.36971e-05   +3.15394e+07
-           28             64           3456   +1.41811e-05   +2.43704e+08
-           28            512          27648   +2.84390e-05   +9.72185e+08
-           28           4096         221184   +1.66733e-04   +1.32658e+09
-           28          32768        1769472   +1.05364e-03   +1.67939e+09
+           14              8            208   +5.94807e-06   +3.49693e+07
+           14             64           1664   +6.48904e-06   +2.56432e+08
+           14            512          13312   +7.36403e-06   +1.80770e+09
+           14           4096         106496   +1.99492e-05   +5.33836e+09
+           14          32768         851968   +1.73976e-04   +4.89704e+09
+           28              8            432   +1.11580e-05   +3.87167e+07
+           28             64           3456   +1.27668e-05   +2.70701e+08
+           28            512          27648   +2.09711e-05   +1.31839e+09
+           28           4096         221184   +5.24411e-05   +4.21776e+09
+           28          32768        1769472   +4.49687e-04   +3.93490e+09
+           56              8            880   +8.97098e-06   +9.80941e+07
+           56             64           7040   +1.23742e-05   +5.68927e+08
+           56            512          56320   +4.99241e-05   +1.12811e+09
+           56           4096         450560   +1.17221e-04   +3.84368e+09
+           56          32768        3604480   +9.88314e-04   +3.64710e+09
+          112              8           1776   +1.46520e-05   +1.21212e+08
+          112             64          14208   +1.91510e-05   +7.41894e+08
+          112            512         113664   +4.40750e-05   +2.57888e+09
+          112           4096         909312   +2.29402e-04   +3.96384e+09
+          112          32768        7274496   +1.83156e-03   +3.97176e+09
 MPI All-reduce test:
  # Processes  | Message Size | Total Size   | Time         | B/s
-           14              8            208   +9.71293e-06   +2.14147e+07
-           14             64           1664   +2.98405e-06   +5.57632e+08
-           14            512          13312   +1.10369e-05   +1.20614e+09
-           14           4096         106496   +2.52440e-05   +4.21867e+09
-           14          32768         851968   +8.96239e-05   +9.50603e+09
-           14         262144        6815744   +8.30278e-04   +8.20899e+09
-           14        2097152       54525952   +6.19218e-03   +8.80561e+09
-           28              8            432   +1.45569e-05   +2.96767e+07
-           28             64           3456   +1.41420e-05   +2.44378e+08
-           28            512          27648   +1.55561e-05   +1.77731e+09
-           28           4096         221184   +6.51300e-05   +3.39604e+09
-           28          32768        1769472   +1.68915e-04   +1.04755e+10
-           28         262144       14155776   +1.76596e-03   +8.01591e+09
-           28        2097152      113246208   +5.68560e-03   +1.99181e+10
+           14              8            208   +3.19004e-06   +6.52029e+07
+           14             64           1664   +3.86596e-06   +4.30424e+08
+           14            512          13312   +9.19509e-06   +1.44773e+09
+           14           4096         106496   +1.65930e-05   +6.41814e+09
+           14          32768         851968   +1.08629e-04   +7.84292e+09
+           14         262144        6815744   +7.24422e-04   +9.40853e+09
+           14        2097152       54525952   +3.35616e-03   +1.62465e+10
+           28              8            432   +6.04010e-06   +7.15220e+07
+           28             64           3456   +4.93312e-06   +7.00571e+08
+           28            512          27648   +1.74911e-05   +1.58069e+09
+           28           4096         221184   +1.17083e-04   +1.88912e+09
+           28          32768        1769472   +1.15743e-04   +1.52879e+10
+           28         262144       14155776   +7.25049e-04   +1.95239e+10
+           28        2097152      113246208   +3.94959e-03   +2.86729e+10
+           56              8            880   +1.34871e-05   +6.52475e+07
+           56             64           7040   +9.62806e-06   +7.31196e+08
+           56            512          56320   +2.01199e-05   +2.79922e+09
+           56           4096         450560   +1.28744e-04   +3.49965e+09
+           56          32768        3604480   +1.26491e-04   +2.84959e+10
+           56         262144       28835840   +9.47815e-04   +3.04235e+10
+           56        2097152      230686720   +4.94801e-03   +4.66221e+10
+          112              8           1776   +9.84406e-06   +1.80413e+08
+          112             64          14208   +7.48897e-06   +1.89719e+09
+          112            512         113664   +1.98951e-05   +5.71317e+09
+          112           4096         909312   +3.93050e-05   +2.31348e+10
+          112          32768        7274496   +1.47519e-04   +4.93122e+10
+          112         262144       58195968   +1.02052e-03   +5.70257e+10
+          112        2097152      465567744   +5.80109e-03   +8.02552e+10
 MPI All-gather test:
  # Processes  | Message Size | Total Size   | Time         | B/s
-           14              8           1456   +3.09801e-06   +4.69979e+08
-           14             64          11648   +3.76296e-06   +3.09544e+09
-           14            512          93184   +1.45149e-05   +6.41988e+09
-           14           4096         745472   +6.54919e-05   +1.13827e+10
-           14          32768        5963776   +4.30634e-04   +1.38488e+10
-           28              8           6048   +1.53580e-05   +3.93802e+08
-           28             64          48384   +5.03707e-06   +9.60559e+09
-           28            512         387072   +4.38290e-05   +8.83142e+09
-           28           4096        3096576   +1.80794e-04   +1.71276e+10
-           28          32768       24772608   +1.13068e-03   +2.19095e+10
+           14              8           1456   +2.85220e-06   +5.10483e+08
+           14             64          11648   +4.81391e-06   +2.41965e+09
+           14            512          93184   +7.70807e-06   +1.20891e+10
+           14           4096         745472   +3.38812e-05   +2.20025e+10
+           14          32768        5963776   +2.36932e-04   +2.51708e+10
+           28              8           6048   +7.79605e-06   +7.75778e+08
+           28             64          48384   +1.40090e-05   +3.45378e+09
+           28            512         387072   +2.21779e-05   +1.74530e+10
+           28           4096        3096576   +1.40974e-04   +2.19656e+10
+           28          32768       24772608   +2.44690e-03   +1.01241e+10
+           56              8          24640   +3.58510e-05   +6.87289e+08
+           56             64         197120   +5.98590e-05   +3.29307e+09
+           56            512        1576960   +4.23084e-04   +3.72730e+09
+           56           4096       12615680   +1.16459e-03   +1.08327e+10
+           56          32768      100925440   +1.62334e-03   +6.21716e+10
+          112              8          99456   +2.44980e-05   +4.05976e+09
+          112             64         795648   +2.81742e-05   +2.82403e+10
+          112            512        6365184   +9.95271e-05   +6.39543e+10
+          112           4096       50921472   +2.25949e-04   +2.25367e+11
+          112          32768      407371776   +4.10329e-03   +9.92793e+10
 MPI All-to-all test:
  # Processes  | Message Size | Total Size   | Time         | B/s
-           14              8           1352   +1.13952e-05   +1.18646e+08
-           14             64          10816   +2.36301e-05   +4.57720e+08
-           14            512          86528   +3.65191e-05   +2.36939e+09
-           14           4096         692224   +7.50909e-05   +9.21848e+09
-           14          32768        5537792   +9.40026e-04   +5.89110e+09
-           28              8           5832   +5.84772e-05   +9.97312e+07
-           28             64          46656   +6.08611e-05   +7.66598e+08
-           28            512         373248   +9.61380e-05   +3.88242e+09
-           28           4096        2985984   +2.62500e-04   +1.13752e+10
-           28          32768       23887872   +1.92181e-03   +1.24299e+10
+           14              8           1352   +7.29513e-06   +1.85329e+08
+           14             64          10816   +2.08919e-05   +5.17712e+08
+           14            512          86528   +1.91531e-05   +4.51770e+09
+           14           4096         692224   +4.39441e-05   +1.57524e+10
+           14          32768        5537792   +3.50442e-04   +1.58023e+10
+           28              8           5832   +3.33250e-05   +1.75004e+08
+           28             64          46656   +1.35191e-04   +3.45112e+08
+           28            512         373248   +2.31794e-04   +1.61026e+09
+           28           4096        2985984   +1.98361e-04   +1.50533e+10
+           28          32768       23887872   +1.18151e-03   +2.02181e+10
+           56              8          24200   +1.58313e-04   +1.52862e+08
+           56             64         193600   +7.77680e-04   +2.48946e+08
+           56            512        1548800   +2.85296e-04   +5.42874e+09
+           56           4096       12390400   +1.63926e-03   +7.55852e+09
+           56          32768       99123200   +8.63381e-03   +1.14808e+10
+          112              8          98568   +1.16077e-03   +8.49157e+07
+          112             64         788544   +3.31808e-03   +2.37651e+08
+          112            512        6308352   +8.69938e-04   +7.25149e+09
+          112           4096       50466816   +7.24510e-03   +6.96565e+09
+          112          32768      403734528   +3.11379e-02   +1.29660e+10
