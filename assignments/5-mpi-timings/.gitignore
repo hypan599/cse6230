@@ -3,4 +3,5 @@ benchmarks
 *.log
 test_output
 !benchmarks.png
+!benchmarks2.png
 *.png
