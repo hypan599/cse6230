@@ -236,6 +236,9 @@ int main(int argc, char **argv)
       // for the 'pong' message.
       // (HINT: look up the proper usage of MPI_IN_PLACE)
       double tic = -1;
+      tmp_buffer = (char *)calloc(totalNumBytes, sizeof(char));
+      if (!tmp_buffer)
+        return 1;
       for (int t = 0; t < numTests + numSkip; t++)
       {
         if (t == numSkip)
@@ -243,7 +246,7 @@ int main(int argc, char **argv)
           err = startTime(&tic);
           MPI_CHK(err);
         }
-        if (rank == 0)
+        if (!rank)
         {
           err = MPI_Bcast(buffer, numBytes, MPI_BYTE, 0, subComm);
           MPI_CHK(err);
@@ -254,7 +257,7 @@ int main(int argc, char **argv)
         {
           err = MPI_Bcast(buffer, numBytes, MPI_BYTE, 0, subComm);
           MPI_CHK(err);
-          err = MPI_Reduce(buffer, buffer, numBytes, MPI_BYTE, MPI_BXOR, 0, subComm);
+          err = MPI_Reduce(buffer, tmp_buffer, numBytes, MPI_BYTE, MPI_BXOR, 0, subComm);
           MPI_CHK(err);
         }
       }
