@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 
+import sys
+from numpy import polyfit
 import matplotlib.pyplot as plt
 
+
 def parse_benchmarks_data(f, commName):
-    f.readline() # skip the line with the headers
+    f.readline()  # skip the line with the headers
     msgs = []
-    bws  = []
+    bws = []
     line = f.readline()
     while line:
-        if line.startswith("MPI"): break
+        if line.startswith("MPI"):
+            break
         (P, msgSize, totalSize, time, bw) = line.split()
         msgSize = int(msgSize)
         bw = float(bw)
@@ -24,6 +28,7 @@ def parse_benchmarks_data(f, commName):
         line = f.readline()
     return ((commName, msgs, bws), line)
 
+
 ax = plt.gca()
 ax.set_title("MPI Benchmark Bandwidths")
 ax.set_xlabel("Message Size (B)")
@@ -32,7 +37,6 @@ ax.set_ylabel("Bandwidth (B/s)")
 ax.set_yscale("log")
 lines = []
 
-import sys
 
 with sys.stdin as f:
     line = f.readline()
@@ -63,7 +67,39 @@ with sys.stdin as f:
 
 for line in lines:
     print(line)
-    ax.plot(line[1],line[2],label=line[0])
+    ax.plot(line[1], line[2], label=line[0])
 
 ax.legend()
 plt.savefig('benchmarks.png')
+
+fig = plt.figure()
+ax = plt.subplot()
+ax.set_title("MPI Benchmark Bandwidths")
+ax.set_xlabel("Message Size (B)")
+ax.set_xscale("log")
+ax.set_ylabel("Time (s)")
+ax.set_yscale("log")
+for line in lines:
+    y = [i / j for i, j in zip(line[1], line[2])]
+    ax.plot(line[1], y, label=line[0])
+
+
+ax.legend()
+plt.savefig('benchmarks2.png')
+
+fig = plt.figure()
+ax = plt.subplot()
+ax.set_title("MPI Benchmark Bandwidths")
+ax.set_xlabel("Message Size (B)")
+ax.set_xscale("log")
+ax.set_ylabel("Time (s)")
+ax.set_yscale("log")
+for line in lines:
+    y = [i / j for i, j in zip(line[1], line[2])]
+    z = polyfit(line[1], y, 1)
+    x = list(range(10, 10000000, 500))
+    print(line[0], z)
+    ax.plot(x, [i * z[0] + z[1] for i in x], label=line[0] + "_fit")
+
+ax.legend()
+plt.savefig('benchmarks3.png')
