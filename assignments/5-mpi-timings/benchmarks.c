@@ -237,7 +237,7 @@ int main(int argc, char **argv)
       // (HINT: look up the proper usage of MPI_IN_PLACE)
       double tic = -1;
       char* tmp_buffer;
-      tmp_buffer = (char *)calloc(totalNumBytes, sizeof(char));
+      tmp_buffer = (char *)calloc(totalNumBytes, sizeof(char));  // is this the best way???
       if (!tmp_buffer)
         return 1;
       for (int t = 0; t < numTests + numSkip; t++)
@@ -302,23 +302,11 @@ int main(int argc, char **argv)
           err = startTime(&tic);
           MPI_CHK(err);
         }
-        if (rank == 0)
-        {
-          // MPI_Scatter(
-          //     void *send_data,
-          //     int send_count,
-          //     MPI_Datatype send_datatype,
-          //     void *recv_data,
-          //     int recv_count,
-          //     MPI_Datatype recv_datatype,
-          //     int root,
-          //     MPI_Comm communicator)
 
-          // err = MPI_Scatter(buffer, numBytes * numComm, MPI_BYTE, buffer2, numBytes, MPI_CHAR, 0, subComm);
-          // MPI_CHK(err);
-          // err = MPI_Gather(MPI_IN_PLACE, buffer, numBytes, MPI_BYTE, MPI_BXOR, 0, subComm);
-          // MPI_CHK(err);
-        }
+        err = MPI_Scatter(buffer, numBytes, MPI_BYTE, buffer2, numBytes, MPI_BYTE, 0, subComm);
+        MPI_CHK(err);
+        err = MPI_Gather(buffer2, numBytes, MPI_BYTE, buffer, numBytes, MPI_BYTE, 0, subComm);
+        MPI_CHK(err);
       }
       err = stopTime(tic, &timeAvg);
       MPI_CHK(err);
@@ -345,10 +333,27 @@ int main(int argc, char **argv)
       double timeAvg = 0.;
       long long int totalNumBytes = numBytes * (numComm - 1) * 2;
 
-      // TODO: Set up a timing loop for the following:
+      // Set up a timing loop for the following:
       // Use the subComm communicator to BXOR the first `numBytes`
       // chars of `buffer` from every process and store the results in
       // `buffer` on all processes (HINT: MPI_IN_PLACE again).
+      double tic = -1;
+      for (int t = 0; t < numTests + numSkip; t++)
+      {
+        if (t == numSkip)
+        {
+          err = startTime(&tic);
+          MPI_CHK(err);
+        }
+
+        err = MPI_Allreduce(MPI_IN_PLACE, buffer, numBytes, MPI_BYTE, MPI_BXOR, subComm);
+        MPI_CHK(err);
+      }
+      err = stopTime(tic, &timeAvg);
+      MPI_CHK(err);
+      timeAvg /= numTests;
+      err = maxTime(subComm, timeAvg, &timeAvg);
+      MPI_CHK(err);
 
       MPI_LOG(rank, " %12d   %12d   %12lld   %+12.5e   %+12.5e\n", numComm, numBytes, totalNumBytes, timeAvg, totalNumBytes / timeAvg);
     }
@@ -370,11 +375,27 @@ int main(int argc, char **argv)
       double timeAvg = 0.;
       long long int totalNumBytes = numBytes * (numComm - 1) * numComm;
 
-      // TODO: Set up a timing loop for the following:
+      // Set up a timing loop for the following:
       // Use the subComm communicator to gather the first `numBytes`
       // bytes of `buffer2` from every process and store the results in
       // `buffer`.
+      double tic = -1;
+      for (int t = 0; t < numTests + numSkip; t++)
+      {
+        if (t == numSkip)
+        {
+          err = startTime(&tic);
+          MPI_CHK(err);
+        }
 
+        err = MPI_Allgather(buffer2, numBytes, MPI_BYTE, buffer, numBytes, MPI_BYTE, subComm);
+        MPI_CHK(err);
+      }
+      err = stopTime(tic, &timeAvg);
+      MPI_CHK(err);
+      timeAvg /= numTests;
+      err = maxTime(subComm, timeAvg, &timeAvg);
+      MPI_CHK(err);
       MPI_LOG(rank, " %12d   %12d   %12lld   %+12.5e   %+12.5e\n", numComm, numBytes, totalNumBytes, timeAvg, totalNumBytes / timeAvg);
     }
     err = destroyCommunicator(&subComm);
@@ -395,12 +416,28 @@ int main(int argc, char **argv)
       double timeAvg = 0.;
       long long int totalNumBytes = numBytes * ((numComm - 1) * (numComm - 1));
 
-      // TODO: Set up a timing loop for the following:
+      // Set up a timing loop for the following:
       // Use the subComm communicator to transpose the first
       // `numComm` * `numBytes` bytes of `buffer` from every process and
       // store the results in `buffer`.  This is another place where
       // MPI_IN_PLACE is relevant.
+      double tic = -1;
+      for (int t = 0; t < numTests + numSkip; t++)
+      {
+        if (t == numSkip)
+        {
+          err = startTime(&tic);
+          MPI_CHK(err);
+        }
 
+        err = MPI_Alltoall(MPI_IN_PLACE, numBytes, MPI_BYTE, buffer, numBytes, MPI_BYTE, subComm);
+        MPI_CHK(err);
+      }
+      err = stopTime(tic, &timeAvg);
+      MPI_CHK(err);
+      timeAvg /= numTests;
+      err = maxTime(subComm, timeAvg, &timeAvg);
+      MPI_CHK(err);
       MPI_LOG(rank, " %12d   %12d   %12lld   %+12.5e   %+12.5e\n", numComm, numBytes, totalNumBytes, timeAvg, totalNumBytes / timeAvg);
     }
     err = destroyCommunicator(&subComm);
