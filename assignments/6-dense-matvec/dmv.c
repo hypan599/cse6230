@@ -114,7 +114,7 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
   err = DMVCommGetRankCoordinates2D(args->comm, &numRows, &nBlock, &numCols, &mBlock);
   if (! rank){
     for (int i = 0; i <= size; i ++){
-      printf("Offset[i] is: (%d, %d)\n", rank, lOffsets[i], rOffsets[1]);
+      printf("Offset[%d] is: (%d, %d)\n", i, lOffsets[i], rOffsets[1]);
     }
   }
 
