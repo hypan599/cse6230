@@ -75,12 +75,14 @@ int DMVCommGetRankCoordinates2D(MPI_Comm comm, int *num_rows_p, int *row_p, int 
   /* TODO: HINT, lookup MPI_Dims_create() */
   int dims[2] = {0};
   err = MPI_Dims_create(size, 2, dims);
-  printf("call with size %d and dim 2 we get (%d, %d)on %d-th node\n", size, dims[0], dims[1], rank);
 
-  *num_cols_p = num_cols;
-  *num_rows_p = num_rows;
-  *col_p = col;
-  *row_p = row;
+  *num_cols_p = dims[1];
+  *num_rows_p = dims[0];
+
+  *col_p = rank / *num_cols_p;
+  *row_p = rank % *num_rows_p;
+
+  printf("Rows: %d, Cols: %d. The %d-th node have (r, c): (%d, %d)\n", *num_rows_p, *num_cols_p, rank, *row_p, *col_p);
   return 0;
 }
 
