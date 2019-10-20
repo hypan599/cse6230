@@ -82,7 +82,7 @@ int DMVCommGetRankCoordinates2D(MPI_Comm comm, int *num_rows_p, int *row_p, int 
   *col_p = rank / *num_rows_p;
   *row_p = rank % *num_rows_p;
 
-  printf("Rows: %d, Cols: %d. The %d-th node have (r, c): (%d, %d)\n", *num_rows_p, *num_cols_p, rank, *row_p, *col_p);
+  // printf("Rows: %d, Cols: %d. The %d-th node have (r, c): (%d, %d)\n", *num_rows_p, *num_cols_p, rank, *row_p, *col_p);
   return 0;
 }
 
@@ -109,7 +109,10 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
    * The block column j should contain the same columns as are in the right
    * vector for ranks (j * mBlock, j * mBlock + 1, ..., (j + 1) * mBlock - 1).
    */
-  err = DMVCommGetRankCoordinates2D(args->comm, &mStart, &mEnd, &nStart, &nEnd);
+  int numRows, numCols, row, col;
+  numRows = numCols = row = col = -1;
+  err = DMVCommGetRankCoordinates2D(args->comm, &numRows, &row, &numcol, &col);
+  print("I am %d-th node and my offset is: (%d, %d) .\n", rank, *loffsets, *roffsets);
   *mStart_p = mStart;
   *mEnd_p = mEnd;
   *nStart_p = mStart;
