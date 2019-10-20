@@ -107,7 +107,7 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
    * The block column j should contain the same columns as are in the right
    * vector for ranks (j * mBlock, j * mBlock + 1, ..., (j + 1) * mBlock - 1).
    */
-  err = DMVCommGetRankCoordinates2D(args - comm, &mStart, &mEnd, &nStart, &nEnd);
+  err = DMVCommGetRankCoordinates2D(args->comm, &mStart, &mEnd, &nStart, &nEnd);
   *mStart_p = mStart;
   *mEnd_p = mEnd;
   *nStart_p = mStart;
