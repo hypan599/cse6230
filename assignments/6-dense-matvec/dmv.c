@@ -82,7 +82,7 @@ int DMVCommGetRankCoordinates2D(MPI_Comm comm, int *num_rows_p, int *row_p, int 
   *col_p = rank / *num_rows_p;
   *row_p = rank % *num_rows_p;
 
-  // printf("Rows: %d, Cols: %d. The %d-th node have (r, c): (%d, %d)\n", *num_rows_p, *num_cols_p, rank, *row_p, *col_p);
+  printf("Rows: %d, Cols: %d. The %d-th node have (r, c): (%d, %d)\n", *num_rows_p, *num_cols_p, rank, *row_p, *col_p);
   return 0;
 }
 
