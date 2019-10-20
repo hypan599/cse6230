@@ -64,6 +64,7 @@ int DMVCommGetRankCoordinates2D(MPI_Comm comm, int *num_rows_p, int *row_p, int 
 {
   int num_cols, num_rows, col, row;
   num_cols = num_rows = col = row = -1;
+  int err;
 
   int size, rank;
   err = MPI_Comm_size(comm, &size);
