@@ -111,7 +111,7 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
    */
   int numRows, numCols, row, col;
   numRows = numCols = row = col = -1;
-  err = DMVCommGetRankCoordinates2D(args->comm, &numRows, &row, &numcol, &col);
+  err = DMVCommGetRankCoordinates2D(args->comm, &numRows, &row, &numCols, &col);
   printf("I am %d-th node and my offset is: (%d, %d) .\n", rank, *lOffsets, *rOffsets);
   *mStart_p = mStart;
   *mEnd_p = mEnd;
