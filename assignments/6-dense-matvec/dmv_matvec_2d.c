@@ -64,7 +64,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
     vecLeftLocal[r] += val;
   }
   */
- printf("mStart: %d, mEnd: %d, nStart: %d, nEnd: %d, lStart: %d, lEnd: %d, rStart: %d, rEnd: %d\n", mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
+ printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
 
 
 
