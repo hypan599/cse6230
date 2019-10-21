@@ -65,25 +65,24 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   // printf("Rank %d: step3 finish\n", rank);
 
   // step4
-  // // row major multiple
-  // int num_cols = mEnd - mStart;
-  // for (int r = 0; r < nEnd - nStart; r++){
-  //   double val = 0;
-  //   for (int c = 0; c < mEnd - mStart; c++){
-  //     val += matrixEntries[r * num_cols + c] * temp_vec_right[c];
-  //   }
-  //   vecLeft[r] = val;
-  // }
-  // col major multiple
   int num_cols = mEnd - mStart;
   int num_rows = nEnd - nStart;
-  for (int c = 0; c < num_cols; c++){
+  // // row major multiple
+  for (int r = 0; r < num_rows; r++){
     double val = 0;
-    for (int r = 0; r < num_rows; r++){
-      val += matrixEntries[c * num_rows + r] * temp_vec_right[r];
+    for (int c = 0; c < num_cols; c++){
+      val += matrixEntries[c * num_rows + r] * temp_vec_right[c];
     }
-    vecLeft[c] = val;
+    vecLeft[r] = val;
   }
+  // col major multiple
+  // for (int c = 0; c < num_cols; c++){
+  //   double val = 0;
+  //   for (int r = 0; r < num_rows; r++){
+  //     val += matrixEntries[c * num_rows + r] * temp_vec_right[r];
+  //   }
+  //   vecLeft[c] = val;
+  // }
 
 
   // printf("Rank %d: step4 finish\n", rank);
