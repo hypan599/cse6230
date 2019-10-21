@@ -33,9 +33,9 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
 
   // step3
   int colCommSize = 0;
-  int colCommRank = 0;
-  err = MPI_Comm_size(args->comm, &colCommSize); MPI_CHK(err);
-  err = MPI_Comm_rank(args->comm, &colCommRank); MPI_CHK(err);
+  int rowCommSize = 0;
+  err = MPI_Comm_size(colComm, &colCommSize); MPI_CHK(err);
+  err = MPI_Comm_size(rowComm, &rowCommSize); MPI_CHK(err);
 
   int nRightLocal = rEnd - rStart;
   double* temp_vec_right;
@@ -52,13 +52,13 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   if (!nOffsets) MPI_CHK(1);
 
   // Gather the counts for every process
-  err = MPI_Allgather(&nRightLocal, 1, MPI_INT, nLocals, 1, MPI_INT, &colComm); MPI_CHK(err);
+  err = MPI_Allgather(&nRightLocal, 1, MPI_INT, nLocals, 1, MPI_INT, colComm); MPI_CHK(err);
   // Turn the counts into the offsets
   nOffsets[0] = 0;
   for (int q = 0; q < colCommSize; q++) {
     nOffsets[q + 1] = nOffsets[q] + nLocals[q];
   }
-  err = MPI_Allgatherv(vecRightLocal, nRightLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, &colComm);
+  err = MPI_Allgatherv(vecRightLocal, nRightLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, colComm);
   MPI_CHK(err);
 
   // step4
@@ -72,7 +72,11 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   }
 
   // step5
-  err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, mEnd-mStart, MPI_DOUBLE, MPI_SUM, &rowComm); MPI_CHK(err);
+  int* mLocals;
+  mLocals = (int *) malloc(rowCommSize * sizeof(int));
+  if (!mLocals) MPI_CHK(1);
+  err = MPI_Allgather(&num_cols, 1, MPI_INT, mLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
+  err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, mLocals, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
 
   // final clean;
   err = MPI_Comm_free(&rowComm);MPI_CHK(err);
