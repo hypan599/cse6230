@@ -89,7 +89,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Comm_free(&colComm);MPI_CHK(err);
   free(nOffsets);
   free(nLocals);
-  free(mLocals);
+  free(rLocals);
 
   return 0;
 }
