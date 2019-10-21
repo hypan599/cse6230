@@ -112,6 +112,7 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
   int nBlocks, mBlocks, nBlock, mBlock;
   nBlocks = mBlocks = nBlock = mBlock = -1;
   err = DMVCommGetRankCoordinates2D(args->comm, &nBlocks, &nBlock, &mBlocks, &mBlock);
+  MPI_CHK(err);
 
   *mStart_p = rOffsets[mBlock * nBlocks];
   *mEnd_p = rOffsets[(mBlock + 1) * nBlocks];
