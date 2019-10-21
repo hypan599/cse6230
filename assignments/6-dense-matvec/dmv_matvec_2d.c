@@ -44,7 +44,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   temp_vec_right = (double *)malloc((mEnd - mStart) * sizeof(double));
   if (!temp_vec_right) MPI_CHK(1);
   double* vecLeft;
-  vecLeft = (double *) malloc((mEnd - mStart) * sizeof(double));
+  vecLeft = (double *) malloc((nEnd - nStart) * sizeof(double));
   if (!vecLeft) MPI_CHK(1);
   int* nLocals;
   nLocals = (int *) malloc(colCommSize * sizeof(int));
@@ -88,12 +88,15 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   // printf("Rank %d: step4 finish\n", rank);
 
   // step5
-  int* rLocals;
-  rLocals = (int *) malloc(rowCommSize * sizeof(int));
-  if (!rLocals) MPI_CHK(1);
-  int rLocal = rEnd - rStart;
-  err = MPI_Allgather(&rLocal, 1, MPI_INT, rLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
-  err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, rLocals, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
+  int* lLocals;
+  lLocals = (int *) malloc(rowCommSize * sizeof(int));
+  if (!lLocals) MPI_CHK(1);
+  // int lLocal = lEnd - lStart;
+  // err = MPI_Allgather(&lLocal, 1, MPI_INT, lLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
+  for (int i = 0; i < rowCommSize; i++){
+    llocals[i] = lEnd - lStart;
+  }
+  err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, lLocals, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
   // printf("Rank %d: step5 finish\n", rank);
 
   // final clean;
@@ -101,7 +104,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Comm_free(&colComm);MPI_CHK(err);
   free(nOffsets);
   free(nLocals);
-  free(rLocals);
+  free(lLocals);
 
   return 0;
 }
