@@ -75,14 +75,6 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
     }
     vecLeft[r] = val;
   }
-  // col major multiple
-  // for (int c = 0; c < num_cols; c++){
-  //   double val = 0;
-  //   for (int r = 0; r < num_rows; r++){
-  //     val += matrixEntries[c * num_rows + r] * temp_vec_right[r];
-  //   }
-  //   vecLeft[c] = val;
-  // }
 
 
   // printf("Rank %d: step4 finish\n", rank);
@@ -91,8 +83,6 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   int* lLocals;
   lLocals = (int *) malloc(rowCommSize * sizeof(int));
   if (!lLocals) MPI_CHK(1);
-  // int lLocal = lEnd - lStart;
-  // err = MPI_Allgather(&lLocal, 1, MPI_INT, lLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
   for (int i = 0; i < rowCommSize; i++){
     lLocals[i] = lEnd - lStart;
   }
