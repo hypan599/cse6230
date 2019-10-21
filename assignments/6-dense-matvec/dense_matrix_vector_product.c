@@ -34,7 +34,7 @@ int main (int argc, char **argv)
   int     mStart, mEnd, nStart, nEnd;
   int     rank, size;
   int     partitionType;
-  int     numTests = 10;
+  int     numTests = 1;  // TODO: change back to 10
   double *matrixEntries = NULL;
   double *vecRightLocal, *vecLeftLocal;
   double  time;
