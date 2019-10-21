@@ -72,7 +72,7 @@ int DMVCommGetRankCoordinates2D(MPI_Comm comm, int *num_rows_p, int *row_p, int 
   err = MPI_Comm_rank(comm, &rank);
   MPI_CHK(err);
 
-  /* TODO: HINT, lookup MPI_Dims_create() */
+  /* HINT, lookup MPI_Dims_create() */
   int dims[2] = {0};
   err = MPI_Dims_create(size, 2, dims);
 
@@ -102,7 +102,7 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
   MPI_CHK(err);
   err = MPI_Comm_rank(comm, &rank);
   MPI_CHK(err);
-  /* TODO: compute mStart, mEnd, nStart, and nEnd. HINT: use DMVCommGetRankCoordinates2D() to get the
+  /* compute mStart, mEnd, nStart, and nEnd. HINT: use DMVCommGetRankCoordinates2D() to get the
    * number of block columns and rows used to partition the matrix, mBlock and nBlock.
    * The block row i should contain the same rows as are in the left vector for
    * ranks (i * nBlock, i * nBlock + 1, ..., (i + 1) * nBlock - 1).
