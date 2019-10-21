@@ -66,7 +66,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   for (int r = 0; r < nEnd - nStart; r++){
     double val = 0;
     for (int c = 0; c < mEnd - mStart; c++){
-      val += matrixEntries[r * (mEnd - mStart) + c] * temp_vec_right[c];
+      val += matrixEntries[r * num_cols + c] * temp_vec_right[c];
     }
     vecLeft[r] = val;
   }
