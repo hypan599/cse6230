@@ -113,10 +113,10 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
   nBlocks = mBlocks = nBlock = mBlock = -1;
   err = DMVCommGetRankCoordinates2D(args->comm, &nBlocks, &nBlock, &mBlocks, &mBlock);
 
-  *mStart_p = rOffsets[mBlock * mBlocks];
-  *mEnd_p = rOffsets[(mBlock + 1) * mBlocks];
-  *nStart_p = lOffsets[nBlock * nBlocks];
-  *nEnd_p = lOffsets[(nBlock + 1) * nBlocks];
+  *mStart_p = rOffsets[mBlock * nBlocks];
+  *mEnd_p = rOffsets[(mBlock + 1) * nBlocks];
+  *nStart_p = lOffsets[nBlock * mBlocks];
+  *nEnd_p = lOffsets[(nBlock + 1) * mBlocks];
   printf("%d-th node: row (%d, %d), col (%d, %d)\n", rank, *nStart_p, *nEnd_p,*mStart_p,*mEnd_p);
   return 0;
 }
