@@ -23,6 +23,15 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   int numRows, row, numCols, col;
   numRows = num_cols = row = col = -1;
   err = DMVCommGetRankCoordinates2D(comm, &numRows, &row, &numCols, &col); MPI_CHK(err);
+
+  // step2
+  MPI_Comm colComm, rowComm;
+  err = MPI_Comm_split(comm, col, rank, &colComm); MPI_CHK(err);
+  err = MPI_Comm_split(comm, row, rank, &rowComm); MPI_CHK(err);
+
+  // step3
   
+
+
   return 0;
 }
