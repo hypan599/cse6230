@@ -94,7 +94,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   // int lLocal = lEnd - lStart;
   // err = MPI_Allgather(&lLocal, 1, MPI_INT, lLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
   for (int i = 0; i < rowCommSize; i++){
-    llocals[i] = lEnd - lStart;
+    lLocals[i] = lEnd - lStart;
   }
   err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, lLocals, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
   // printf("Rank %d: step5 finish\n", rank);
