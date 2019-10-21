@@ -20,18 +20,18 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
    * 5. Use MPI_Reduce_scatter() on the row communicator to sum all of the row contributions to vecLeftLocal.
    *      Look at DenseMatVec_ColPartition() in dmv_matvec_col.c for an example of use MPI_Reduce_scatter() in this wary, but adapt it to the row communicator.
    */
-  printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
+  // printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
   // step1
   int numRows, row, numCols, col;
   numRows = numCols = row = col = -1;
   err = DMVCommGetRankCoordinates2D(comm, &numRows, &row, &numCols, &col); MPI_CHK(err);
-  printf("Rank %d: step1 finish\n", rank);
+  // printf("Rank %d: step1 finish\n", rank);
 
   // step2
   MPI_Comm colComm, rowComm;
   err = MPI_Comm_split(comm, col, rank, &colComm); MPI_CHK(err);
   err = MPI_Comm_split(comm, row, rank, &rowComm); MPI_CHK(err);
-  printf("Rank %d: step2 finish\n", rank);
+  // printf("Rank %d: step2 finish\n", rank);
 
   // step3
   int colCommSize = 0;
@@ -62,7 +62,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   }
   err = MPI_Allgatherv(vecRightLocal, nRightLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, colComm);
   MPI_CHK(err);
-  printf("Rank %d: step3 finish\n", rank);
+  // printf("Rank %d: step3 finish\n", rank);
 
   // step4
   int num_cols = mEnd - mStart;
@@ -73,7 +73,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
     }
     vecLeft[r] = val;
   }
-  printf("Rank %d: step4 finish\n", rank);
+  // printf("Rank %d: step4 finish\n", rank);
 
   // step5
   int* rLocals;
@@ -82,7 +82,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   int rLocal = rEnd - rStart;
   err = MPI_Allgather(&rLocal, 1, MPI_INT, rLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
   err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, rLocals, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
-  printf("Rank %d: step5 finish\n", rank);
+  // printf("Rank %d: step5 finish\n", rank);
 
   // final clean;
   err = MPI_Comm_free(&rowComm);MPI_CHK(err);

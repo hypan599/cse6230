@@ -6,7 +6,7 @@ static int DenseMatVec_RowPartition_Ssend(Args args, int mStart, int mEnd, int n
   double      *recvBuf, *sendBuf;
   int         err, rank, size, nOffset = rStart, nLocal = rEnd - rStart, mLocal = lEnd - lStart, nGlobal = nEnd - nStart;
   int         nRecv;
-  printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
+  // printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
 
   err = MPI_Comm_size(args->comm, &size); MPI_CHK(err);
   err = MPI_Comm_rank(args->comm, &rank); MPI_CHK(err);
@@ -78,7 +78,7 @@ static int DenseMatVec_RowPartition_Issend(Args args, int mStart, int mEnd, int 
   int         *indices;
   int         err, rank, size, nGlobal = nEnd - nStart;
   int         nLocal = rEnd - rStart, mLocal = lEnd - lStart;
-  printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
+  // printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
 
   err = MPI_Comm_size(args->comm, &size); MPI_CHK(err);
   err = MPI_Comm_rank(args->comm, &rank); MPI_CHK(err);
@@ -143,7 +143,7 @@ static int DenseMatVec_RowPartition_Allgatherv(Args args, int mStart, int mEnd, 
   int         *nOffsets;
   int         err, rank, size, nGlobal = nEnd - nStart;
   int         nLocal = rEnd - rStart, mLocal = lEnd - lStart;
-  printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
+  // printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
   err = MPI_Comm_size(args->comm, &size); MPI_CHK(err);
   err = MPI_Comm_rank(args->comm, &rank); MPI_CHK(err);
 
