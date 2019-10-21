@@ -3,6 +3,7 @@
 
 int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEnd, const double *matrixEntries, int rStart, int rEnd, const double *vecRightLocal, int lStart, int lEnd, double *vecLeftLocal)
 {
+  printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
   MPI_Comm comm = args->comm;
   int      size, rank, err;
 
@@ -19,7 +20,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
    * 5. Use MPI_Reduce_scatter() on the row communicator to sum all of the row contributions to vecLeftLocal.
    *      Look at DenseMatVec_ColPartition() in dmv_matvec_col.c for an example of use MPI_Reduce_scatter() in this wary, but adapt it to the row communicator.
    */
-  /* HINT
+  
   // step1
   int numRows, row, numCols, col;
   numRows = num_cols = row = col = -1;
@@ -39,11 +40,13 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   int nRightLocal = rEnd - rStart;
   temp_vec_right = (double *)malloc((mEnd - mStart) * sizeof(double));
   if (!temp_vec_right) MPI_CHK(1);
-
+  vecLeft = (double *) malloc((mEnd - mStart) * sizeof(double));
+  if (!vecLeft) MPI_CHK(1);
   nLocals = (int *) malloc(colCommSize * sizeof(int));
   if (!nLocals) MPI_CHK(1);
   nOffsets = (int *) malloc((colCommSize + 1) * sizeof(int));
   if (!nOffsets) MPI_CHK(1);
+
   // Gather the counts for every process
   err = MPI_Allgather(&nRightLocal, 1, MPI_INT, nLocals, 1, MPI_INT, colComm); MPI_CHK(err);
   // Turn the counts into the offsets
@@ -61,14 +64,17 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
     for (int c = 0; c < mEnd - mStart; c++){
       val += matrixEntries[r * (mEnd - mStart) + c] * temp_vec_right[c];
     }
-    vecLeftLocal[r] += val;
+    vecLeft[r] = val;
   }
-  */
- printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
 
+  // step5
+  err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, mEnd-mStart, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
 
-
-
+  // final clean;
+  err = MPI_Comm_free(rowComm);MPI_CHK(err);
+  err = MPI_Comm_free(colComm);MPI_CHK(err);
+  free(nOffsets);
+  free(nLocals);
 
   return 0;
 }
