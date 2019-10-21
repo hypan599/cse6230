@@ -19,5 +19,10 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
    * 5. Use MPI_Reduce_scatter() on the row communicator to sum all of the row contributions to vecLeftLocal.
    *      Look at DenseMatVec_ColPartition() in dmv_matvec_col.c for an example of use MPI_Reduce_scatter() in this wary, but adapt it to the row communicator.
    */
+  // step1
+  int numRows, row, numCols, col;
+  numRows = num_cols = row = col = -1;
+  err = DMVCommGetRankCoordinates2D(comm, &numRows, &row, &numCols, &col); MPI_CHK(err);
+  
   return 0;
 }
