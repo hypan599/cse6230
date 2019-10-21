@@ -3,7 +3,7 @@
 
 int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEnd, const double *matrixEntries, int rStart, int rEnd, const double *vecRightLocal, int lStart, int lEnd, double *vecLeftLocal)
 {
-  printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
+  
   MPI_Comm comm = args->comm;
   int      size, rank, err;
 
@@ -20,10 +20,10 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
    * 5. Use MPI_Reduce_scatter() on the row communicator to sum all of the row contributions to vecLeftLocal.
    *      Look at DenseMatVec_ColPartition() in dmv_matvec_col.c for an example of use MPI_Reduce_scatter() in this wary, but adapt it to the row communicator.
    */
-  
+  printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n",rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
   // step1
   int numRows, row, numCols, col;
-  numRows = num_cols = row = col = -1;
+  numRows = numCols = row = col = -1;
   err = DMVCommGetRankCoordinates2D(comm, &numRows, &row, &numCols, &col); MPI_CHK(err);
 
   // step2
@@ -38,12 +38,16 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Comm_rank(args->comm, &colCommRank); MPI_CHK(err);
 
   int nRightLocal = rEnd - rStart;
+  double* temp_vec_right;
   temp_vec_right = (double *)malloc((mEnd - mStart) * sizeof(double));
   if (!temp_vec_right) MPI_CHK(1);
+  double* vecLeft;
   vecLeft = (double *) malloc((mEnd - mStart) * sizeof(double));
   if (!vecLeft) MPI_CHK(1);
+  int* nLocals;
   nLocals = (int *) malloc(colCommSize * sizeof(int));
   if (!nLocals) MPI_CHK(1);
+  int* nOffsets;
   nOffsets = (int *) malloc((colCommSize + 1) * sizeof(int));
   if (!nOffsets) MPI_CHK(1);
 
