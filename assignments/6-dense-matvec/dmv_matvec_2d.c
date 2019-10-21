@@ -76,11 +76,12 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   printf("Rank %d: step4 finish\n", rank);
 
   // step5
-  int* mLocals;
-  mLocals = (int *) malloc(rowCommSize * sizeof(int));
-  if (!mLocals) MPI_CHK(1);
-  err = MPI_Allgather(&num_cols, 1, MPI_INT, mLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
-  err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, mLocals, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
+  int* rLocals;
+  rLocals = (int *) malloc(rowCommSize * sizeof(int));
+  if (!rLocals) MPI_CHK(1);
+  int rLocal = rEnd - rStart;
+  err = MPI_Allgather(&rLocal, 1, MPI_INT, rLocals, 1, MPI_INT, rowComm); MPI_CHK(err);
+  err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, rLocals, MPI_DOUBLE, MPI_SUM, rowComm); MPI_CHK(err);
   printf("Rank %d: step5 finish\n", rank);
 
   // final clean;
