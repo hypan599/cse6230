@@ -54,7 +54,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   for (int q = 0; q < colCommSize; q++) {
     nOffsets[q + 1] = nOffsets[q] + nLocals[q];
   }
-  err = MPI_Allgatherv(vecRightLocal, nRightLocal, MPI_DOUBLE, temp_vec_right, nRightLocal, nOffsets, MPI_DOUBLE, colComm);
+  err = MPI_Allgatherv(vecRightLocal, nRightLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, colComm);
   MPI_CHK(err);
 
   // step4
