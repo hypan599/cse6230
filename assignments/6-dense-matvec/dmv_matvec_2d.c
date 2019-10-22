@@ -12,7 +12,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   MPI_CHK(err);
   err = MPI_Comm_rank(comm, &rank);
   MPI_CHK(err);
-  /* TODO: implement a matrix-vector multiplication on a 2d matrix partition */
+  /* implement a matrix-vector multiplication on a 2d matrix partition */
   /* HINT:
    * 1. Use DMVCommGetRankCoordinates2D() to get the coordinates of the current rank in a 2d grid of MPI processes.
    * 2. Use the coordinates as colorings to split the communicator into row and column communicators.
@@ -86,7 +86,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
     double val = 0;
     for (int c = 0; c < num_cols; c++)
     {
-      val += matrixEntries[r * num_rows + c] * temp_vec_right[c];
+      val += matrixEntries[r * num_cols + c] * temp_vec_right[c];
     }
     vecLeft[r] = val;
   }
