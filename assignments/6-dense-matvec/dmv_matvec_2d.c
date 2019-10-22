@@ -116,7 +116,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   MPI_CHK(err);
 
   err = MPI_Sendrecv(&vecLeft, lLocal, MPI_DOUBLE, buddy_to, 100,
-                     &vecLeftLocal, lLocal, MPI_DOUBLE, buddy_from, 100, comm, MPI_STATUS_IGNORE);
+                     &vecLeftLocal, lEnd - lStart, MPI_DOUBLE, buddy_from, 100, comm, MPI_STATUS_IGNORE);
   MPI_CHK(err);
 
   // final clean;
