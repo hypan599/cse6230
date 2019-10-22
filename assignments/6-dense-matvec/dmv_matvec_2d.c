@@ -115,9 +115,9 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Reduce_scatter(MPI_IN_PLACE, vecLeft, lLocals, MPI_DOUBLE, MPI_SUM, rowComm);
   MPI_CHK(err);
 
-  // printf("I am %d and lLocal: %d, lEnd-Start: %d\n", rank, lLocal, lEnd - lStart);
-  err = MPI_Sendrecv(vecLeft, lLocal, MPI_DOUBLE, buddy_to, 100,
-                     vecLeftLocal, lEnd - lStart, MPI_DOUBLE, buddy_from, 100, comm, MPI_STATUS_IGNORE);
+  printf("I am %d and lLocal: %d, lEnd-Start: %d\n", rank, lLocal, lEnd - lStart);
+  err = MPI_Sendrecv(vecLeft, lLocal, MPI_DOUBLE, buddy_from, 100,
+                     vecLeftLocal, lEnd - lStart, MPI_DOUBLE, buddy_to, 100, comm, MPI_STATUS_IGNORE);
   MPI_CHK(err);
 
   // final clean;
