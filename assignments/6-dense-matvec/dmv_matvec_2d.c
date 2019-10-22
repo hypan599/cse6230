@@ -1,5 +1,6 @@
 #include "dmv.h"
 #include "dmv_impl.h"
+#include "dmv_indices.h"
 
 int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEnd, const double *matrixEntries, int rStart, int rEnd, const double *vecRightLocal, int lStart, int lEnd, double *vecLeftLocal)
 {
@@ -98,6 +99,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   int lLocal = lEnd - lStart;
   err = MPI_Allgather(&lLocal, 1, MPI_INT, lLocals, 1, MPI_INT, rowComm);
   MPI_CHK(err);
+  printf("I am %d and my buddy is %d\n", rank, GetMyBuddyRank(numRows, numCols, row, col));
   // err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, lLocals, MPI_DOUBLE, MPI_SUM, rowComm);
   // MPI_CHK(err);
   // TODO: play with indices
