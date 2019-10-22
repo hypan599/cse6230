@@ -101,7 +101,6 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   int buddy_rank;
   buddy_rank = GetMyBuddyRank(numRows, numCols, row, col);
 
-  MPI_Status status;
   // printf("I am %d and my buddy is %d\n", rank, buddy_rank);
   // int MPI_Sendrecv(
   //   void *sendbuf,
@@ -118,8 +117,12 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   //   MPI_Status *status
   // );
   printf("I am %d and my left size is %d\n", rank, lLocal);
-  err = MPI_Sendrecv_replace(&lLocal, 1, MPI_INT, buddy_rank, 100, buddy_rank, 100, comm, &status);
+  err = MPI_Sendrecv_replace(&lLocal, 1, MPI_INT, buddy_rank, 100, buddy_rank, 100, comm, MPI_STATUS_IGNORE);
   MPI_CHK(err);
+
+  err = MPI_Sendrecv_replace(&lLocal, 1, MPI_INT, buddy_rank, 100, buddy_rank, 100, comm, MPI_STATUS_IGNORE);
+  MPI_CHK(err);
+  MPI_Barrier();
   printf("I am %d and my new left size is %d\n", rank, lLocal);
   // err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, lLocals, MPI_DOUBLE, MPI_SUM, rowComm);
   // MPI_CHK(err);
