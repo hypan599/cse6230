@@ -80,7 +80,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   vecLeft = (double *)malloc((nEnd - nStart) * sizeof(double));
   if (!vecLeft)
     MPI_CHK(1);
-  // // row major multiple
+  // row major multiple
   for (int r = 0; r < num_rows; r++)
   {
     double val = 0;
@@ -92,10 +92,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   }
 
   // step5
-  int *lLocals;
-  lLocals = (int *)malloc(rowCommSize * sizeof(int));
-  if (!lLocals)
-    MPI_CHK(1);
+
   int lLocal = lEnd - lStart;
   int buddy_to, buddy_from;
   buddy_to = GetMyBuddyToRank(numRows, numCols, row, col);
@@ -107,6 +104,10 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Sendrecv_replace(&lLocal, 1, MPI_INT, buddy_to, 100, buddy_from, 100, comm, MPI_STATUS_IGNORE);
   MPI_CHK(err);
 
+  int *lLocals;
+  lLocals = (int *)malloc(rowCommSize * sizeof(int));
+  if (!lLocals)
+    MPI_CHK(1);
   err = MPI_Allgather(&lLocal, 1, MPI_INT, lLocals, 1, MPI_INT, rowComm);
   MPI_CHK(err);
 
