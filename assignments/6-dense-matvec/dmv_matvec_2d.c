@@ -122,7 +122,6 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
 
   err = MPI_Sendrecv_replace(&lLocal, 1, MPI_INT, buddy_rank, 100, buddy_rank, 100, comm, MPI_STATUS_IGNORE);
   MPI_CHK(err);
-  MPI_Barrier();
   printf("I am %d and my new left size is %d\n", rank, lLocal);
   // err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, lLocals, MPI_DOUBLE, MPI_SUM, rowComm);
   // MPI_CHK(err);
