@@ -102,7 +102,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   buddy_to = GetMyBuddyToRank(numRows, numCols, row, col);
   buddy_from = GetMyBuddyFromRank(numRows, numCols, row, col);
 
-  printf("I am %d and my buddy is %d\n", rank, buddy_rank);
+  printf("I am %d and my buddy is from %d to %d\n", rank, buddy_from, buddy_to);
   // int MPI_Sendrecv(
   //   void *sendbuf,
   //   int sendcount,
