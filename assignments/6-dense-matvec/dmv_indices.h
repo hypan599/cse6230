@@ -1,8 +1,8 @@
-int GetMyBuddyFromRank(int numRows, int numCols, int row, int col)
+int GetMyBuddyToRank(int numRows, int numCols, int row, int col)
 {
     return row * numCols + col;
 }
-int GetMyBuddyToRank(int numRows, int numCols, int row, int col)
+int GetMyBuddyFromRank(int numRows, int numCols, int row, int col)
 {
     int curr_rank = col * numRows + row;
     int rrow, rcol;
