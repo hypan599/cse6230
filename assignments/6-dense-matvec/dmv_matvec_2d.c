@@ -77,7 +77,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Allgatherv(vecRightLocal, rLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, colComm);
   if (verbose)
   {
-    printf("I am %d-th. I gathered nLocals: ", rank);
+    printf("I am %d-th. I gathered rLocals: ", rank);
     for (int i = 0; i < numRows; i++)
     {
       printf("%d, ", nLocals[i]);
@@ -126,11 +126,20 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   }
 
   int *lLocals;
-  lLocals = (int *)malloc(rowCommSize * sizeof(int));
+  lLocals = (int *)malloc(numCols * sizeof(int));
   if (!lLocals)
     MPI_CHK(1);
   err = MPI_Allgather(&lLocal, 1, MPI_INT, lLocals, 1, MPI_INT, rowComm);
   MPI_CHK(err);
+  if (verbose)
+  {
+    printf("I am %d-th. I gathered lLocals: ", rank);
+    for (int i = 0; i < numCols; i++)
+    {
+      printf("%d, ", lLocals[i]);
+    }
+    printf("\n");
+  }
 
   // err = MPI_Reduce_scatter(vecLeft, vecLeftLocal, lLocals, MPI_DOUBLE, MPI_SUM, rowComm);
   // MPI_CHK(err);
