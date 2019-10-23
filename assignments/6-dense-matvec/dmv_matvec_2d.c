@@ -49,7 +49,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   // step3
   int nRightLocal = rEnd - rStart;
   double *temp_vec_right;
-  temp_vec_right = (double *)malloc((nEnd - nStart) * sizeof(double));
+  temp_vec_right = (double *)malloc((mEnd - mStart) * sizeof(double));
   if (!temp_vec_right)
     MPI_CHK(1);
 
