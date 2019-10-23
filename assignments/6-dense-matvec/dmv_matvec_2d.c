@@ -74,8 +74,12 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   MPI_CHK(err);
 
   // step4
-  int num_cols = mEnd - mStart;
-  int num_rows = nEnd - nStart;
+  // int num_cols = mEnd - mStart;
+  // int num_rows = nEnd - nStart;
+
+  int num_cols = nEnd - nStart;
+  int num_rows = mEnd - mStart;
+
   double *vecLeft; // local result
   vecLeft = (double *)malloc((nEnd - nStart) * sizeof(double));
   if (!vecLeft)
