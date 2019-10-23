@@ -77,7 +77,8 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Allgatherv(vecRightLocal, rLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, colComm);
   if (verbose)
   {
-    printf("I am %d-th. I gathered nLocals: ") for (i = 0; i < numRows; i++);
+    printf("I am %d-th. I gathered nLocals: ");
+    for (i = 0; i < numRows; i++)
     {
       printf("%d, ", nLocals[i]);
     }
