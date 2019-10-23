@@ -150,6 +150,10 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   err = MPI_Sendrecv(vecLeft, lLocal, MPI_DOUBLE, buddy_from, 100,
                      vecLeftLocal, lEnd - lStart, MPI_DOUBLE, buddy_to, 100, comm, MPI_STATUS_IGNORE);
   MPI_CHK(err);
+  if (verbose)
+  {
+    printf("I am %d and I send %d values to %d\n", rank, lLocal, buddy_from);
+  }
 
   // final clean;
   err = MPI_Comm_free(&rowComm);
