@@ -12,6 +12,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   MPI_CHK(err);
   err = MPI_Comm_rank(comm, &rank);
   MPI_CHK(err);
+  int verbose = args->verbose;
   /* implement a matrix-vector multiplication on a 2d matrix partition */
   /* HINT:
    * 1. Use DMVCommGetRankCoordinates2D() to get the coordinates of the current rank in a 2d grid of MPI processes.
@@ -24,7 +25,10 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
    *      Look at DenseMatVec_ColPartition() in dmv_matvec_col.c for an example of use MPI_Reduce_scatter() in this wary, but adapt it to the row communicator.
    */
   // printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n", rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
-  printf("%d-th node:\tm: %d\t, n: %d\t, l: %d\t, r: %d\n", rank, -mStart + mEnd, -nStart + nEnd, -lStart + lEnd, -rStart + rEnd);
+  if (verbose)
+  {
+    printf("%d-th node:\tm: %d\t, n: %d\t, l: %d\t, r: %d\n", rank, -mStart + mEnd, -nStart + nEnd, -lStart + lEnd, -rStart + rEnd);
+  }
   // step1
   int numRows, row, numCols, col;
   numRows = numCols = row = col = -1;
