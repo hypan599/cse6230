@@ -49,16 +49,16 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   // step3
   int nRightLocal = rEnd - rStart;
   double *temp_vec_right;
-  temp_vec_right = (double *)malloc((mEnd - mStart) * sizeof(double));
+  temp_vec_right = (double *)malloc((nEnd - nStart) * sizeof(double));
   if (!temp_vec_right)
     MPI_CHK(1);
 
   int *nLocals;
-  nLocals = (int *)malloc(colCommSize * sizeof(int));
+  nLocals = (int *)malloc(numRows * sizeof(int));
   if (!nLocals)
     MPI_CHK(1);
   int *nOffsets;
-  nOffsets = (int *)malloc((colCommSize + 1) * sizeof(int));
+  nOffsets = (int *)malloc((numRows + 1) * sizeof(int));
   if (!nOffsets)
     MPI_CHK(1);
   // Gather the counts for every process
@@ -66,7 +66,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   MPI_CHK(err);
   // Turn the counts into the offsets
   nOffsets[0] = 0;
-  for (int q = 0; q < colCommSize; q++)
+  for (int q = 0; q < numRows; q++)
   {
     nOffsets[q + 1] = nOffsets[q] + nLocals[q];
   }
