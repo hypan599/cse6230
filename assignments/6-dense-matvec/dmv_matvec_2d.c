@@ -115,11 +115,15 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   if (verbose)
   {
     printf("I am %d and my buddy is from %d to %d\n", rank, buddy_from, buddy_to);
+
+    printf("I am %d and my left size is %d\n", rank, lLocal);
   }
-  // printf("I am %d and my left size is %d\n", rank, lLocal);
-  // printf("I am %d and my new left size is %d\n", rank, lLocal);
   err = MPI_Sendrecv_replace(&lLocal, 1, MPI_INT, buddy_to, 100, buddy_from, 100, comm, MPI_STATUS_IGNORE);
   MPI_CHK(err);
+  if (verbose)
+  {
+    printf("I am %d and my new left size is %d\n", rank, lLocal);
+  }
 
   int *lLocals;
   lLocals = (int *)malloc(rowCommSize * sizeof(int));
