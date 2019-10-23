@@ -51,7 +51,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   MPI_CHK(err);
 
   // step3
-  int nRightLocal = rEnd - rStart;
+  int rLocal = rEnd - rStart;
   double *temp_vec_right;
   temp_vec_right = (double *)malloc((mEnd - mStart) * sizeof(double));
   if (!temp_vec_right)
@@ -66,7 +66,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   if (!nOffsets)
     MPI_CHK(1);
   // Gather the counts for every process
-  err = MPI_Allgather(&nRightLocal, 1, MPI_INT, nLocals, 1, MPI_INT, colComm);
+  err = MPI_Allgather(&rLocal, 1, MPI_INT, nLocals, 1, MPI_INT, colComm);
   MPI_CHK(err);
   // Turn the counts into the offsets
   nOffsets[0] = 0;
@@ -74,7 +74,15 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   {
     nOffsets[q + 1] = nOffsets[q] + nLocals[q];
   }
-  err = MPI_Allgatherv(vecRightLocal, nRightLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, colComm);
+  err = MPI_Allgatherv(vecRightLocal, rLocal, MPI_DOUBLE, temp_vec_right, nLocals, nOffsets, MPI_DOUBLE, colComm);
+  if (verbose)
+  {
+    printf("I am %d-th. I gathered nLocals: ") for (i = 0; i < numRows; i++)
+    {
+      printf("%d, ", nLocals[i]);
+    }
+    printf("\n")
+  }
   MPI_CHK(err);
 
   // step4
