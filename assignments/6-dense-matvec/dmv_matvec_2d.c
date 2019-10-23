@@ -24,13 +24,13 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
    *      Look at DenseMatVec_ColPartition() in dmv_matvec_col.c for an example of use MPI_Reduce_scatter() in this wary, but adapt it to the row communicator.
    */
   // printf("%d-th node:\tmStart: %d\t, mEnd: %d\t, nStart: %d\t, nEnd: %d\t, lStart: %d\t, lEnd: %d\t, rStart: %d\t, rEnd: %d\n", rank, mStart, mEnd, nStart, nEnd, lStart, lEnd, rStart, rEnd);
-  // printf("%d-th node:\tm: %d\t, n: %d\t, l: %d\t, r: %d\n", rank, -mStart + mEnd, -nStart + nEnd, -lStart + lEnd, -rStart + rEnd);
+  printf("%d-th node:\tm: %d\t, n: %d\t, l: %d\t, r: %d\n", rank, -mStart + mEnd, -nStart + nEnd, -lStart + lEnd, -rStart + rEnd);
   // step1
   int numRows, row, numCols, col;
   numRows = numCols = row = col = -1;
   err = DMVCommGetRankCoordinates2D(comm, &numRows, &row, &numCols, &col);
   MPI_CHK(err);
-  printf("Rank %d: r, c == (%d, %d) finish\n", rank, row, col);
+  // printf("Rank %d: r, c == (%d, %d) finish\n", rank, row, col);
 
   // step2
   MPI_Comm colComm, rowComm;
