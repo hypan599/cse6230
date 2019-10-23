@@ -119,7 +119,7 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
   *nStart_p = lOffsets[nBlock * mBlocks];
   *nEnd_p = lOffsets[(nBlock + 1) * mBlocks];
 
-  int verbose = args->verbose;
+  int verbose = args->verbosity;
   if (verbose)
   {
     printf("%d-th node: row (%d, %d), col (%d, %d)\n", rank, *nStart_p, *nEnd_p, *mStart_p, *mEnd_p);
