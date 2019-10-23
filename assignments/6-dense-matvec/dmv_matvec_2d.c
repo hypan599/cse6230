@@ -12,7 +12,9 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   MPI_CHK(err);
   err = MPI_Comm_rank(comm, &rank);
   MPI_CHK(err);
-  int verbose = args->verbosity;
+  int verbose = 0;
+  int print_mat = args->verbosity;
+  int print_rank = 0;
   /* implement a matrix-vector multiplication on a 2d matrix partition */
   /* HINT:
    * 1. Use DMVCommGetRankCoordinates2D() to get the coordinates of the current rank in a 2d grid of MPI processes.
@@ -29,7 +31,17 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   {
     printf("%d-th node:\tm: %d\t, n: %d\t, l: %d\t, r: %d\n", rank, -mStart + mEnd, -nStart + nEnd, -lStart + lEnd, -rStart + rEnd);
   }
-  // step1
+  if (print_mat) {
+    // if (rank == print_rank)
+    // {
+      printf("I am %d: ", rank);
+      for (int i = 0; i < (mEnd - mStart) * (nEnd - nStart)){
+        printf("%d, ", matrixEntries[i]);
+      }
+      printf("\n")
+    // }
+  }
+  // step1 
   int numRows, row, numCols, col;
   numRows = numCols = row = col = -1;
   err = DMVCommGetRankCoordinates2D(comm, &numRows, &row, &numCols, &col);
