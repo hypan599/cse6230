@@ -38,7 +38,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
       for (int i = 0; i < (mEnd - mStart) * (nEnd - nStart)){
         printf("%f, ", matrixEntries[i]);
       }
-      printf("\n")
+      printf("\n");
     // }
   }
   // step1 
