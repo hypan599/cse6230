@@ -30,7 +30,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   numRows = numCols = row = col = -1;
   err = DMVCommGetRankCoordinates2D(comm, &numRows, &row, &numCols, &col);
   MPI_CHK(err);
-  // printf("Rank %d: step1 finish\n", rank);
+  printf("Rank %d: r, c == (%d, %d) finish\n", rank, row, col);
 
   // step2
   MPI_Comm colComm, rowComm;
@@ -79,10 +79,6 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
 
   double *vecLeft; // local result
   vecLeft = (double *)malloc((nEnd - nStart) * sizeof(double));
-  for (int i = 0; i < nEnd - nStart; i++)
-  {
-    vecLeft[i] = 0;
-  }
   if (!vecLeft)
     MPI_CHK(1);
   // row major multiple
