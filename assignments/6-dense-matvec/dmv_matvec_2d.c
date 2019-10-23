@@ -108,25 +108,25 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   vecLeft = (double *)malloc((nEnd - nStart) * sizeof(double));
   if (!vecLeft)
     MPI_CHK(1);
-  // row major multiple
-  // for (int r = 0; r < num_rows; r++)
-  // {
-  //   double val = 0;
-  //   for (int c = 0; c < num_cols; c++)
-  //   {
-  //     val += matrixEntries[r * num_cols + c] * temp_vec_right[c];
-  //   }
-  //   vecLeft[r] = val;
-  // }
+  row major multiple
   for (int r = 0; r < num_rows; r++)
   {
     double val = 0;
     for (int c = 0; c < num_cols; c++)
     {
-      val += matrixEntries[c * num_rows + r] * temp_vec_right[c];
+      val += matrixEntries[r * num_cols + c] * temp_vec_right[c];
     }
     vecLeft[r] = val;
   }
+  // for (int r = 0; r < num_rows; r++)
+  // {
+  //   double val = 0;
+  //   for (int c = 0; c < num_cols; c++)
+  //   {
+  //     val += matrixEntries[c * num_rows + r] * temp_vec_right[c];
+  //   }
+  //   vecLeft[r] = val;
+  // }
 
   // step5
 
