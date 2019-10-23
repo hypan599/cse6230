@@ -78,7 +78,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   if (verbose)
   {
     printf("I am %d-th. I gathered nLocals: ");
-    for (i = 0; i < numRows; i++)
+    for (int i = 0; i < numRows; i++)
     {
       printf("%d, ", nLocals[i]);
     }
