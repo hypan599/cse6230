@@ -108,7 +108,7 @@ int DenseMatVec_2dPartition(Args args, int mStart, int mEnd, int nStart, int nEn
   vecLeft = (double *)malloc((nEnd - nStart) * sizeof(double));
   if (!vecLeft)
     MPI_CHK(1);
-  row major multiple
+  // row major multiple
   for (int r = 0; r < num_rows; r++)
   {
     double val = 0;
