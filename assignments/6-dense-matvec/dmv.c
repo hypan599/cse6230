@@ -111,18 +111,18 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
    */
   int nBlocks, mBlocks, nBlock, mBlock;
   nBlocks = mBlocks = nBlock = mBlock = -1;
-  err = DMVCommGetRankCoordinates2D(args->comm, &nBlocks, &nBlock, &mBlocks, &mBlock);
+  err = DMVCommGetRankCoordinates2D(args->comm, &mBlocks, &mBlock, &nBlocks, &nBlock);
   MPI_CHK(err);
 
-  *mStart_p = rOffsets[mBlock * nBlocks];
-  *mEnd_p = rOffsets[(mBlock + 1) * nBlocks];
-  *nStart_p = lOffsets[nBlock * mBlocks];
-  *nEnd_p = lOffsets[(nBlock + 1) * mBlocks];
+  *nStart_p = rOffsets[mBlock * nBlocks];
+  *nEnd_p = rOffsets[(mBlock + 1) * nBlocks];
+  *mStart_p = lOffsets[nBlock * mBlocks];
+  *mEnd_p = lOffsets[(nBlock + 1) * mBlocks];
 
   int verbose = args->verbosity;
   if (verbose)
   {
-    printf("%d-th node: row (%d, %d), col (%d, %d)\n", rank, *nStart_p, *nEnd_p, *mStart_p, *mEnd_p);
+    printf("%d-th node: row (%d, %d), col (%d, %d)\n", rank, *mStart_p, *mEnd_p, *nStart_p, *nEnd_p);
   }
   return 0;
 }
