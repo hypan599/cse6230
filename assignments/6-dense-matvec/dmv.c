@@ -109,15 +109,15 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
    * The block column j should contain the same columns as are in the right
    * vector for ranks (j * mBlock, j * mBlock + 1, ..., (j + 1) * mBlock - 1).
    */
-  int nBlocks, mBlocks, nBlock, mBlock;
-  nBlocks = mBlocks = nBlock = mBlock = -1;
-  err = DMVCommGetRankCoordinates2D(args->comm, &mBlocks, &mBlock, &nBlocks, &nBlock);
+  int numCols, numRows, myRow, myCol;
+  numCols = numRows = nBlock = mBlock = -1;
+  err = DMVCommGetRankCoordinates2D(args->comm, &numRows, &myRow, &numCols, &myCol);
   MPI_CHK(err);
 
-  *nStart_p = rOffsets[mBlock * nBlocks];
-  *nEnd_p = rOffsets[(mBlock + 1) * nBlocks];
-  *mStart_p = lOffsets[nBlock * mBlocks];
-  *mEnd_p = lOffsets[(nBlock + 1) * mBlocks];
+  *nStart_p = rOffsets[myCol * numRows];
+  *nEnd_p = rOffsets[(myCol + 1) * numRows];
+  *mStart_p = lOffsets[myRow * numCols];
+  *mEnd_p = lOffsets[(myRow + 1) * numCols];
 
   int verbose = args->verbosity;
   if (verbose)
