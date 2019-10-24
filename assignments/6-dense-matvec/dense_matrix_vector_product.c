@@ -38,8 +38,8 @@ int main(int argc, char **argv)
   int mStart, mEnd, nStart, nEnd;
   int rank, size;
   int partitionType;
-  int numTests = 1;
-  // int numTests = 10;
+  // int numTests = 1;
+  int numTests = 10;
   double *matrixEntries = NULL;
   double *vecRightLocal, *vecLeftLocal;
   double time;
