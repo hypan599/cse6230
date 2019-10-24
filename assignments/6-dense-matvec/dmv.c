@@ -110,7 +110,7 @@ int MatrixGetLocalRange2d(Args args, const int *lOffsets, const int *rOffsets, i
    * vector for ranks (j * mBlock, j * mBlock + 1, ..., (j + 1) * mBlock - 1).
    */
   int numCols, numRows, myRow, myCol;
-  numCols = numRows = nBlock = mBlock = -1;
+  numCols = numRows = myRow = myCol = -1;
   err = DMVCommGetRankCoordinates2D(args->comm, &numRows, &myRow, &numCols, &myCol);
   MPI_CHK(err);
 
