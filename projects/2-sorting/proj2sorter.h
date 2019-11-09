@@ -1,15 +1,17 @@
 #if !defined(PROJ2SORT_H)
-#define      PROJ2SORT_H
+#define PROJ2SORT_H
 
 #include "proj2.h"
 #include <mpi.h>
 
-enum {
-  PROJ2SORT_FORWARD  = 0,
+enum
+{
+  PROJ2SORT_FORWARD = 0,
   PROJ2SORT_BACKWARD = 1
 };
 
-enum {
+enum
+{
   PROJ2TAG_BITONIC,
   PROJ2TAG_QUICKSORT
 };
@@ -58,7 +60,7 @@ int Proj2SorterSort(Proj2Sorter sorter, size_t numKeysLocal, int uniform, uint64
  *                         PROJ2SORT_BACKWARD for descending.
  * \return                 Non-zero if an error occured.
  */
-int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction);
+int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction, int flag);
 
 /* Defined in bitonic.c */
 /* A parallel sort that works for power of 2 processes.

@@ -5,12 +5,28 @@
 #define SORT_TYPE uint64_t
 #include "swensonsort/sort.h"
 
-
 int Proj2SorterSortLocal_swenson_quick_sort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
 {
   proj2_swenson_quick_sort(keys, numKeysLocal);
-  if (direction == PROJ2SORT_BACKWARD) {
-    for (int i = 0; i < numKeysLocal / 2; i++) {
+  if (direction == PROJ2SORT_BACKWARD)
+  {
+    for (int i = 0; i < numKeysLocal / 2; i++)
+    {
+      uint64_t swap = keys[i];
+      keys[i] = keys[numKeysLocal - 1 - i];
+      keys[numKeysLocal - 1 - i] = swap;
+    }
+  }
+  return 0;
+}
+
+int Proj2SorterSortLocal_swenson_merge_sort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
+{
+  proj2_swenson_merge_sort(keys, numKeysLocal);
+  if (direction == PROJ2SORT_BACKWARD)
+  {
+    for (int i = 0; i < numKeysLocal / 2; i++)
+    {
       uint64_t swap = keys[i];
       keys[i] = keys[numKeysLocal - 1 - i];
       keys[numKeysLocal - 1 - i] = swap;
@@ -21,22 +37,29 @@ int Proj2SorterSortLocal_swenson_quick_sort(Proj2Sorter sorter, size_t numKeysLo
 
 int Proj2SorterSortLocal_qsort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
 {
-  if (direction == PROJ2SORT_FORWARD) {
+  if (direction == PROJ2SORT_FORWARD)
+  {
     qsort(keys, numKeysLocal, sizeof(*keys), uint64_comp_forward);
-  } else {
+  }
+  else
+  {
     qsort(keys, numKeysLocal, sizeof(*keys), uint64_comp_backward);
   }
   return 0;
 }
 
-int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
+int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction, int flag)
 {
   int err;
-
-#if 0
-  err = Proj2SorterSortLocal_qsort(sorter, numKeysLocal, keys, direction); PROJ2CHK(err);
-#else
-  err = Proj2SorterSortLocal_swenson_quick_sort(sorter, numKeysLocal, keys, direction); PROJ2CHK(err);
-#endif
+  if (flag)
+  {
+    err = Proj2SorterSortLocal_swenson_merge_sort(sorter, numKeysLocal, keys, direction);
+    PROJ2CHK(err);
+  }
+  else
+  {
+    err = Proj2SorterSortLocal_swenson_quick_sort(sorter, numKeysLocal, keys, direction);
+    PROJ2CHK(err);
+  }
   return 0;
 }
