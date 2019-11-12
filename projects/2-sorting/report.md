@@ -3,13 +3,13 @@
 ## Changes we (planning to) make:
 #### Qsort:
 
-[x] Use merge sort in each sort local
+- [x] Use merge sort in each sort local
 
-[ ] Remove redundant redistribution
+- [ ] Remove redundant redistribution
 
 #### Biotonic Sort:
 
-[ ] Remove unnecessary send/recv feedback
+- [ ] Remove unnecessary send/recv feedback
 
 #### General:
-[ ] Choose to use which sort wisely
+- [ ] Choose to use which sort wisely
