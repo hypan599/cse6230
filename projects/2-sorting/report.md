@@ -1,12 +1,15 @@
-### Project2 Report
+# Project2 Report
 
-Changes we (planning to) make:
-Qsort:
+## Changes we (planning to) make:
+#### Qsort:
+
 [x] Use merge sort in each sort local
+
 [ ] Remove redundant redistribution
 
-Biotonic Sort:
+#### Biotonic Sort:
+
 [ ] Remove unnecessary send/recv feedback
 
-General:
+#### General:
 [ ] Choose to use which sort wisely
