@@ -195,7 +195,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
   }
   err = MPI_Comm_split(comm, color, rank, &subcomm);
   PROJ2CHK(err);
-  err = Proj2SorterSort_quicksort_recursive(sorter, subcomm, numKeysLocalNew, keysNew, numkeysFinal, keysFinal);
+  err = Proj2SorterSort_quicksort_recursive(sorter, subcomm, numKeysLocalNew, keysNew, numKeysFinal, keysFinal);
   PROJ2CHK(err);
   err = MPI_Comm_free(&subcomm);
   PROJ2CHK(err);
@@ -357,9 +357,9 @@ int Proj2SorterSort_quicksort(Proj2Sorter sorter, size_t numKeysLocal, int unifo
   int err;
   // TODO: take advantage of uniform
   // initiate recursive call
-  size_t *numKeysFinal;
+  size_t numKeysFinal;
   uint64_t *keysFinal = NULL;
-  err = Proj2SorterSort_quicksort_recursive(sorter, sorter->comm, numKeysLocal, keys, numKeysFinal, keysFinal);
+  err = Proj2SorterSort_quicksort_recursive(sorter, sorter->comm, numKeysLocal, keys, &numKeysFinal, keysFinal);
   PROJ2CHK(err);
   err = Proj2SorterSort_quicksort_redistribute(sorter, sorter->comm, numKeysFinal, keysFinal, numKeysLocal, keys);
   PROJ2CHK(err);
