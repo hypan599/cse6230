@@ -37,7 +37,7 @@ int Proj2SorterSortLocal_swenson_merge_sort(Proj2Sorter sorter, size_t numKeysLo
 
 bool smaller_than(uint64_t a, uint64_t b, int direction)
 {
-  return direction ? (a > b) : (a < b);
+  return direction == PROJ2SORT_BACKWARD ? (a > b) : (a < b);
 }
 
 int Proj2SorterSortLocal_my_merge_sort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
