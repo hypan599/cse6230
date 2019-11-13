@@ -23,12 +23,27 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
     numCommsNeeded++;
     tmp >>= 1;
   }
-
   sorter->comms = (MPI_Comm *)malloc(numCommsNeeded * sizeof(MPI_Comm));
-  sorter->comms[0] = comm;
-  // while (numCommsNeeded > 0) {
+  // sorter->comms[0] = comm;
+  MPI_Comm comm1, comm2;
+  comm1 = comm;
 
-  // }
+  int depth = 0, color;
+  do
+  {
+    sorter->comms[depth++] = comm1;
+    err = MPI_Comm_rank(comm1, &rank);
+    MPI_CHK(err);
+    color = (rank >= (size / 2));
+    err = MPI_Comm_split(comm1, color, rank, &comm2);
+    PROJ2CHK(err);
+    err = MPI_Comm_size(comm2, &size);
+    MPI_CHK(err);
+    comm1 = comm2;
+  } while (size > 1);
+
+  // some checker
+  printf("I am rank %d and my depth is:%d".rank, depth);
 
   sorter->comm = comm;
 
