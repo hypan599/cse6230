@@ -35,6 +35,41 @@ int Proj2SorterSortLocal_swenson_merge_sort(Proj2Sorter sorter, size_t numKeysLo
   return 0;
 }
 
+bool smaller_than(uint64_t a, uint64_t b, int direction)
+{
+  return direction ? a > b : a < b;
+}
+
+int Proj2SorterSortLocal_my_merge_sort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
+{
+  int right = 0;
+  for (int i = 1; i < numKeysLocal; i++)
+  {
+    if (smaller_than(keys[i], keys[i - 1], direction))
+    {
+      right = i;
+      break;
+    }
+  }
+  int numSorted = 0, left = 0;
+  int tmp_result = (uint64_t *)malloc(sizeof(uint64_t) * numKeysLocal);
+  while (numSorted < numKeysLocal)
+  {
+    if (smaller_than(keys[left], keys[right], direction))
+    {
+      tmp_result[numSorted] = keys[left++];
+    }
+    else
+    {
+      tmp_result[numSorted] = keys[right++];
+    }
+    numSorted++;
+  }
+  memcpy(keys, tmp_result, numSorted * sizeof(*keys));
+  free(tmp_result);
+  return 0;
+}
+
 int Proj2SorterSortLocal_qsort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
 {
   if (direction == PROJ2SORT_FORWARD)
@@ -53,7 +88,7 @@ int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys
   int err;
   if (flag)
   {
-    err = Proj2SorterSortLocal_swenson_merge_sort(sorter, numKeysLocal, keys, direction);
+    err = Proj2SorterSortLocal_my_merge_sort(sorter, numKeysLocal, keys, direction);
     PROJ2CHK(err);
   }
   else
