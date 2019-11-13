@@ -350,6 +350,7 @@ int Proj2SorterSort_quicksort_redistribute(Proj2Sorter sorter, MPI_Comm comm,
   PROJ2CHK(err);
   err = Proj2SorterRestoreWorkArray(sorter, size + 1, sizeof(uint64_t), &oldOffsets);
   PROJ2CHK(err);
+  return 0;
 }
 
 int Proj2SorterSort_quicksort(Proj2Sorter sorter, size_t numKeysLocal, int uniform, uint64_t *keys)
