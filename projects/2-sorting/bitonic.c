@@ -34,6 +34,7 @@ static int uint64_swap_bitonic(Proj2Sorter sorter, size_t nkeys, uint64_t *keys,
   err = MPI_Isend(keys, nkeys, MPI_UINT64_T, comm_rank, PROJ2TAG_BITONIC, sorter->comm, &send_req);
   MPI_CHK(err);
   err = MPI_Wait(&recv_req, MPI_STATUS_IGNORE);
+  err = MPI_Wait(&send_req, MPI_STATUS_IGNORE);
   MPI_CHK(err);
   if ((rank < comm_rank) ^ direction)
   { /* take the lower half */
