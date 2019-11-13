@@ -48,7 +48,7 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
   // some checker
   err = MPI_Comm_rank(comm, &rank);
   MPI_CHK(err);
-  printf("I am rank %d and my depth is:%d\n", rank, depth);
+//   printf("I am rank %d and my depth is:%d\n", rank, depth);
 
   sorter->comm = comm;
 
