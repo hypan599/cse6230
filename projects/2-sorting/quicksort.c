@@ -60,7 +60,8 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
     // base case: nothing to do
     // at the end of recursive call, return keysFinal
     *numKeysFinal = numKeysLocal;
-
+    err = Proj2SorterGetWorkArray(sorter, numKeysLocal, sizeof(uint64_t), &keysFinal);
+    PROJ2CHK(err);
     memcpy(keysFinal, keys, numKeysLocal * sizeof(*keysFinal));
     return 0;
   }
@@ -360,8 +361,6 @@ int Proj2SorterSort_quicksort(Proj2Sorter sorter, size_t numKeysLocal, int unifo
   // initiate recursive call
   size_t numKeysFinal;
   uint64_t *keysFinal = NULL;
-  err = Proj2SorterGetWorkArray(sorter, numKeysLocal, sizeof(uint64_t), &keysFinal);
-  PROJ2CHK(err);
   err = Proj2SorterSort_quicksort_recursive(sorter, sorter->comm, numKeysLocal, keys, &numKeysFinal, keysFinal);
   PROJ2CHK(err);
   err = Proj2SorterSort_quicksort_redistribute(sorter, sorter->comm, numKeysLocal, keys, numKeysFinal, keysFinal);
