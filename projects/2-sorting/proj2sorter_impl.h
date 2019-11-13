@@ -1,5 +1,5 @@
 #if !defined(PROJ2SORTER_IMPL_H)
-#define      PROJ2SORTER_IMPL_H
+#define PROJ2SORTER_IMPL_H
 
 #include "proj2sorter.h"
 
@@ -14,9 +14,10 @@ struct _proj2memlink
 
 struct _proj2sorter
 {
-  MPI_Comm     comm;
+  MPI_Comm comm;
   Proj2MemLink avail;
   Proj2MemLink inUse;
+  MPI_Comm *comms;
 };
 
 /* A parallel sort implementation based on divide and conquer, by choosing a
