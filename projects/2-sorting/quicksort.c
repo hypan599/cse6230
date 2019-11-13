@@ -34,8 +34,8 @@ static int uint64_compare_pair(const void *key, const void *array)
 }
 
 static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm,
-                                               size_t numKeysLocal, size_t *numKeysLocalReturn,
-                                               uint64_t *keys, uint64_t *keysReturn)
+                                               size_t numKeysLocal, uint64_t *keys,
+                                               size_t *numKeysFinal, uint64_t *keysFinal)
 {
   uint64_t pivot = 0;
   uint64_t *lower_half, *upper_half;
@@ -57,7 +57,11 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
   PROJ2CHK(err);
   if (size == 1)
   {
-    /* base case: nothing to do */
+    // base case: nothing to do
+    // at the end of recursive call, return keysFinal
+    *numkeysFinal = numKeysLocal;
+
+    memcpy(keysFinal, keys, numKeysLocal * sizeof(*keysFinal));
     return 0;
   }
   err = ChoosePivot(sorter, comm, numKeysLocal, keys, &pivot);
@@ -145,7 +149,8 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
     }
   }
   if (size % 2)
-  { /* odd number of processes: size - 1 has been left out */
+  {
+    // odd number of processes: size - 1 has been left out
     MPI_Request sendreq;
     MPI_Status recvstatus;
 
@@ -190,14 +195,13 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
   }
   err = MPI_Comm_split(comm, color, rank, &subcomm);
   PROJ2CHK(err);
-  err = Proj2SorterSort_quicksort_recursive(sorter, subcomm, numKeysLocalNew, keysNew);
+  err = Proj2SorterSort_quicksort_recursive(sorter, subcomm, numKeysLocalNew, keysNew, numkeysFinal, keysFinal);
   PROJ2CHK(err);
   err = MPI_Comm_free(&subcomm);
   PROJ2CHK(err);
 
   err = Proj2SorterRestoreWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
   PROJ2CHK(err);
-  *numKeysLocalReturn = numKeysLocalNew;
 
   return 0;
 }
@@ -205,8 +209,8 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
 // Now the array is sorted, but we have to move it back to its original distribution
 // Only executed at end of recursive call
 int Proj2SorterSort_quicksort_redistribute(Proj2Sorter sorter, MPI_Comm comm,
-                                           size_t numKeysLocalOld, size_t numKeysLocalNew,
-                                           uint64_t *keys, uint64_t *keysNew)
+                                           size_t numKeysLocalOld, uint64_t *keysOld,
+                                           size_t numKeysLocalNew, uint64_t *keysNew)
 {
   uint64_t myOldCount = numKeysLocalOld;
   uint64_t myNewCount = numKeysLocalNew;
@@ -351,13 +355,16 @@ int Proj2SorterSort_quicksort_redistribute(Proj2Sorter sorter, MPI_Comm comm,
 int Proj2SorterSort_quicksort(Proj2Sorter sorter, size_t numKeysLocal, int uniform, uint64_t *keys)
 {
   int err;
-  // todo: take advantage of uniform
+  // TODO: take advantage of uniform
   // initiate recursive call
-  int *numKeysLocalNew;
-  unit64_t *keysNew = NULL;
-  err = Proj2SorterSort_quicksort_recursive(sorter, sorter->comm, numKeysLocal, keys);
+  int *numKeysFinal;
+  unit64_t *keysFinal = NULL;
+  err = Proj2SorterSort_quicksort_recursive(sorter, sorter->comm, numKeysLocal, keys, numKeysFinal, keysFinal);
   PROJ2CHK(err);
-  err = Proj2SorterSort_quicksort_redistribute(sorter, sorter->comm, numKeysLocal, keys);
+  err = Proj2SorterSort_quicksort_redistribute(sorter, sorter->comm, numKeysFinal, keysFinal, numKeysLocal, keys);
+  PROJ2CHK(err);
+  // memery allocated in revursive call, but free here
+  err = Proj2SorterRestoreWorkArray(sorter, numKeysFinal, sizeof(uint64_t), &keysFinal);
   PROJ2CHK(err);
 
   return 0;
