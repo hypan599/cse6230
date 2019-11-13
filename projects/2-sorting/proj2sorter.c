@@ -42,6 +42,8 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
     MPI_CHK(err);
     comm1 = comm2;
   } while (size > 1);
+  sorter->comms[depth++] = comm1;
+    
 
   // some checker
   err = MPI_Comm_rank(comm, &rank);

@@ -46,12 +46,13 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth, si
   MPI_Comm subcomm, comm;
   int err;
 
-  printf("Getting comm from with depth: %d", depth);
+  // printf("Getting comm from with depth: %d\n", depth);
   comm = sorter->comms[depth];
   err = MPI_Comm_size(comm, &size);
   PROJ2CHK(err);
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
+  // printf("I am %d/%d\n", rank, size);
   /* sort locally up front */
   err = Proj2SorterSortLocal(sorter, numKeysLocal, keys, PROJ2SORT_FORWARD);
   PROJ2CHK(err);
