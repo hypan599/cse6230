@@ -7,9 +7,11 @@
 
 - [ ] Remove redundant redistribution
 
+- [ ] Split comm before
+
 #### Biotonic Sort:
 
-- [ ] Remove unnecessary send/recv feedback
+- [ ] Change Ssend to Isend
 
 #### General:
 - [ ] Choose to use which sort wisely
