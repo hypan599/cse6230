@@ -46,6 +46,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth, si
   MPI_Comm subcomm, comm;
   int err;
 
+  printf("Getting comm from with depth: %d", depth);
   comm = sorter->comms[depth];
   err = MPI_Comm_size(comm, &size);
   PROJ2CHK(err);
