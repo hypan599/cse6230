@@ -52,7 +52,7 @@ int Proj2SorterSortLocal_my_merge_sort(Proj2Sorter sorter, size_t numKeysLocal, 
     }
   }
   int numSorted = 0, left = 0;
-  int tmp_result = (uint64_t *)malloc(sizeof(uint64_t) * numKeysLocal);
+  uint64_t *tmp_result = (uint64_t *)malloc(sizeof(uint64_t) * numKeysLocal);
   while (numSorted < numKeysLocal)
   {
     if (smaller_than(keys[left], keys[right], direction))
