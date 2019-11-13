@@ -8,7 +8,7 @@
 
 - [ ] Remove redundant redistribution
 
-- [ ] Split comm before
+- [x] Split comm before
 
 ### Biotonic Sort
 
