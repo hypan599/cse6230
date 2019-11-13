@@ -6,7 +6,9 @@
 int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
 {
   Proj2Sorter sorter = NULL;
-  int err, rank, size, numCommsNeeded = 0;
+  int err, rank, size, color;
+  int depth = 0, numCommsNeeded = 0;
+  MPI_Comm comm1 = comm, comm2; // tmp comms
 
   err = PROJ2MALLOC(1, &sorter);
   PROJ2CHK(err);
@@ -17,18 +19,16 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
   err = MPI_Comm_size(comm, &size);
   MPI_CHK(err);
 
-  int tmp = size;
-  while (tmp > 0)
+  while (size > 0)
   {
     numCommsNeeded++;
-    tmp >>= 1;
+    size >>= 1;
   }
   sorter->comms = (MPI_Comm *)malloc(numCommsNeeded * sizeof(MPI_Comm));
-  // sorter->comms[0] = comm;
-  MPI_Comm comm1, comm2;
-  comm1 = comm;
 
-  int depth = 0, color;
+  //
+  err = MPI_Comm_size(comm, &size);
+  MPI_CHK(err);
   do
   {
     sorter->comms[depth++] = comm1;
@@ -43,7 +43,9 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
   } while (size > 1);
 
   // some checker
-  printf("I am rank %d and my depth is:%d".rank, depth);
+  err = MPI_Comm_rank(comm, &rank);
+  MPI_CHK(err);
+  printf("I am rank %d and my depth is:%d", rank, depth);
 
   sorter->comm = comm;
 
