@@ -8,16 +8,12 @@
 
 - [ ] Remove redundant redistribution
 
+- [ ] Split comm before
+
 ### Biotonic Sort
 
-- [ ] Remove unnecessary send/recv feedback
+- [x] Change Ssend to Isend (talk about protocals and which fits this problem)
 
 ### General
 
-- [ ] Choose to use which sort wisely
-
-## Different cases
-
-- uniform distribution
-- uniform size
-- partially sorted: can save one sort local
+- [ ] Choose to use which sort wisely (there may be sweet spots for bitonicsort)
