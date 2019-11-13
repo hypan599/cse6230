@@ -4,6 +4,7 @@
 #define SORT_NAME proj2_swenson
 #define SORT_TYPE uint64_t
 #include "swensonsort/sort.h"
+#include <stdbool.h>
 
 int Proj2SorterSortLocal_swenson_quick_sort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
 {
