@@ -46,7 +46,18 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
   // some checker
   err = MPI_Comm_rank(comm, &rank);
   MPI_CHK(err);
-  printf("I am rank %d and my depth is:%d\n", rank, depth);
+  if (!rank)
+  {
+    int tmp_rank, tmp_size;
+    for (int i = 0; i < depth; i++)
+    {
+      err = MPI_Comm_rank(sorter->comms[i], &tmp_rank);
+      MPI_CHK(err);
+      err = MPI_Comm_size(sorter->comms[i], &tmp_size);
+      MPI_CHK(err);
+      printf("I am %d/%d\n", tmp_rank, tmp_size);
+    }
+  }
 
   sorter->comm = comm;
 
