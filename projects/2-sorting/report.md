@@ -4,11 +4,11 @@
 
 ### Qsort
 
-- [x] Use merge sort in each sort local
+- [x] Use merge sort in each sort local (done)
 
-- [ ] Remove redundant redistribution
+- [x] Remove redundant redistribution (done)
 
-- [x] Split comm before
+- [x] Split comm before (need to check)
 
 ### Biotonic Sort
 
@@ -17,3 +17,16 @@
 ### General
 
 - [ ] Choose to use which sort wisely (there may be sweet spots for bitonicsort)
+
+## Results
+
+| Uniform Size | Uniform Distribution | Partially Sorted | #Keys | Bandwidth(/1e9) |
+|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | 0 |
+| 1 | 0 | 0 | 0 | 0 |
+| 0 | 1 | 0 | 0 | 0 |
+| 0 | 0 | 1 | 0 | 0 |
+| 1 | 1 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 0 | 0 |
+| 1 | 0 | 1 | 0 | 0 |
+| 1 | 1 | 1 | 0 | 0 |
