@@ -4,6 +4,7 @@
 #define SORT_NAME proj2_swenson
 #define SORT_TYPE uint64_t
 #include "swensonsort/sort.h"
+#include <inttypes.h>
 
 int Proj2SorterSortLocal_swenson_quick_sort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
 {
@@ -109,7 +110,7 @@ int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys
     printf("On rank 0: Before local sort:\n");
     for (i = 0; i < numKeysLocal; i++)
     {
-      printf("%lld ", keys[i]);
+      printf("%" PRIu64 " ", keys[i]);
     }
     printf("\n");
   }
@@ -130,7 +131,7 @@ int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys
     printf("On rank 0: After local sort:\n");
     for (i = 0; i < numKeysLocal; i++)
     {
-      printf("%lld ", keys[i]);
+      printf("%" PRIu64 " ", keys[i]);
     }
     printf("\n");
   }
