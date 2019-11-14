@@ -107,7 +107,7 @@ int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys
   PROJ2CHK(err);
   if (!rank)
   {
-    printf("On rank 0: Before local sort:\n");
+    printf("At depth: %d, On rank 0: Before local sort:\n", flag);
     for (i = 0; i < numKeysLocal; i++)
     {
       printf("%" PRIu64 " ", keys[i]);
@@ -128,7 +128,7 @@ int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys
 
   if (!rank)
   {
-    printf("On rank 0: After local sort:\n");
+    printf("At depth: %d, On rank 0: After local sort:\n", flag);
     for (i = 0; i < numKeysLocal; i++)
     {
       printf("%" PRIu64 " ", keys[i]);
