@@ -35,7 +35,7 @@ static int uint64_compare_pair(const void *key, const void *array)
 
 static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm,
                                                size_t numKeysLocal, uint64_t *keys,
-                                               size_t *numKeysFinal, uint64_t *keysFinal)
+                                               size_t *numKeysFinal, uint64_t **keysFinal)
 {
   uint64_t pivot = 0;
   uint64_t *lower_half, *upper_half;
@@ -60,9 +60,9 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
     // base case: nothing to do
     // at the end of recursive call, return keysFinal
     *numKeysFinal = numKeysLocal;
-    err = Proj2SorterGetWorkArray(sorter, numKeysLocal, sizeof(uint64_t), &keysFinal);
+    err = Proj2SorterGetWorkArray(sorter, numKeysLocal, sizeof(uint64_t), *keysFinal);
     PROJ2CHK(err);
-    memcpy(keysFinal, keys, numKeysLocal * sizeof(*keysFinal));
+    memcpy(*keysFinal, keys, numKeysLocal * sizeof(*keys));
     return 0;
   }
   err = ChoosePivot(sorter, comm, numKeysLocal, keys, &pivot);
