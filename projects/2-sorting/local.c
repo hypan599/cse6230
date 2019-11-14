@@ -90,6 +90,21 @@ int Proj2SorterSortLocal_qsort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t
 int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction, int flag)
 {
   int err;
+
+  MPI_Comm comm = sorter->comm;
+  int rank, i;
+  err = MPI_Comm_rank(comm, &rank);
+  PROJ2CHK(err);
+  if (!rank)
+  {
+    printf("On rank 0: Before local sort:\n");
+    for (i = 0; i < numKeysLocal; i++)
+    {
+      printf("%d ", keys[i]);
+    }
+    printf("\n");
+  }
+
   if (flag > 0)
   {
     err = Proj2SorterSortLocal_my_merge_sort(sorter, numKeysLocal, keys, direction);
@@ -100,5 +115,16 @@ int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys
     err = Proj2SorterSortLocal_swenson_quick_sort(sorter, numKeysLocal, keys, direction);
     PROJ2CHK(err);
   }
+
+  if (!rank)
+  {
+    printf("On rank 0: After local sort:\n");
+    for (i = 0; i < numKeysLocal; i++)
+    {
+      printf("%d ", keys[i]);
+    }
+    printf("\n");
+  }
+
   return 0;
 }
