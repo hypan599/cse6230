@@ -41,8 +41,22 @@ int smaller_than(uint64_t a, uint64_t b, int direction)
   return direction == PROJ2SORT_BACKWARD ? (a > b ? 1 : 0) : (a < b ? 1 : 0);
 }
 
-int Proj2SorterSortLocal_my_merge_sort(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
+int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
 {
+  MPI_Comm comm = sorter->comm;
+  int rank, i;
+  err = MPI_Comm_rank(comm, &rank);
+  PROJ2CHK(err);
+  if (!rank)
+  {
+    printf("At depth: %d, On rank 0: Before local sort:\n", flag);
+    for (i = 0; i < numKeysLocal; i++)
+    {
+      printf("%" PRIu64 " ", keys[i]);
+    }
+    printf("\n");
+  }
+
   int right = 0;
   for (int i = 1; i < numKeysLocal; i++)
   {
@@ -54,9 +68,8 @@ int Proj2SorterSortLocal_my_merge_sort(Proj2Sorter sorter, size_t numKeysLocal, 
   }
   int right_save = right;
   if (right == 0)
-  {
     return 0;
-  }
+  print("Left: %d, Right: %d", left, right);
   int numSorted = 0, left = 0;
   uint64_t *tmp_result = (uint64_t *)malloc(sizeof(uint64_t) * numKeysLocal);
   while (numSorted < numKeysLocal)
@@ -81,6 +94,17 @@ int Proj2SorterSortLocal_my_merge_sort(Proj2Sorter sorter, size_t numKeysLocal, 
   }
   memcpy(keys, tmp_result, numKeysLocal * sizeof(uint64_t));
   free(tmp_result);
+
+  if (!rank)
+  {
+    printf("At depth: %d, On rank 0: After local sort:\n", flag);
+    for (i = 0; i < numKeysLocal; i++)
+    {
+      printf("%" PRIu64 " ", keys[i]);
+    }
+    printf("\n");
+  }
+
   return 0;
 }
 
@@ -101,39 +125,15 @@ int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys
 {
   int err;
 
-  MPI_Comm comm = sorter->comm;
-  int rank, i;
-  err = MPI_Comm_rank(comm, &rank);
-  PROJ2CHK(err);
-  if (!rank)
-  {
-    printf("At depth: %d, On rank 0: Before local sort:\n", flag);
-    for (i = 0; i < numKeysLocal; i++)
-    {
-      printf("%" PRIu64 " ", keys[i]);
-    }
-    printf("\n");
-  }
-
   if (flag > 0)
   {
-    err = Proj2SorterSortLocal_my_merge_sort(sorter, numKeysLocal, keys, direction);
+    err = Proj2SorterSortLocal_my_merge(sorter, numKeysLocal, keys, direction);
     PROJ2CHK(err);
   }
   else
   {
     err = Proj2SorterSortLocal_swenson_quick_sort(sorter, numKeysLocal, keys, direction);
     PROJ2CHK(err);
-  }
-
-  if (!rank)
-  {
-    printf("At depth: %d, On rank 0: After local sort:\n", flag);
-    for (i = 0; i < numKeysLocal; i++)
-    {
-      printf("%" PRIu64 " ", keys[i]);
-    }
-    printf("\n");
   }
 
   return 0;
