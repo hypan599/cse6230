@@ -8,7 +8,7 @@
 static int uint64_swap_bitonic(Proj2Sorter sorter, size_t nkeys, uint64_t *keys, int start, int end, int rank, int direction)
 {
   uint64_t *recv;
-  MPI_Request recv_req;
+  MPI_Request recv_req, send_req;
   int comm_rank;
   int err;
   int diff = end - start;
@@ -31,9 +31,10 @@ static int uint64_swap_bitonic(Proj2Sorter sorter, size_t nkeys, uint64_t *keys,
   PROJ2CHK(err);
   err = MPI_Irecv(recv, nkeys, MPI_UINT64_T, comm_rank, PROJ2TAG_BITONIC, sorter->comm, &recv_req);
   MPI_CHK(err);
-  err = MPI_Ssend(keys, nkeys, MPI_UINT64_T, comm_rank, PROJ2TAG_BITONIC, sorter->comm);
+  err = MPI_Isend(keys, nkeys, MPI_UINT64_T, comm_rank, PROJ2TAG_BITONIC, sorter->comm, &send_req);
   MPI_CHK(err);
   err = MPI_Wait(&recv_req, MPI_STATUS_IGNORE);
+  err = MPI_Wait(&send_req, MPI_STATUS_IGNORE);
   MPI_CHK(err);
   if ((rank < comm_rank) ^ direction)
   { /* take the lower half */
