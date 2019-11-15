@@ -41,87 +41,64 @@ int smaller_than(uint64_t a, uint64_t b, int direction)
   return direction == PROJ2SORT_BACKWARD ? (a > b ? 1 : 0) : (a < b ? 1 : 0);
 }
 
-int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction)
+int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
+                                  size_t numKeysIn, uint64_t *keysIn,
+                                  size_t numKeysIn2, uint64_t *keysOut,
+                                  int direction)
 {
   MPI_Comm comm = sorter->comm;
   int rank, i, err;
   int print_rank = 1;
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
-  if (rank == print_rank)
+  // if (!rank)
+  // {
+  //   printf("At depth: %d, On rank 0: Before local sort:\n", flag);
+  //   for (i = 0; i < numKeysLocal; i++)
+  //   {
+  //     printf("%" PRIu64 " ", keys[i]);
+  //   }
+  //   printf("\n");
+  // }
+
+  // One portion of the input is in keysIn at  0:numKeysIn
+  // The other portion of the input is in keysOut at numKeysIn2:numKeysOut
+
+  int numSorted = 0, left = 0, right = 0;
+  while (numSorted < numKeysIn + numKeysIn2)
   {
-    printf("On rank 0: Before local sort:\n");
-    for (i = 0; i < numKeysLocal; i++)
+    if (left == numKeysIn)
     {
-      printf("%" PRIu64 " ", keys[i]);
+      keysOut[numSorted] = keysOut[right + numKeysIn];
+      right++;
     }
-    printf("\n");
-  }
-  int right = 0, numSorted = 0, left = 0;
-  for (int i = 1; i < numKeysLocal; i++)
-  {
-    if (smaller_than(keys[i], keys[i - 1], direction) > 0)
+    else if (right == numKeysIn2)
     {
-      right = i;
-      break;
+      keysOut[numSorted] = keys[left];
+      left++;
     }
-  }
-//   right ++;
-  int right_save = right;
-  if (right == 0)
-    return 0;
-  if (rank == print_rank) {
-      printf("Left: %d, Right: %d, Total: %d\n", left, right, (int)numKeysLocal);
-  }
-  uint64_t *tmp_result = (uint64_t *)malloc(sizeof(uint64_t) * numKeysLocal);
-  while (numSorted < numKeysLocal)
-  {
-    if (left == right_save)
+    else if (smaller_than(keysIn[left], keysOut[right + numKeysIn], direction) > 0)
     {
-      tmp_result[numSorted] = keys[right++];
-          if (rank == print_rank) {
-              printf("r");
-          }
-    }
-    else if (right == numKeysLocal)
-    {
-      tmp_result[numSorted] = keys[left++];
-          if (rank == print_rank) {
-              printf("l");
-          }
-    }
-    else if (smaller_than(keys[left], keys[right], direction) > 0)
-    {
-      tmp_result[numSorted] = keys[left++];
-          if (rank == print_rank) {
-              printf("l");
-          }
+      keysOut[numSorted] = keys[left];
+      left++;
     }
     else
     {
-      tmp_result[numSorted] = keys[right++];
-          if (rank == print_rank) {
-              printf("r");
-          }
+      keysOut[numSorted] = keysOut[right + numKeysIn];
+      right++;
     }
     numSorted++;
   }
-  if (rank == print_rank) {
-      printf("\n");
-  }
-  
-  memcpy(keys, tmp_result, numKeysLocal * sizeof(uint64_t));
-  free(tmp_result);
 
-  if (rank == print_rank)
-  {
-    printf("On rank 0: After local sort:\n");
-    for (i = 0; i < numKeysLocal; i++)
-    {
-      printf("%" PRIu64 " ", keys[i]);
-    }
-    printf("\n");
-  }
+  // if (!rank)
+  // {
+  //   printf("At depth: %d, On rank 0: After local sort:\n", flag);
+  //   for (i = 0; i < numKeysLocal; i++)
+  //   {
+  //     printf("%" PRIu64 " ", keys[i]);
+  //   }
+  //   printf("\n");
+  // }
 
   return 0;
 }

@@ -50,9 +50,12 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
   PROJ2CHK(err);
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
-  /* sort locally up front */
-  err = Proj2SorterSortLocal(sorter, numKeysLocal, keys, PROJ2SORT_FORWARD, depth);
-  PROJ2CHK(err);
+  // sort locally up front, only at depth 0
+  if (!depth)
+  {
+    err = Proj2SorterSortLocal(sorter, numKeysLocal, keys, PROJ2SORT_FORWARD, depth);
+    PROJ2CHK(err);
+  }
   if (size == 1)
   {
     /* base case: nothing to do */
@@ -111,13 +114,17 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
       MPI_CHK(err);
       err = MPI_Get_count(&recvstatus, MPI_UINT64_T, &numIncoming);
       MPI_CHK(err);
-        // double the size of numIncoming
+      // double the size of numIncoming
       numKeysLocalNew = lower_size + numIncoming;
       err = Proj2SorterGetWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
       PROJ2CHK(err);
-      memcpy(keysNew, lower_half, lower_size * sizeof(*keysNew));
+      // memcpy(keysNew, lower_half, lower_size * sizeof(*keysNew));
       err = MPI_Recv(&keysNew[lower_size], numIncoming, MPI_UINT64_T, equivRank, PROJ2TAG_QUICKSORT, comm, MPI_STATUS_IGNORE);
       PROJ2CHK(err);
+      // local merge here, with keysNew and lower_half
+      err = Proj2SorterSortLocal_my_merge(sorter, lower_size, lower_half, numIncoming, keysNew, PROJ2SORT_FORWARD);
+      MPI_CHK(err);
+
       err = MPI_Wait(&sendreq, MPI_STATUS_IGNORE);
       MPI_CHK(err);
     }
@@ -134,9 +141,14 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
       numKeysLocalNew = numIncoming + upper_size;
       err = Proj2SorterGetWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
       PROJ2CHK(err);
-      memcpy(&keysNew[numIncoming], upper_half, upper_size * sizeof(*keysNew));
+      // memcpy(&keysNew[numIncoming], upper_half, upper_size * sizeof(*keysNew));
       err = MPI_Recv(keysNew, numIncoming, MPI_UINT64_T, equivRank, PROJ2TAG_QUICKSORT, comm, MPI_STATUS_IGNORE);
       PROJ2CHK(err);
+
+      // local merge with upper half and keysNew
+      err = Proj2SorterSortLocal_my_merge(sorter, upper_size, upper_half, numIncoming, keysNew, PROJ2SORT_FORWARD);
+      MPI_CHK(err);
+
       err = MPI_Wait(&sendreq, MPI_STATUS_IGNORE);
       MPI_CHK(err);
     }
@@ -162,10 +174,15 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
       numKeysLocalNewNew = numKeysLocalNew + numIncoming;
       err = Proj2SorterGetWorkArray(sorter, numKeysLocalNewNew, sizeof(uint64_t), &keysNewNew);
       PROJ2CHK(err);
-      memcpy(keysNewNew, keysNew, numKeysLocalNew * sizeof(*keysNewNew));
-      err = Proj2SorterRestoreWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
-      PROJ2CHK(err);
+      // memcpy(keysNewNew, keysNew, numKeysLocalNew * sizeof(*keysNewNew));
       err = MPI_Recv(&keysNewNew[numKeysLocalNew], numIncoming, MPI_UINT64_T, size - 1, PROJ2TAG_QUICKSORT, comm, MPI_STATUS_IGNORE);
+      PROJ2CHK(err);
+
+      // local merge with upper half and keysNew
+      err = Proj2SorterSortLocal_my_merge(sorter, numKeysLocalNew, keysNew, numIncoming, keysNewNew, PROJ2SORT_FORWARD);
+      MPI_CHK(err);
+
+      err = Proj2SorterRestoreWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
       PROJ2CHK(err);
       numKeysLocalNew = numKeysLocalNewNew;
       keysNew = keysNewNew;
@@ -173,6 +190,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
     else if (rank == (size - 1))
     {
       /* (size - 1) does not receive from anyone */
+      // this one doesn't receive anything, no need to merge
       err = MPI_Isend(lower_half, (int)lower_size, MPI_UINT64_T, (size / 2) - 1, PROJ2TAG_QUICKSORT, comm, &sendreq);
       MPI_CHK(err);
       numKeysLocalNew = upper_size;
