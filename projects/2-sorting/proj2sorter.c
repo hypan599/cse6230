@@ -20,11 +20,14 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
   err = MPI_Comm_size(comm, &size);
   MPI_CHK(err);
 
+  size--; // ceiling
   while (size > 0)
   {
     numCommsNeeded++;
     size >>= 1;
   }
+  numCommsNeeded++; // ceiling
+
   sorter->comms = (MPI_Comm *)malloc(numCommsNeeded * sizeof(MPI_Comm));
 
   //
