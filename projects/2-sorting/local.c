@@ -48,12 +48,12 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
 {
   MPI_Comm comm = sorter->comm;
   int rank, i, err;
-  int print_rank = 1;
+  int print_rank = 0;
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
-  // if (!rank)
+  // if (rank == printrank)
   // {
-  //   printf("At depth: %d, On rank 0: Before local sort:\n", flag);
+  //   printf("On rank %d: After local sort:\n", rank);
   //   for (i = 0; i < numKeysLocal; i++)
   //   {
   //     printf("%" PRIu64 " ", keys[i]);
@@ -90,15 +90,15 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
     numSorted++;
   }
 
-  // if (!rank)
-  // {
-  //   printf("At depth: %d, On rank 0: After local sort:\n", flag);
-  //   for (i = 0; i < numKeysLocal; i++)
-  //   {
-  //     printf("%" PRIu64 " ", keys[i]);
-  //   }
-  //   printf("\n");
-  // }
+  if (rank == printrank)
+  {
+    printf("On rank %d: After local sort:\n", rank);
+    for (i = 0; i < numKeysIn + numKeysIn2; i++)
+    {
+      printf("%" PRIu64 " ", keysOut[i]);
+    }
+    printf("\n");
+  }
 
   return 0;
 }
