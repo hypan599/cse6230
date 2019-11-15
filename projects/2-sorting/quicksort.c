@@ -105,7 +105,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth,
   }
 
   /* color the upper half to split the communicator */
-  color = (rank >= (size / 2));
+//   color = (rank >= (size / 2));
   equivRank = color ? (rank - (size / 2)) : (rank + (size / 2));
   if ((size % 2) == 0 || (rank != size - 1))
   {
