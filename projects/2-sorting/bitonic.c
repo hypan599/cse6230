@@ -68,7 +68,7 @@ static int uint64_sort_bitonic(Proj2Sorter sorter, size_t nkeys, uint64_t *keys,
   {
     if (!input_bitonic)
     {
-      err = Proj2SorterSortLocal(sorter, nkeys, keys, direction, 0);
+      err = Proj2SorterSortLocal(sorter, nkeys, keys, direction);
       PROJ2CHK(err);
     }
     else if (nkeys > 1)
