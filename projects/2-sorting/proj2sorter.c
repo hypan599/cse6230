@@ -165,7 +165,7 @@ int Proj2SorterSort(Proj2Sorter sorter, size_t numKeysLocal, int uniform, uint64
   PROJ2CHK(err);
   if (size == 1)
   {
-    err = Proj2SorterSortLocal(sorter, numKeysLocal, keys, PROJ2SORT_FORWARD, 0);
+    err = Proj2SorterSortLocal(sorter, numKeysLocal, keys, PROJ2SORT_FORWARD);
     PROJ2CHK(err);
   }
   else if (uniform && (1 << ((int)log2(size))) == size)
