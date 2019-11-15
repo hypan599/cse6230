@@ -8,3 +8,4 @@ hpctoolkit-*
 .DS_Store
 .vscode/*
 workspace/*
+*.hpcstruct
