@@ -20,11 +20,14 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
   err = MPI_Comm_size(comm, &size);
   MPI_CHK(err);
 
+  size--; // ceiling
   while (size > 0)
   {
     numCommsNeeded++;
     size >>= 1;
   }
+  numCommsNeeded++; // ceiling
+
   sorter->comms = (MPI_Comm *)malloc(numCommsNeeded * sizeof(MPI_Comm));
 
   //
@@ -46,20 +49,20 @@ int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
     
 
   // some checker
-  err = MPI_Comm_rank(comm, &rank);
-  MPI_CHK(err);
-  if (!rank)
-  {
-    int tmp_rank, tmp_size;
-    for (int i = 0; i < depth; i++)
-    {
-      err = MPI_Comm_rank(sorter->comms[i], &tmp_rank);
-      MPI_CHK(err);
-      err = MPI_Comm_size(sorter->comms[i], &tmp_size);
-      MPI_CHK(err);
-      printf("I am %d/%d\n", tmp_rank, tmp_size);
-    }
-  }
+  // err = MPI_Comm_rank(comm, &rank);
+  // MPI_CHK(err);
+  // if (!rank)
+  // {
+  //   int tmp_rank, tmp_size;
+  //   for (int i = 0; i < depth; i++)
+  //   {
+  //     err = MPI_Comm_rank(sorter->comms[i], &tmp_rank);
+  //     MPI_CHK(err);
+  //     err = MPI_Comm_size(sorter->comms[i], &tmp_size);
+  //     MPI_CHK(err);
+  //     printf("I am %d/%d\n", tmp_rank, tmp_size);
+  //   }
+  // }
 
   sorter->comm = comm;
 
