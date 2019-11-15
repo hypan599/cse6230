@@ -55,7 +55,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth, si
   // sort locally up front, only at depth 0
   if (!depth)
   {
-    err = Proj2SorterSortLocal(sorter, numKeysLocal, keys, PROJ2SORT_FORWARD, depth);
+    err = Proj2SorterSortLocal(sorter, numKeysLocal, keys, PROJ2SORT_FORWARD);
     PROJ2CHK(err);
   }
   if (size == 1)
@@ -203,11 +203,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth, si
       MPI_CHK(err);
     }
   }
-  err = MPI_Comm_split(comm, color, rank, &subcomm);
-  PROJ2CHK(err);
   err = Proj2SorterSort_quicksort_recursive(sorter, depth + 1, numKeysLocalNew, keysNew);
-  PROJ2CHK(err);
-  err = MPI_Comm_free(&subcomm);
   PROJ2CHK(err);
 
   /* Now the array is sorted, but we have to move it back to its original

@@ -60,7 +60,7 @@ int Proj2SorterSort(Proj2Sorter sorter, size_t numKeysLocal, int uniform, uint64
  *                         PROJ2SORT_BACKWARD for descending.
  * \return                 Non-zero if an error occured.
  */
-int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction, int flag);
+int Proj2SorterSortLocal(Proj2Sorter sorter, size_t numKeysLocal, uint64_t *keys, int direction);
 
 /* Defined in bitonic.c */
 /* A parallel sort that works for power of 2 processes.
