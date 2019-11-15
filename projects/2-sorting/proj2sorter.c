@@ -1,16 +1,67 @@
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 #include "proj2sorter.h"
 #include "proj2sorter_impl.h"
 
 int Proj2SorterCreate(MPI_Comm comm, Proj2Sorter *sorter_p)
 {
   Proj2Sorter sorter = NULL;
-  int err;
+  int err, rank, size, color;
+  int depth = 0, numCommsNeeded = 0;
+  MPI_Comm comm1 = comm, comm2; // tmp comms
 
   err = PROJ2MALLOC(1, &sorter);
   PROJ2CHK(err);
   memset(sorter, 0, sizeof(*sorter));
+
+  err = MPI_Comm_rank(comm, &rank);
+  MPI_CHK(err);
+  err = MPI_Comm_size(comm, &size);
+  MPI_CHK(err);
+
+  size--; // ceiling
+  while (size > 0)
+  {
+    numCommsNeeded++;
+    size >>= 1;
+  }
+  numCommsNeeded++; // ceiling
+
+  sorter->comms = (MPI_Comm *)malloc(numCommsNeeded * sizeof(MPI_Comm));
+
+  //
+  err = MPI_Comm_size(comm, &size);
+  MPI_CHK(err);
+  do
+  {
+    sorter->comms[depth++] = comm1;
+    err = MPI_Comm_rank(comm1, &rank);
+    MPI_CHK(err);
+    color = (rank >= (size / 2));
+    err = MPI_Comm_split(comm1, color, rank, &comm2);
+    PROJ2CHK(err);
+    err = MPI_Comm_size(comm2, &size);
+    MPI_CHK(err);
+    comm1 = comm2;
+  } while (size > 1);
+  sorter->comms[depth++] = comm1;
+
+  // some checker
+  // err = MPI_Comm_rank(comm, &rank);
+  // MPI_CHK(err);
+  // if (!rank)
+  // {
+  //   int tmp_rank, tmp_size;
+  //   for (int i = 0; i < depth; i++)
+  //   {
+  //     err = MPI_Comm_rank(sorter->comms[i], &tmp_rank);
+  //     MPI_CHK(err);
+  //     err = MPI_Comm_size(sorter->comms[i], &tmp_size);
+  //     MPI_CHK(err);
+  //     printf("I am %d/%d\n", tmp_rank, tmp_size);
+  //   }
+  // }
 
   sorter->comm = comm;
 
@@ -36,6 +87,7 @@ int Proj2SorterDestroy(Proj2Sorter *sorter_p)
     PROJ2CHK(err);
     next = nnext;
   }
+  free(sorter->comms);
   err = PROJ2FREE(sorter_p);
   PROJ2CHK(err);
 
