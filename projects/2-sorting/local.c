@@ -51,7 +51,7 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
   int print_rank = 0;
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
-  // if (rank == printrank)
+  // if (rank == print_rank)
   // {
   //   printf("On rank %d: After local sort:\n", rank);
   //   for (i = 0; i < numKeysLocal; i++)
@@ -90,7 +90,7 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
     numSorted++;
   }
 
-  if (rank == printrank)
+  if (rank == print_rank)
   {
     printf("On rank %d: After local sort:\n", rank);
     for (i = 0; i < numKeysIn + numKeysIn2; i++)
