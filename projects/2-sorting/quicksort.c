@@ -2,6 +2,7 @@
 #include <string.h>
 #include "proj2sorter.h"
 #include "proj2sorter_impl.h"
+#include <inttypes.h>
 
 /* A basic strategy to choose a pivot is to have the root broadcast its
  * median entry, and hope it will be close to the median for all processes */
@@ -201,6 +202,12 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
       MPI_CHK(err);
     }
   }
+    printf("On rank %d: After local sort:%d\n", rank, numKeysLocalNew);
+    for (int i = 0; i < numKeysLocalNew; i++)
+    {
+      printf("%" PRIu64 " ", keysNew[i]);
+    }
+    printf("\n====================\n");
   err = MPI_Comm_split(comm, color, rank, &subcomm);
   PROJ2CHK(err);
   err = Proj2SorterSort_quicksort_recursive(sorter, subcomm, numKeysLocalNew, keysNew, depth + 1);

@@ -48,7 +48,7 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
 {
   MPI_Comm comm = sorter->comm;
   int rank, i, err;
-  int print_rank = 0;
+  int print_rank = 10;
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
   if (rank == print_rank)
@@ -103,7 +103,7 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
     {
       printf("%" PRIu64 " ", keysOut[i]);
     }
-    printf("\n");
+    printf("\n====================\n");
   }
 
   return 0;
