@@ -74,12 +74,12 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
     }
     else if (right == numKeysIn2)
     {
-      keysOut[numSorted] = keys[left];
+      keysOut[numSorted] = keysIn[left];
       left++;
     }
     else if (smaller_than(keysIn[left], keysOut[right + numKeysIn], direction) > 0)
     {
-      keysOut[numSorted] = keys[left];
+      keysOut[numSorted] = keysIn[left];
       left++;
     }
     else
