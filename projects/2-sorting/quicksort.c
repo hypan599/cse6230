@@ -111,6 +111,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, MPI_Comm comm
       MPI_CHK(err);
       err = MPI_Get_count(&recvstatus, MPI_UINT64_T, &numIncoming);
       MPI_CHK(err);
+        // double the size of numIncoming
       numKeysLocalNew = lower_size + numIncoming;
       err = Proj2SorterGetWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
       PROJ2CHK(err);
