@@ -44,22 +44,28 @@ int smaller_than(uint64_t a, uint64_t b, int direction)
 int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
                                   size_t numKeysIn, uint64_t *keysIn,
                                   size_t numKeysIn2, uint64_t *keysOut,
-                                  int direction)
+                                  int direction, int depth)
 {
-  MPI_Comm comm = sorter->comm;
+  MPI_Comm comm = sorter->comms[0];
   int rank, i, err;
-  int print_rank = 1;
+  int print_rank = 10;
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
-  // if (!rank)
-  // {
-  //   printf("At depth: %d, On rank 0: Before local sort:\n", flag);
-  //   for (i = 0; i < numKeysLocal; i++)
-  //   {
-  //     printf("%" PRIu64 " ", keys[i]);
-  //   }
-  //   printf("\n");
-  // }
+//   if (rank == print_rank)
+//   {
+//     printf("--------------\nOn rank %d: Before local sort:\n", rank);
+//     printf("KeysIn: %d, KeysIn2: %d\n", (int)numKeysIn, (int)numKeysIn2);
+//     for (i = 0; i < numKeysIn; i++)
+//     {
+//       printf("%" PRIu64 " ", keysIn[i]);
+//     }
+//     printf("\n");
+//     for (i = 0; i < numKeysIn + numKeysIn2; i++)
+//     {
+//       printf("%" PRIu64 " ", keysOut[i]);
+//     }
+//     printf("\n");
+//   }
 
   // One portion of the input is in keysIn at  0:numKeysIn
   // The other portion of the input is in keysOut at numKeysIn2:numKeysOut
@@ -90,15 +96,16 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
     numSorted++;
   }
 
-  // if (!rank)
-  // {
-  //   printf("At depth: %d, On rank 0: After local sort:\n", flag);
-  //   for (i = 0; i < numKeysLocal; i++)
-  //   {
-  //     printf("%" PRIu64 " ", keys[i]);
-  //   }
-  //   printf("\n");
-  // }
+//   if (rank == print_rank)
+//   {
+//     printf("On rank %d: After local sort: numSortedIS: %d\n", rank, numSorted);
+//     for (i = 0; i < numKeysIn + numKeysIn2; i++)
+//     {
+//       printf("%" PRIu64 " ", keysOut[i]);
+//     }
+//     printf("\n====================\n");
+//   }
+
 
   return 0;
 }

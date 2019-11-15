@@ -2,6 +2,7 @@
 #include <string.h>
 #include "proj2sorter.h"
 #include "proj2sorter_impl.h"
+#include <inttypes.h>
 
 /* A basic strategy to choose a pivot is to have the root broadcast its
  * median entry, and hope it will be close to the median for all processes */
@@ -105,7 +106,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth,
   }
 
   /* color the upper half to split the communicator */
-//   color = (rank >= (size / 2));
+  color = (rank >= (size / 2));
   equivRank = color ? (rank - (size / 2)) : (rank + (size / 2));
   if ((size % 2) == 0 || (rank != size - 1))
   {
@@ -131,7 +132,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth,
       err = MPI_Recv(&keysNew[lower_size], numIncoming, MPI_UINT64_T, equivRank, PROJ2TAG_QUICKSORT, comm, MPI_STATUS_IGNORE);
       PROJ2CHK(err);
       // local merge here, with keysNew and lower_half
-      err = Proj2SorterSortLocal_my_merge(sorter, lower_size, lower_half, numIncoming, keysNew, PROJ2SORT_FORWARD);
+      err = Proj2SorterSortLocal_my_merge(sorter, lower_size, lower_half, numIncoming, keysNew, PROJ2SORT_FORWARD, depth);
       MPI_CHK(err);
 
       err = MPI_Wait(&sendreq, MPI_STATUS_IGNORE);
@@ -151,12 +152,19 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth,
       err = Proj2SorterGetWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
       PROJ2CHK(err);
       // memcpy(&keysNew[numIncoming], upper_half, upper_size * sizeof(*keysNew));
-      err = MPI_Recv(keysNew, numIncoming, MPI_UINT64_T, equivRank, PROJ2TAG_QUICKSORT, comm, MPI_STATUS_IGNORE);
+        // force recv at second half of container, leave first half for merge
+      err = MPI_Recv(&keysNew[upper_size], numIncoming, MPI_UINT64_T, equivRank, PROJ2TAG_QUICKSORT, comm, MPI_STATUS_IGNORE);
       PROJ2CHK(err);
 
       // local merge with upper half and keysNew
-      err = Proj2SorterSortLocal_my_merge(sorter, upper_size, upper_half, numIncoming, keysNew, PROJ2SORT_FORWARD);
+      err = Proj2SorterSortLocal_my_merge(sorter, upper_size, upper_half, numIncoming, keysNew, PROJ2SORT_FORWARD, depth);
       MPI_CHK(err);
+//             printf("On rank %d: After local sort:\n", rank);
+//             for (int i = 0; i < numKeysLocalNew; i++)
+//             {
+//               printf("%" PRIu64 " ", keysNew[i]);
+//             }
+//             printf("\n====================\n");
 
       err = MPI_Wait(&sendreq, MPI_STATUS_IGNORE);
       MPI_CHK(err);
@@ -189,8 +197,15 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth,
       PROJ2CHK(err);
 
       // local merge with upper half and keysNew
-      err = Proj2SorterSortLocal_my_merge(sorter, numKeysLocalNew, keysNew, numIncoming, keysNewNew, PROJ2SORT_FORWARD);
+      err = Proj2SorterSortLocal_my_merge(sorter, numKeysLocalNew, keysNew, numIncoming, keysNewNew, PROJ2SORT_FORWARD, depth);
       MPI_CHK(err);
+//             printf("On rank %d: After local sort:\n", rank);
+//             for (int i = 0; i < numKeysLocalNewNew; i++)
+//             {
+//               printf("%" PRIu64 " ", keysNewNew[i]);
+//             }
+//             printf("\n====================\n");
+        
 
       err = Proj2SorterRestoreWorkArray(sorter, numKeysLocalNew, sizeof(uint64_t), &keysNew);
       PROJ2CHK(err);
@@ -211,6 +226,7 @@ static int Proj2SorterSort_quicksort_recursive(Proj2Sorter sorter, int depth,
       MPI_CHK(err);
     }
   }
+
   err = Proj2SorterSort_quicksort_recursive(sorter, depth + 1, numKeysLocalNew, keysNew, numKeysFinal, keysFinal);
   PROJ2CHK(err);
 
@@ -374,8 +390,22 @@ int Proj2SorterSort_quicksort(Proj2Sorter sorter, size_t numKeysLocal, int unifo
   // initiate recursive call
   size_t numKeysFinal;
   uint64_t *keysFinal = NULL;
+//     printf("Before qsort:\n");
+//     for (int i = 0; i < numKeysLocal; i++)
+//     {
+//       printf("%" PRIu64 " ", keys[i]);
+//     }
+//     printf("\n====================\n");
   err = Proj2SorterSort_quicksort_recursive(sorter, 0, numKeysLocal, keys, &numKeysFinal, &keysFinal);
   PROJ2CHK(err);
+    
+//     printf("After qsort:\n");
+//     for (int i = 0; i < numKeysFinal; i++)
+//     {
+//       printf("%" PRIu64 " ", keysFinal[i]);
+//     }
+//     printf("\n====================\n");
+    
   err = Proj2SorterSort_quicksort_redistribute(sorter, sorter->comm, numKeysLocal, keys, numKeysFinal, keysFinal);
   PROJ2CHK(err);
   // memery allocated in revursive call, but free here
