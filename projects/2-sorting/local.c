@@ -51,15 +51,21 @@ int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
   int print_rank = 0;
   err = MPI_Comm_rank(comm, &rank);
   PROJ2CHK(err);
-  // if (rank == print_rank)
-  // {
-  //   printf("On rank %d: After local sort:\n", rank);
-  //   for (i = 0; i < numKeysLocal; i++)
-  //   {
-  //     printf("%" PRIu64 " ", keys[i]);
-  //   }
-  //   printf("\n");
-  // }
+  if (rank == print_rank)
+  {
+    printf("On rank %d: Before local sort:\n", rank);
+    printf("KeysIn %d: KeysIn2:%d\n", numKeysIn, numKeysIn2);
+    for (i = 0; i < numKeysIn; i++)
+    {
+      printf("%" PRIu64 " ", keysIn[i]);
+    }
+    printf("\n");
+    for (i = 0; i < numKeysIn + numKeysIn2; i++)
+    {
+      printf("%" PRIu64 " ", keysOut[i]);
+    }
+    printf("\n");
+  }
 
   // One portion of the input is in keysIn at  0:numKeysIn
   // The other portion of the input is in keysOut at numKeysIn2:numKeysOut
