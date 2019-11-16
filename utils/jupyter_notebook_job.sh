@@ -2,6 +2,7 @@
 #PBS -q coc-ice
 #PBS -j oe
 
+source ~/.bashrc
 module use ${CSE6230_DIR}/modulefiles
 module load cse6230
 
