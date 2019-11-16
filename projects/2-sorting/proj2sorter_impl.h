@@ -1,5 +1,5 @@
 #if !defined(PROJ2SORTER_IMPL_H)
-#define      PROJ2SORTER_IMPL_H
+#define PROJ2SORTER_IMPL_H
 
 #include "proj2sorter.h"
 
@@ -14,9 +14,10 @@ struct _proj2memlink
 
 struct _proj2sorter
 {
-  MPI_Comm     comm;
+  MPI_Comm comm;
   Proj2MemLink avail;
   Proj2MemLink inUse;
+  MPI_Comm *comms;
 };
 
 /* A parallel sort implementation based on divide and conquer, by choosing a
@@ -25,5 +26,11 @@ struct _proj2sorter
  * pivot is known, each partner sends its entries less than the pivot to the
  * lower of the pair and the others to the greater of the pair. */
 int Proj2SorterSort_quicksort(Proj2Sorter sorter, size_t numKeysLocal, int uniform, uint64_t *keys);
+
+int smaller_than(uint64_t a, uint64_t b, int direction);
+int Proj2SorterSortLocal_my_merge(Proj2Sorter sorter,
+                                  size_t numKeysIn, uint64_t *keysIn,
+                                  size_t numKeysIn2, uint64_t *keysOut,
+                                  int direction, int depth);
 
 #endif

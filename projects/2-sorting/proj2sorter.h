@@ -1,15 +1,17 @@
 #if !defined(PROJ2SORT_H)
-#define      PROJ2SORT_H
+#define PROJ2SORT_H
 
 #include "proj2.h"
 #include <mpi.h>
 
-enum {
-  PROJ2SORT_FORWARD  = 0,
+enum
+{
+  PROJ2SORT_FORWARD = 0,
   PROJ2SORT_BACKWARD = 1
 };
 
-enum {
+enum
+{
   PROJ2TAG_BITONIC,
   PROJ2TAG_QUICKSORT
 };
