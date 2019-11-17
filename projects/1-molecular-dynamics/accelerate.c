@@ -32,10 +32,9 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
 #ifdef BOXDIM
     int boxdim = BOXDIM;
 #else
-    int boxdim = 8; /* this number is magic! */ // Original 4, optimized 10
+    int boxdim = 4; /* this number is magic! */ // Original 4, optimized 10
 #endif
-    int maxNx;
-    maxNx = 32; /* how should we estimate the maximum number of interactions? */
+    int maxNx = Np; /* how should we estimate the maximum number of interactions? */
     err = IXCreate(L, boxdim, maxNx, &(a->ix));
     CHK(err);
   }
@@ -100,63 +99,6 @@ accelerate_ix(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //a
 }
 
 static void
-accelerate_ix_no_update(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
-{
-  IX ix = accel->ix;
-  int Np = X->Np;
-  double L = accel->L;
-  double k = accel->k;
-  double r = accel->r;
-  int NpairTMP = *Npairs;
-#pragma omp parallel for schedule(static, 16) // I'm good
-  for (int p = 0; p < *Npairs; p++)
-  {
-    int i = (*pairs)[p].p[0];
-    int j = (*pairs)[p].p[1];
-    double du[3];
-
-    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-
-    for (int d = 0; d < 3; d++)
-    {
-#pragma omp atomic
-      IDX(U, d, i) += du[d];
-#pragma omp atomic
-      IDX(U, d, j) -= du[d];
-    }
-  }
-}
-
-static void
-accelerate_ix_no_update_restore(Accel accel, Vector X, Vector U, int *Npairs, ix_pair **pairs) //add the frequency of updating interaction pairs  int update_inter_pair
-{
-  IX ix = accel->ix;
-  int Np = X->Np;
-  double L = accel->L;
-  double k = accel->k;
-  double r = accel->r;
-  int NpairTMP = *Npairs;
-#pragma omp parallel for schedule(static, 16) // I'm good
-  for (int p = 0; p < *Npairs; p++)
-  {
-    int i = (*pairs)[p].p[0];
-    int j = (*pairs)[p].p[1];
-    double du[3];
-
-    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-
-    for (int d = 0; d < 3; d++)
-    {
-#pragma omp atomic
-      IDX(U, d, i) += du[d];
-#pragma omp atomic
-      IDX(U, d, j) -= du[d];
-    }
-  }
-  IXRestorePairs(ix, X, 2. * r, Npairs, pairs);
-}
-
-static void
 accelerate_direct(Accel accel, Vector X, Vector U)
 {
   int Np = accel->Np;
@@ -198,18 +140,7 @@ void accelerate(Accel accel, Vector X, Vector U, int control_update, int update_
   ix_pair *pairs;
   if (accel->use_ix)
   {
-    if (control_update && control_update != update_inter_pair)
-    {
-      accelerate_ix_no_update(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, no update_inter_pair
-    }
-    else if (control_update == update_inter_pair)
-    {
-      accelerate_ix_no_update_restore(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, no update_inter_pair,restore pairs
-    }
-    else
-    {
-      accelerate_ix(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, update_inter_pair
-    }
+    accelerate_ix(accel, X, U, &Npairs, &pairs); //add the coefficient of Npairs, pairs, update_inter_pair
   }
   else
   {
