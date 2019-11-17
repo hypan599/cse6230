@@ -94,7 +94,7 @@ void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector U)
     #ifdef UPDATEINTERVAL
     update_inter_pair = UPDATEINTERVAL;
     #else
-  update_inter_pair = 4;
+  update_inter_pair = 1;
     #endif
 
   int control_update;
@@ -103,10 +103,10 @@ void verlet_step(Verlet Vr, int Nt, double dt, Vector X, Vector U)
 
   for (t = 0; t < Nt; t += update_inter_pair) //t++
   {
-    for (control_update = 0; control_update < update_inter_pair; control_update++)
-    {
-      accelerate(Vr->accel, X, U, control_update, update_inter_pair); //add the coefficient of period update_inter_pair
+//     for (control_update = 0; control_update < update_inter_pair; control_update++)
+//     {
+      accelerate(Vr->accel, X, U, 0, update_inter_pair); //add the coefficient of period update_inter_pair
       stream_and_noise(Vr, dt, dt_noise, X, U);
-    }
+//     }
   }
 }
