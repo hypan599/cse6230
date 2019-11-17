@@ -28,7 +28,7 @@ However, if the number of boxes is larger, there will also be extra time spent o
 
 After the trial, we decided to set the boxdim as 8
 .
-
+gst
 Parallel the loop of finding interaction pairs:
 
 We looked at profile of the program, and the GetPairs loop takes surprisingly large amount of time. To optimize, it must be parallelized. Calculation in each box is independent, which can be paralleled naturally. The most difficult part here is the data structure.
