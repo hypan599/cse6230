@@ -30,7 +30,7 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
   {
     int boxdim = 10; /* this number is magic! */
     int maxNx;
-    maxNx = 64; /* how should we estimate the maximum number of interactions? */
+    maxNx = Np; /* how should we estimate the maximum number of interactions? */
     err = IXCreate(L, boxdim, maxNx, &(a->ix));
     CHK(err);
   }
@@ -128,7 +128,6 @@ accelerate_direct(Accel accel, Vector X, Vector U)
     {
       /* Instead of adding to the velocity,
        * For this project the computed interactions give the complete velocity */
-#pragma omp atomic
       IDX(U, d, i) = u[d];
     }
   }
