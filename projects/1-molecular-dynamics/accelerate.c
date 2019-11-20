@@ -75,12 +75,6 @@ accelerate_ix(Accel accel, Vector X, Vector U)
     }
   }
 
-  //   for (int j = 0; j < 3; j++) {
-  //     for (int i = 0; i < Np; i++) {
-  //       IDX(U,j,i) = 0.;
-  //     }
-  //   }
-
   IXGetPairs(ix, X, 2. * r, &Npairs, &pairs); // parallel in side
 #pragma omp parallel for schedule(runtime)
   for (int p = 0; p < Npairs; p += 2)
@@ -134,6 +128,7 @@ accelerate_direct(Accel accel, Vector X, Vector U)
     {
       /* Instead of adding to the velocity,
        * For this project the computed interactions give the complete velocity */
+#pragma omp atomic
       IDX(U, d, i) = u[d];
     }
   }
