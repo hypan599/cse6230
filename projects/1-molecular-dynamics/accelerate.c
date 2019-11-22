@@ -30,7 +30,7 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
   {
     int boxdim = 10; /* this number is magic! */
     int maxNx;
-    maxNx = Np; /* how should we estimate the maximum number of interactions? */
+    maxNx = Np;
     err = IXCreate(L, boxdim, maxNx, &(a->ix));
     CHK(err);
   }
