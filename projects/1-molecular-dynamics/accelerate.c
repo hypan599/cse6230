@@ -28,7 +28,7 @@ int AccelCreate(int Np, double L, double k, double r, int use_ix, Accel *accel)
   a->use_ix = use_ix;
   if (use_ix)
   {
-    int boxdim = 10; /* this number is magic! */
+    int boxdim = 6; /* this number is magic! */
     int maxNx;
     maxNx = Np;
     err = IXCreate(L, boxdim, maxNx, &(a->ix));
