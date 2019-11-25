@@ -77,14 +77,13 @@ accelerate_ix(Accel accel, Vector X, Vector U)
 
   IXGetPairs(ix, X, 2. * r, &Npairs, &pairs); // parallel in side
 #pragma omp parallel for schedule(runtime)
-  for (int p = 0; p < Npairs; p += 2)
+  for (int p = 0; p < Npairs; p += 1)
   {
     int i = pairs[p].p[0];
     int j = pairs[p].p[1];
     double du[3];
 
     force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
-    // printf("we get du: %f, %f ,%f, \n", du[0], du[1], du[2]);
     for (int d = 0; d < 3; d++)
     {
 #pragma omp atomic

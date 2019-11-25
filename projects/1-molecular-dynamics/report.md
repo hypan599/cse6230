@@ -28,7 +28,7 @@ From the profile after optimization, we see that:
 
 A new function of computing the remainder of a number with regard to the dimension of the cell is written as MY_REMAINDER in the file "steric.h". The function is set under "omp declare simd", which let the code vecotrized better.
 
-Idea comes from and proved in course lectures.
+Motivation and proof comes from hw4.
 
 ### Change the size of boxs
 
@@ -40,9 +40,49 @@ After the trial, we decided to set the boxdim as 8.
 
 ### Parallel the function of computing the forces
 
+#### motivation
+
+There are for loops that doesn't have data dependency inside. They should be parallelized. e.g. the force calculation:
+
+```c
+for (int p = 0; p < Npairs; p += 2)
+  {
+    int i = pairs[p].p[0];
+    int j = pairs[p].p[1];
+    double du[3];
+
+    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+    for (int d = 0; d < 3; d++)
+    {
+      IDX(U, d, i) += du[d];
+      IDX(U, d, j) -= du[d];
+    }
+```
+
 After finding the interacting pairs, the force between one pair is only related to the positions of the two particles, which is independent with other pairs. So the loop of computing forces should be paralleled with ease.
 
 However, since there is the risk of adding forces exerted on one particle simultaneously, the code of adding forces onto the elements of the force array "U" are set atomic. Everytime only one thread can access to the position saving the force on a particle.
+
+The force calculation is tuned into this:
+
+```c
+#pragma omp parallel for schedule(runtime)
+  for (int p = 0; p < Npairs; p += 2)
+  {
+    int i = pairs[p].p[0];
+    int j = pairs[p].p[1];
+    double du[3];
+
+    force(k, r, L, IDX(X, 0, i), IDX(X, 1, i), IDX(X, 2, i), IDX(X, 0, j), IDX(X, 1, j), IDX(X, 2, j), du);
+    for (int d = 0; d < 3; d++)
+    {
+#pragma omp atomic
+      IDX(U, d, i) += du[d];
+#pragma omp atomic
+      IDX(U, d, j) -= du[d];
+    }
+  }
+```
 
 ### Not using AoS
 
