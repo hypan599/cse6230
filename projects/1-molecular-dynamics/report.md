@@ -32,15 +32,19 @@ Motivation and proof comes from hw4.
 
 ### Change the size of boxs
 
-By changing the size of the box, we have control over roughly how many particles are in each box. Smaller boxes have fewer particles in them but have larger partitioning overhead. Since it doesn't affect the correctness of the program, here we only need to do some experiments and find a optimal size of the box.
+#### Motivation
+
+Since we are reassigning particles to boxes in every iteration, it's better to have smaller boxes to reduce number of particles in each box.
 
 Since the "radius" of particles is 1, minimum possible box length is 2, and maximum possible boxes along one axis is 10.
 
-After the trial, we decided to set the boxdim as 8.
+![pj1_boxsize](pj1_boxsize.png)
+
+We see that as number of particles increase, the relative speed up becomes higher and higher.
 
 ### Parallel the function of computing the forces
 
-#### motivation
+#### Motivation
 
 There are for loops that doesn't have data dependency inside. They should be parallelized. e.g. the force calculation:
 
