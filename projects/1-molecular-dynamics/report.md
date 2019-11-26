@@ -16,7 +16,7 @@ In original program, all interaction pairs are recorded on one list. To parallel
 
 - Finally, all the lists in the array are joined into one list at the end of IXGetPairs, which will be passed to accelerate.
 
-![after_OptGetPairs](after_multivec.png)
+![after_OptGetPairs](after_multivec_2.png)
 
 From the profile after optimization, we see that:
 
