@@ -20,7 +20,7 @@ In original program, all interaction pairs are recorded on one list. To parallel
 
 From the profile after optimization, we see that:
 
-1. `omp_fork` is called, which means that omp parallel routine is successfully called.
+1. `omp_fork` is called, which means that omp parallel routine is successfully called. Meanwhile, the content of fork-join call is within the for loop we parallel, as expected.
 
 2. Percentage of time cost of `GetPairs` significantly reduce, which means that this work is useful.
 
