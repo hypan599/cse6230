@@ -33,6 +33,6 @@ In d.3 the author took advantage of the fact that in matrix multiplication, all 
 - **Application**: pyramidal II screw dislocation in Mg
 - **Measurement**: stable single SCF iteration time. `MPI_Wtime` for CPU; `MPI_Wtime` + `cudaDeviceSynchronize` for CPU-GPU. FLOP measured by `nvprof`, take avg of 2 MPI tasks, then scale to full size.
 
-- **Model**: strong scaling and weak scaling
+- **Model**: The author use strong scaling to demonstrate that the DFT-FE have higher speed up that previous state-of-art methods, and is much closer to ideal speed up. The author alse used weak scaling to show that the program have a rather good parallelism efficiency on up to system with 20,000 electrons.
 
 ## f. Any paper that is submitted for a prize contains some marketing, and maybe some attempts to fool the masses. If you could ask the authors to submit one additional figure with the performance measurements of an experiment, what would you choose, and why
