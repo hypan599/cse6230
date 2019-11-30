@@ -27,7 +27,7 @@ Namely, in d.1 and d.2 the author solved c.1 by employing *error-analysis inform
 
 In d.3 the author took advantage of the fact that in matrix multiplication, all wavefuntion vectors have same p2p communication pattern, and thus they could be combined together to avoid paying redudant latency. The author also employed FE cell level dense matrix operations instead of global sparse matrix operations, as well as porting all computational intensive operations to GPU.
 
-## e. What model is used that combines the problem parameters and machine parameters to predict performance?
+## e. What model is used that combines the problem parameters and machine parameters to predict performance
 
 - **System and environment**: Summit supercomputer(CPU-GPU), Theta and Cori supercomputer(CPU)
 - **Application**: pyramidal II screw dislocation in Mg
@@ -35,4 +35,4 @@ In d.3 the author took advantage of the fact that in matrix multiplication, all 
 
 - **Model**: strong scaling and weak scaling
 
-## f. Any paper that is submitted for a prize contains some marketing, and maybe some attempts to fool the masses. If you could ask the authors to submit one additional figure with the performance measurements of an experiment, what would you choose, and why?
+## f. Any paper that is submitted for a prize contains some marketing, and maybe some attempts to fool the masses. If you could ask the authors to submit one additional figure with the performance measurements of an experiment, what would you choose, and why
