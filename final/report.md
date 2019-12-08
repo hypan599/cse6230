@@ -44,9 +44,9 @@ Installation:
 
 To install MKL, download source tarball and run `install.sh`.
 
-MPI is shipped with pace module. (But I guess MPI official site should have elaborate documentation on this)
+To install MPI follow official [documentation](https://www.open-mpi.org/faq/?category=building). Here MPI is shipped with pace module.
 
-To install HPL, download source tarball and follow the `INSTALL` file. Remember to change make file to point to correct mpi and mkl installation.
+To install HPL, download source tarball and follow the `INSTALL` file. Remember to change make file to point those environment variables to correct mpi and mkl installation.
 
 ### 1.4 (1 pts): Successfully install and run your benchmark
 
