@@ -27,6 +27,16 @@ We will focus on first get this thing running on CPU, then maybe try utilize GPU
 
 - d. One measure of the complexity of a benchmark is how difficult it would be to write a reference implementation from scratch (one that solves the problem, if not in a "high-performance" way). If you had to guess, how big would a team have to be do that: (i) one dedicated programmer; (ii) a team of about a dozen (like a research lab); (iii) an Organization (like a division of a company or a government agency)? Give your reasoning (by, e.g. measuring lines of code in the implementation you will be working with)
 
+Total lines of code in hpl: 12009
+
+In assignments 6, we did matvec using MPI, given skeleton code with 857 lines. And after plenty of work we finally come up with a working version consisting of 1042 lines in one week. Here we observe: 2 dedicated student, 7 days, ~150 lines of code. Given the fact that we spent some time working on other courses, and we did spend some time debugging pointers, and assume experienced programmer doesn't make this type of mistakes at all, we speed up 200% resulting in himself writing ~300 lines of code per week. Thus he needs 400 weeks to finish the project if he can stay in this pace.
+
+Given a dozen prople, we can speed up roughly 10-15 times resulting in less that 40 weeks, which is about 3 quarters.
+
+Given a company, let's say we have a product manager and he assigns different part of the program to different teams, we can speed up at least 20 times. Generally a company should be able to finish that work in 2-3 month.
+
+Note: in all counting above, comments and blank lines in source files are ignored.
+
 ### 1.3 (1 pts): Try to prepare for some of the logistics ahead of you. Answer the following questions:
 
 - a. Where / how will you obtain the source for the benchmark driver and implementation that you will be using? (Regarding how: is it a tarball, repository, or other?)
