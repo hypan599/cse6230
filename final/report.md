@@ -37,14 +37,30 @@ Source code is downloaded from link above.
 
 Dependency:
 
-- Intel MKL
-- MPI
+- [Intel MKL](https://software.intel.com/en-us/mkl)
+- [MPI](https://www.open-mpi.org/)
+
+Installation:
+
+To install MKL, download source tarball and run `install.sh`.
+
+MPI is shipped with pace module. (But I guess MPI official site should have elaborate documentation on this)
+
+To install HPL, download source tarball and follow the `INSTALL` file. Remember to change make file to point to correct mpi and mkl installation.
 
 ### 1.4 (1 pts): Successfully install and run your benchmark
 
 Include in this directory an example job submission script that runs your benchmark code.
 
 - [ ]: job submission script
+
+HPL parameters:
+
+N number of runs
+Ns mat size
+NBs number of blocks to use (15-100)
+P, Q grid size
+
 
 ### 1.5 (3 pts): Develop a performance model for your benchmark
 
