@@ -62,15 +62,9 @@ To install HPL, download source tarball and follow the `INSTALL` file. Remember 
 
 Include in this directory an example job submission script that runs your benchmark code.
 
-- [ ]: job submission script
+job submission script: `hpl_run.pbs`
 
 HPL parameters:
-
-N number of runs
-Ns mat size
-NBs number of blocks to use (15-100)
-P, Q grid size
-
 
 ### 1.5 (3 pts): Develop a performance model for your benchmark
 
