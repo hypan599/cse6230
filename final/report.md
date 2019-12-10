@@ -23,6 +23,8 @@ We will focus on first get this thing running on CPU, then maybe try utilize GPU
 
 - b. What assumptions does your benchmark make about the kind of machine that it is run on? Do you think that those assumptions are reasonable? Let's make this question very concrete: let's say you have access to TaihuLight, whose nodes are neither really CPUs or GPUs, but somewhere in between. Could your benchmark run on this machine? If not, propose a way that you could change the benchmark to make it more portable.
 
+The HPL package doesn't make any assumption on the platform, since HPL is only calling any linear algebra routines provided by user. The only thing here is that user is responsible for providing a MPI and linear algebra implementation.
+
 - c. How exactly does your benchmark specify the way the problem is solved? If your benchmark is for a particular algorithm or a particular code, do you think that the results of the benchmark would help you predict the performance of a different code/algorithm solving the same problem on the same machine?
 
 - d. One measure of the complexity of a benchmark is how difficult it would be to write a reference implementation from scratch (one that solves the problem, if not in a "high-performance" way). If you had to guess, how big would a team have to be do that: (i) one dedicated programmer; (ii) a team of about a dozen (like a research lab); (iii) an Organization (like a division of a company or a government agency)? Give your reasoning (by, e.g. measuring lines of code in the implementation you will be working with)
@@ -62,15 +64,9 @@ To install HPL, download source tarball and follow the `INSTALL` file. Remember 
 
 Include in this directory an example job submission script that runs your benchmark code.
 
-- [ ]: job submission script
+job submission script: `hpl_run.pbs`
 
 HPL parameters:
-
-N number of runs
-Ns mat size
-NBs number of blocks to use (15-100)
-P, Q grid size
-
 
 ### 1.5 (3 pts): Develop a performance model for your benchmark
 
