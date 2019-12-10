@@ -1,9 +1,0 @@
-# This is an example PBSscript
-#PBS -N final-hpl
-#PBS -j oe
-#PBS -M hpan48@gatech.edu
-
-module use ${CSE6230_DIR}/modulefiles
-module load cse6230
-
-mpirun -np 25 ~/hpl/xhpl > HPL-${PBS_JOBID%.ice-sched.pace.gatech.edu}.out
