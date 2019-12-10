@@ -14,7 +14,7 @@ fi
 
 # prepare dat file
 rm -v $HPL_DIR/HPL.dat $HPL_DIR/"HPL-$PROFILE.out"
-cp -v ./HPL-$PROFILE.dat $HPL_DIR/HPL.dat
+cp -v $HOME/cse6230/final/HPL-$PROFILE.dat $HPL_DIR/HPL.dat
 
 # run
-mpirun -np $PROFILE "$HPL_DIR/xhpl" > "HPL-$PROFILE.out"
+mpirun -np $PROFILE xhpl > "HPL-$PROFILE.out"
