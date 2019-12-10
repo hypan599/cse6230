@@ -6,11 +6,7 @@ module use ${CSE6230_DIR}/modulefiles
 module load cse6230
 HPL_DIR="$HOME/hpl"
 
-if [ $# == "0" ]; then
-    PROFILE="16"
-else
-    PROFILE=$1
-fi
+PROFILE="16"
 
 # prepare dat file
 rm -v $HPL_DIR/HPL.dat $HPL_DIR/"HPL-$PROFILE.out"
