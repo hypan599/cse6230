@@ -1,15 +1,9 @@
 # This is an example PBSscript
-#PBS -N HPL-hpan48
-#PBS -l nodes=1:ppn=4
-#PBS -l pmem=1gb
-#PBS -l walltime=1:00:00
-#PBS -q pace-ice
+#PBS -N final-hpl
 #PBS -j oe
-#PBS -o hpl.out
-#PBS -m abe
 #PBS -M hpan48@gatech.edu
 
 module use ${CSE6230_DIR}/modulefiles
 module load cse6230
 
-mpirun -np 4 ~/hpl/xhpl
+mpirun -np 25 ~/hpl/xhpl > HPL-${PBS_JOBID%.ice-sched.pace.gatech.edu}.out
