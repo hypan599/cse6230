@@ -78,9 +78,13 @@ If it is difficult to formulate your expression in terms of machine parameters, 
 
 ### 1.6 (2 pts): Gather statistics for the performance metric
 
-Include in this directory the job script(s) that you use to gather statistics for the performance metric on pace-ice. Additionally, describe what steps you've taken to ensure the quality of the statistics: how are you accounting for variability / noise? Does your benchmark show different performance on the first run than on subsequent runs?
+    Include in this directory the job script(s) that you use to gather statistics for the performance metric on pace-ice. Additionally, describe what steps you've taken to ensure the quality of the statistics: how are you accounting for variability / noise? Does your benchmark show different performance on the first run than on subsequent runs?
 
-If you are running your benchmark for multiple problem instances ($N$), include a plot of the performance metric for the different problem instances. (You can include error bars for maximum/minimum values of the performance metric for the same problem instance to convey variability.)
+    If you are running your benchmark for multiple problem instances ($N$), include a plot of the performance metric for the different problem instances. (You can include error bars for maximum/minimum values of the performance metric for the same problem instance to convey variability.)
+
+Here we first run hpl with different problem sizes (N) on single node.
+
+Then run on 
 
 ### 1.7 (3 pts): Compare your performance model to your statistics
 
