@@ -27,6 +27,8 @@ The HPL package doesn't make any assumption on the platform, since HPL is only c
 
 - c. How exactly does your benchmark specify the way the problem is solved? If your benchmark is for a particular algorithm or a particular code, do you think that the results of the benchmark would help you predict the performance of a different code/algorithm solving the same problem on the same machine?
 
+HPL is solving the problem in a specific way, namely LU decomposition. However since LU is well understood and each operation is determinstic, one can still make predictions based on result of hpl.
+
 - d. One measure of the complexity of a benchmark is how difficult it would be to write a reference implementation from scratch (one that solves the problem, if not in a "high-performance" way). If you had to guess, how big would a team have to be do that: (i) one dedicated programmer; (ii) a team of about a dozen (like a research lab); (iii) an Organization (like a division of a company or a government agency)? Give your reasoning (by, e.g. measuring lines of code in the implementation you will be working with)
 
 Total lines of code in hpl: 12009
