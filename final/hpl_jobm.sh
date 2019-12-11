@@ -3,11 +3,12 @@
 
 # load module
 module use ${CSE6230_DIR}/modulefiles
-module load cse6230
+module unload cse6230
+module load cse6230/gcc-omp-gpu
 HPL_DIR="$HOME/hpl"
 
-PROFILE="25"
-NP=25
+PROFILE="100"
+NP=100
 
 # prepare dat file
 rm -vrf $HPL_DIR/$PROFILE
