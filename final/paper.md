@@ -4,39 +4,32 @@ Paper: Fast, scalable and accurate finite-element based ab initio calculations u
 
 ## a. What is the problem being solved
 
-first principle calculation based on DFT (density fuctional theory) methods on metallic system
+first principle calculation based on DFT (density fuctional theory) methods, using finite element method.
 
 ## b. What are the most important kernels of the algorithm for solving the problem? (In this context consider a kernel to be a subproblem that is relevant to more than just the specific problem from a.)
 
-the kernel in this problem is a PDE solver (finite-element based)
+After a bunch of mathematical deduction, the authors have reduced the problem to:
+main loop consists of dense matrix multiplication and matrix vector multiplication, in total `O(MlogM + 2MN + 4MN^2 + 2N^3)`, loop until result doesn't get better.
 
 ## c. What about the important kernels and/or the size of the problem make this a challenging problem
 
-Existing FE challenges
-
-- **c.1** large number of DoF(degree of freedom)
-- **c.2** GHEP (generalized hermitian eigenvalue problem) is harder than SHEP (standard hermitian eigenvalue problem)
+challenge in the linear algebra kernel is the large size of the matrix and high asymptotic complexity.
 
 ## d. Summarize the innovation of this paper
 
-- d.1: development of efficient and accurate spatially adaptive discretization strategies using higher order finite element discretization
-- d.2: efficient and scalable algorigthms in conjunction with mixed precision strategy for the solution of kohn sham equations
-- d.3: implementation innovation that reduce the data movement costs and increase arithmetic intensity
-
-Namely, in d.1 and d.2 the author solved c.1 by employing *error-analysis informed adaptive higher order FE discretization* that reduce DoF, and c.2 by employing finite-elements with nodal points coincident with Gauss-Lobatto-Legendre points.
-
-In d.3 the author took advantage of the fact that in matrix multiplication, all wavefuntion vectors have same p2p communication pattern, and thus they could be combined together to avoid paying redudant latency. The author also employed FE cell level dense matrix operations instead of global sparse matrix operations, as well as porting all computational intensive operations to GPU.
+- First thing to mention is that the author applied finite element methods in DFT problem and reduced the problem to a set of linear problems to solve.
+- The author managed to port most of the computation to GPU as wells as minimizing the data transfer between GPUs and CPU.
+- Perform MPI communication for all wavefunction vectors in X_b simutaneously to reduce latency and overhead.
+- Perform the most expensive computation in mixed precision to boost performance without reducing the final accuracy.
 
 ## e. What model is used that combines the problem parameters and machine parameters to predict performance
 
-- **System and environment**: Summit supercomputer(CPU-GPU), Theta and Cori supercomputer(CPU)
-- **Application**: pyramidal II screw dislocation in Mg
-- **Measurement**: stable single SCF iteration time. `MPI_Wtime` for CPU; `MPI_Wtime` + `cudaDeviceSynchronize` for CPU-GPU. FLOP measured by `nvprof`, take avg of 2 MPI tasks, then scale to full size.
+The author use strong scaling to demonstrate that the DFT-FE have higher speed up that previous state-of-art methods, and is much closer to ideal speed up. The author also used weak scaling to show that the program have a rather good parallelism efficiency on up to system with 20,000 electrons.
 
-- **Model**: The author use strong scaling to demonstrate that the DFT-FE have higher speed up that previous state-of-art methods, and is much closer to ideal speed up. The author alse used weak scaling to show that the program have a rather good parallelism efficiency on up to system with 20,000 electrons.
+- In strong scaling, they use $T_f(512)$ (or $T_f(2048)$ etc. in other charts) as base case, and compared observed speed up with ideal speed up, and they get close to ideal speed up even with high number of MPI tasks. Here the model is simply $S_f(P) = \frac{T_f(1)}{T_f(P)}$.
+
+- In weak scaling they choose to fix memory assiciated with the wavefuntion to a constant, and examine the performance. Here the models is $S_f(N, P) = \frac{T_f(N, 1)}{T_f(kN, k)}$, and they've chosen $T_f(2500, 54)$. Here N to P is not linear since the fixed constant is memory per MPI task, which is not necessarily linear to number of electrons.
 
 ## f. Any paper that is submitted for a prize contains some marketing, and maybe some attempts to fool the masses. If you could ask the authors to submit one additional figure with the performance measurements of an experiment, what would you choose, and why
 
-- **f.1**: distribution of FLOPS on different MPI tasks. Since FLOPS are only measured on 2 tasks, and the fact that equal number of DoF on each MPI task is only verified on small system. They may need to prove that this property still holds on larger systems.
-
-- **f.2**: performance of current state-of-art methods on large scale Mg dislocation problem as base line control. In section 7.2, only performance of DFT-FE is reported.
+- In section 7 the author only comparing the model with itself, which means that alghough the speed up form a good curve, the absolute runtime is unknown to us. The author did report runtime comparisons of time but that is done on smaller baseline problems, not on the large scale real problem. Thus I'd like to see a figure or table showing overall runtime (until solution converge) of the new method and current state-of-art method.
