@@ -1,6 +1,7 @@
 #PBS -N final-hpl
 #PBS -j oe
-
+# this file is simply a copy of hpl_job.sh to submit job to coc-ice-multi
+# we don't have more time to spend on this so this file is abandoned
 # load module
 module use ${CSE6230_DIR}/modulefiles
 module unload cse6230
